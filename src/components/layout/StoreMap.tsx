@@ -1,0 +1,132 @@
+import { motion } from 'framer-motion';
+import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
+
+const STORE = {
+  address: '123 Design Street, New York, NY 10001',
+  phone: '+1 (800) 794-7660',
+  email: 'hello@swipo.com',
+  hours: 'Mon - Sat: 10am - 8pm',
+  // Coordinates: NYC SoHo area
+  lat: 40.7234,
+  lng: -73.9988,
+};
+
+export function StoreMap() {
+  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${STORE.lng - 0.01},${STORE.lat - 0.005},${STORE.lng + 0.01},${STORE.lat + 0.005}&layer=mapnik&marker=${STORE.lat},${STORE.lng}`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${STORE.lat},${STORE.lng}`;
+
+  return (
+    <section className="bg-brand-card py-16 lg:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
+        >
+          <span className="inline-block text-xs font-bold text-brand-accent uppercase tracking-[0.2em] mb-3">Visit Us</span>
+          <h2 className="text-3xl lg:text-4xl font-black text-brand-heading">
+            Find our <span className="text-brand-accent">flagship store</span>
+          </h2>
+          <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full mx-auto" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          {/* Info card */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-brand-dark text-white rounded-3xl p-6 lg:p-8 flex flex-col"
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Open now</span>
+            </div>
+
+            <h3 className="text-2xl font-black mb-1">SWIPO Flagship</h3>
+            <p className="text-white/60 text-sm mb-8">Premium showroom & design studio</p>
+
+            <div className="space-y-5 flex-1">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-brand-accent/20 rounded-lg shrink-0">
+                  <MapPin size={16} className="text-brand-accent" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Address</p>
+                  <p className="text-sm text-white/90">{STORE.address}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-brand-accent/20 rounded-lg shrink-0">
+                  <Clock size={16} className="text-brand-accent" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Opening hours</p>
+                  <p className="text-sm text-white/90">{STORE.hours}</p>
+                  <p className="text-xs text-white/50">Sunday: 12pm - 6pm</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-brand-accent/20 rounded-lg shrink-0">
+                  <Phone size={16} className="text-brand-accent" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Phone</p>
+                  <a href={`tel:${STORE.phone}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.phone}</a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-brand-accent/20 rounded-lg shrink-0">
+                  <Mail size={16} className="text-brand-accent" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Email</p>
+                  <a href={`mailto:${STORE.email}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.email}</a>
+                </div>
+              </div>
+            </div>
+
+            <a href={directionsUrl} target="_blank" rel="noopener noreferrer"
+              className="mt-8 flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-orange text-white font-bold py-3.5 rounded-full transition-all hover:scale-[1.02] text-sm"
+            >
+              <Navigation size={16} /> Get Directions
+            </a>
+          </motion.div>
+
+          {/* Map */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-2 rounded-3xl overflow-hidden bg-white shadow-sm relative min-h-[400px] lg:min-h-[500px]"
+          >
+            <iframe
+              src={mapSrc}
+              className="w-full h-full border-0 absolute inset-0"
+              loading="lazy"
+              title="SWIPO Store Location"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            {/* Custom marker overlay (decorative) */}
+            <div className="absolute top-4 left-4 bg-white rounded-2xl shadow-lg p-3 pr-4 flex items-center gap-2 pointer-events-none">
+              <div className="bg-brand-accent text-white p-1.5 rounded-lg">
+                <MapPin size={14} />
+              </div>
+              <div>
+                <p className="text-xs font-black text-brand-heading">SWIPO Flagship</p>
+                <p className="text-[10px] text-gray-400">SoHo, New York</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,0 +1,363 @@
+import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Pencil, Trash2, Search, ToggleLeft, ToggleRight, X, Save, Upload } from 'lucide-react';
+import { useProducts, useCategories, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useProducts';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { ImageUploader } from '../../components/admin/ImageUploader';
+import toast from 'react-hot-toast';
+import type { Product } from '../../types';
+
+interface ProductFormData {
+  name: string; description: string; price: string; discount_price: string;
+  category_id: string; stock: string; status: 'active' | 'inactive';
+  material: string; dimensions: string; tags: string; images: string[];
+}
+
+const EMPTY_FORM: ProductFormData = {
+  name: '', description: '', price: '', discount_price: '',
+  category_id: '', stock: '0', status: 'active',
+  material: '', dimensions: '', tags: '', images: [],
+};
+
+export function AdminProducts() {
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [form, setForm] = useState<ProductFormData>(EMPTY_FORM);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const { data, isLoading } = useProducts({ search: search || undefined, page, limit: 15, status: undefined });
+  const { data: categories } = useCategories();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
+
+  const products = data?.data ?? [];
+
+  const openNew = () => { setEditProduct(null); setForm(EMPTY_FORM); setModalOpen(true); };
+  const openEdit = (p: Product) => {
+    setEditProduct(p);
+    setForm({
+      name: p.name, description: p.description, price: String(p.price),
+      discount_price: p.discount_price ? String(p.discount_price) : '',
+      category_id: p.category_id, stock: String(p.stock), status: p.status,
+      material: p.material ?? '', dimensions: p.dimensions ?? '',
+      tags: p.tags.join(', '), images: p.images ?? [],
+    });
+    setModalOpen(true);
+  };
+
+  const setField = <K extends keyof ProductFormData>(k: K, v: ProductFormData[K]) => setForm(p => ({ ...p, [k]: v }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = {
+      name: form.name, description: form.description,
+      price: parseFloat(form.price),
+      discount_price: form.discount_price ? parseFloat(form.discount_price) : null,
+      category_id: form.category_id,
+      stock: parseInt(form.stock),
+      status: form.status,
+      material: form.material || null,
+      dimensions: form.dimensions || null,
+      tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
+      images: form.images,
+    };
+    try {
+      if (editProduct) {
+        await updateProduct.mutateAsync({ id: editProduct.id, data: payload });
+        toast.success('Product updated');
+      } else {
+        await createProduct.mutateAsync(payload as any);
+        toast.success('Product created');
+      }
+      setModalOpen(false);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this product?')) return;
+    try {
+      await deleteProduct.mutateAsync(id);
+      toast.success('Product deleted');
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const next = new Set(selectedIds);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setSelectedIds(next);
+  };
+
+  return (
+    <>
+      <Helmet><title>Products — SWIPO Admin</title></Helmet>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-black text-brand-heading">Products</h1>
+            <p className="text-gray-400 text-sm mt-0.5">{data?.pagination?.total ?? 0} total products</p>
+          </div>
+          <Button variant="primary" onClick={openNew}>
+            <Plus size={16} /> Add Product
+          </Button>
+        </div>
+
+        {/* Search / Filters */}
+        <div className="bg-white rounded-2xl p-4 flex gap-4 items-center">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text" placeholder="Search products..."
+              value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
+            />
+          </div>
+          {selectedIds.size > 0 && (
+            <div className="flex gap-2">
+              <span className="text-sm font-semibold text-gray-500">{selectedIds.size} selected</span>
+              <Button variant="danger" size="sm" onClick={() => { if (confirm(`Delete ${selectedIds.size} products?`)) { selectedIds.forEach(id => deleteProduct.mutate(id)); setSelectedIds(new Set()); }}}>
+                Delete selected
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="w-10 px-4 py-3">
+                    <input type="checkbox" onChange={e => setSelectedIds(e.target.checked ? new Set(products.map(p => p.id)) : new Set())}
+                      checked={selectedIds.size === products.length && products.length > 0} className="rounded" />
+                  </th>
+                  {['Product', 'Category', 'Price', 'Stock', 'Status', 'Actions'].map(h => (
+                    <th key={h} className="text-left px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {isLoading ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <tr key={i}><td colSpan={7} className="px-4 py-3"><Skeleton className="h-10" /></td></tr>
+                  ))
+                ) : products.map(product => (
+                  <tr key={product.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.has(product.id) ? 'bg-brand-accent/5' : ''}`}>
+                    <td className="px-4 py-3">
+                      <input type="checkbox" checked={selectedIds.has(product.id)} onChange={() => toggleSelect(product.id)} className="rounded" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                          <img
+                            src={product.images?.[0] ?? `https://placehold.co/40x40/f5f5f5/999?text=P`}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-brand-heading line-clamp-1">{product.name}</p>
+                          <p className="text-xs text-gray-400 font-mono">{product.id.slice(0, 8)}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-500">
+                      {(product as any).categories?.name ?? '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        {product.discount_price ? (
+                          <>
+                            <span className="font-bold text-brand-accent">${product.discount_price}</span>
+                            <span className="text-xs text-gray-300 line-through">${product.price}</span>
+                          </>
+                        ) : (
+                          <span className="font-bold">${product.price}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`font-semibold ${product.stock <= 5 ? 'text-red-500' : product.stock <= 20 ? 'text-yellow-500' : 'text-emerald-600'}`}>
+                        {product.stock}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge
+                        label={product.status}
+                        color={product.status === 'active' ? 'green' : 'gray'}
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => openEdit(product)}
+                          className="p-2 text-gray-400 hover:text-brand-accent hover:bg-gray-100 rounded-lg transition-all"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button onClick={() => handleDelete(product.id)}
+                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {!isLoading && products.length === 0 && (
+                  <tr><td colSpan={7} className="px-4 py-12 text-center text-gray-400">No products found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          {data?.pagination && data.pagination.pages > 1 && (
+            <div className="flex justify-center gap-2 px-6 py-4 border-t border-gray-100">
+              {Array.from({ length: data.pagination.pages }, (_, i) => i + 1).map(p => (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`w-9 h-9 rounded-full text-sm font-semibold transition-all ${p === page ? 'bg-brand-dark text-white' : 'hover:bg-gray-100'}`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Product Modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
+              onClick={() => setModalOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl z-10">
+                  <h2 className="text-xl font-black text-brand-heading">
+                    {editProduct ? 'Edit Product' : 'Add New Product'}
+                  </h2>
+                  <button onClick={() => setModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="col-span-full">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Product Name *</label>
+                      <input required value={form.name} onChange={e => setField('name', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="e.g. Modern Lounge Chair" />
+                    </div>
+
+                    <div className="col-span-full">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Description *</label>
+                      <textarea required rows={3} value={form.description} onChange={e => setField('description', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm resize-none"
+                        placeholder="Product description..." />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Price *</label>
+                      <input required type="number" min="0" step="0.01" value={form.price} onChange={e => setField('price', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="0.00" />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Discount Price</label>
+                      <input type="number" min="0" step="0.01" value={form.discount_price} onChange={e => setField('discount_price', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="0.00 (optional)" />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Category *</label>
+                      <select required value={form.category_id} onChange={e => setField('category_id', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                      >
+                        <option value="">Select category</option>
+                        {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Stock *</label>
+                      <input required type="number" min="0" value={form.stock} onChange={e => setField('stock', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Material</label>
+                      <input value={form.material} onChange={e => setField('material', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="e.g. Oak, Steel, Fabric" />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Dimensions</label>
+                      <input value={form.dimensions} onChange={e => setField('dimensions', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="e.g. 80 x 60 x 45 cm" />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Tags (comma-separated)</label>
+                      <input value={form.tags} onChange={e => setField('tags', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="HOT, NEW, SALE" />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Status</label>
+                      <select value={form.status} onChange={e => setField('status', e.target.value as 'active' | 'inactive')}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </div>
+
+                    <div className="col-span-full">
+                      <ImageUploader
+                        value={form.images}
+                        onChange={imgs => setForm(p => ({ ...p, images: imgs }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Cancel</Button>
+                    <Button type="submit" variant="primary" loading={createProduct.isPending || updateProduct.isPending} className="flex-1">
+                      <Save size={16} /> {editProduct ? 'Save Changes' : 'Create Product'}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

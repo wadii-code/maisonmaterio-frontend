@@ -1,0 +1,84 @@
+import { motion } from 'framer-motion';
+import { ShoppingCart, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Badge } from '../ui/Badge';
+import { StarRating } from '../ui/StarRating';
+import { CountdownTimer } from '../ui/CountdownTimer';
+import { useCartStore } from '../../stores/cartStore';
+import type { Product } from '../../types';
+
+interface ProductCardProps {
+  product: Product;
+  index?: number;
+}
+
+const SALE_END = new Date(Date.now() + 259 * 24 * 60 * 60 * 1000);
+
+export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const addItem = useCartStore(s => s.addItem);
+  const discount = product.discount_price && product.price
+    ? Math.round((1 - product.discount_price / product.price) * 100)
+    : null;
+
+  const primaryImage = product.images?.[0] ?? `https://placehold.co/400x400/f5f5f5/999?text=${encodeURIComponent(product.name)}`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
+      whileHover={{ y: -4 }}
+      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
+    >
+      <Link to={`/products/${product.id}`} className="block relative overflow-hidden aspect-square bg-brand-card">
+        <img
+          src={primaryImage}
+          alt={product.name}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
+          {discount && <Badge label={`-${discount}%`} color="red" />}
+          {product.tags.includes('HOT') && <Badge label="HOT" color="orange" />}
+          {product.tags.includes('NEW') && <Badge label="NEW" color="green" />}
+        </div>
+        {/* Quick add overlay */}
+        <motion.button
+          onClick={(e) => { e.preventDefault(); addItem(product); }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="absolute bottom-3 right-3 bg-brand-accent text-white p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          aria-label="Add to cart"
+        >
+          <ShoppingCart size={16} />
+        </motion.button>
+        <button className="absolute top-3 right-3 bg-white text-gray-400 hover:text-red-500 p-2 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200">
+          <Heart size={14} />
+        </button>
+      </Link>
+
+      <div className="p-4 space-y-2">
+        {product.tags.includes('SALE') || discount ? (
+          <CountdownTimer endDate={SALE_END} />
+        ) : null}
+        <StarRating rating={product.rating} count={product.review_count} />
+        <Link to={`/products/${product.id}`}>
+          <h3 className="text-sm font-semibold text-brand-heading line-clamp-2 hover:text-brand-accent transition-colors">
+            {product.name}
+          </h3>
+        </Link>
+        <div className="flex items-center gap-2">
+          {product.discount_price ? (
+            <>
+              <span className="text-gray-400 line-through text-sm">${product.price.toFixed(2)}</span>
+              <span className="text-brand-accent font-bold text-base">${product.discount_price.toFixed(2)}</span>
+            </>
+          ) : (
+            <span className="text-brand-heading font-bold text-base">${product.price.toFixed(2)}</span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
