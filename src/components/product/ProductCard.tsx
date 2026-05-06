@@ -5,7 +5,9 @@ import { Badge } from '../ui/Badge';
 import { StarRating } from '../ui/StarRating';
 import { CountdownTimer } from '../ui/CountdownTimer';
 import { useCartStore } from '../../stores/cartStore';
+import { useWishlistStore } from '../../stores/wishlistStore';
 import type { Product } from '../../types';
+import toast from 'react-hot-toast';
 
 interface ProductCardProps {
   product: Product;
@@ -16,9 +18,21 @@ const SALE_END = new Date(Date.now() + 259 * 24 * 60 * 60 * 1000);
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const addItem = useCartStore(s => s.addItem);
+  const toggleWishlist = useWishlistStore(s => s.toggle);
+  const isInWishlist = useWishlistStore(s => s.has(product.id));
   const discount = product.discount_price && product.price
     ? Math.round((1 - product.discount_price / product.price) * 100)
     : null;
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const added = toggleWishlist(product);
+    toast.success(added ? `${product.name} added to wishlist` : `Removed from wishlist`, {
+      icon: added ? '❤️' : '💔',
+      style: { borderRadius: '50px', fontWeight: '600' },
+    });
+  };
 
   const primaryImage = product.images?.[0] ?? `https://placehold.co/400x400/f5f5f5/999?text=${encodeURIComponent(product.name)}`;
 
@@ -53,9 +67,18 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         >
           <ShoppingCart size={16} />
         </motion.button>
-        <button className="absolute top-3 right-3 bg-white text-gray-400 hover:text-red-500 p-2 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200">
-          <Heart size={14} />
-        </button>
+        <motion.button
+          onClick={handleWishlist}
+          whileTap={{ scale: 0.85 }}
+          aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          className={`absolute top-3 right-3 p-2 rounded-full shadow-sm transition-all duration-200 ${
+            isInWishlist
+              ? 'bg-red-500 text-white opacity-100'
+              : 'bg-white text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100'
+          }`}
+        >
+          <Heart size={14} className={isInWishlist ? 'fill-white' : ''} />
+        </motion.button>
       </Link>
 
       <div className="p-4 space-y-2">

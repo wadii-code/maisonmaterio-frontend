@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Package, ShoppingBag, Users, Star, LogOut, Menu, X, ShieldAlert, RefreshCw, LogIn } from 'lucide-react';
+import { LayoutDashboard, Package, FolderTree, ShoppingBag, Users, Star, LogOut, Menu, X, ShieldAlert, RefreshCw, LogIn } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../ui/Button';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/admin' },
   { icon: Package, label: 'Products', to: '/admin/products' },
+  { icon: FolderTree, label: 'Categories', to: '/admin/categories' },
   { icon: ShoppingBag, label: 'Orders', to: '/admin/orders' },
   { icon: Users, label: 'Customers', to: '/admin/customers' },
   { icon: Star, label: 'Reviews', to: '/admin/reviews' },
 ];
 
 export function AdminLayout() {
-  const { user, profile, signOut, initialized, refreshProfile } = useAuthStore();
+  const { user, profile, profileError, signOut, initialized, refreshProfile } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -75,14 +76,29 @@ export function AdminLayout() {
             Current role: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">{profile?.role ?? 'unknown'}</span>
           </p>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
-            <p className="text-xs font-bold text-amber-700 mb-2">If you just promoted yourself in Supabase:</p>
-            <ol className="text-xs text-amber-700 space-y-1 list-decimal list-inside">
-              <li>Click "Refresh Profile" below — no sign-out needed</li>
-              <li>Or sign out and sign back in</li>
-              <li>Verify in Supabase: <code className="bg-amber-100 px-1 rounded">SELECT role FROM profiles WHERE id = '{user.id.slice(0, 8)}...';</code></li>
-            </ol>
-          </div>
+          {profileError ? (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-left">
+              <p className="text-xs font-bold text-red-700 mb-2">⚠ Profile fetch error</p>
+              <p className="text-xs text-red-700 break-words font-mono">{profileError}</p>
+              <p className="text-xs text-red-700 mt-3 font-semibold">Most likely cause: profile row missing or RLS blocking read.</p>
+              <p className="text-xs text-red-700 mt-2">Run this in Supabase SQL Editor to fix:</p>
+              <code className="block mt-1 bg-red-100 p-2 rounded text-[10px] break-all">
+                INSERT INTO profiles (id, role, full_name) VALUES ('{user.id}', 'admin', 'Admin') ON CONFLICT (id) DO UPDATE SET role = 'admin';
+              </code>
+            </div>
+          ) : (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+              <p className="text-xs font-bold text-amber-700 mb-2">If you just promoted yourself in Supabase:</p>
+              <ol className="text-xs text-amber-700 space-y-1 list-decimal list-inside">
+                <li>Click "Refresh Profile" below — no sign-out needed</li>
+                <li>Or sign out and sign back in</li>
+                <li>Verify in Supabase:</li>
+              </ol>
+              <code className="block mt-2 bg-amber-100 p-2 rounded text-[10px] break-all">
+                SELECT role FROM profiles WHERE id = '{user.id}';
+              </code>
+            </div>
+          )}
 
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => navigate('/')} className="flex-1">

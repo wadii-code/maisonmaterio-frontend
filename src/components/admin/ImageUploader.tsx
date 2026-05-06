@@ -8,13 +8,14 @@ interface ImageUploaderProps {
   value: string[];
   onChange: (urls: string[]) => void;
   maxImages?: number;
+  label?: string;
 }
 
 const BUCKET = 'product-images';
 const MAX_SIZE_MB = 5;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-export function ImageUploader({ value, onChange, maxImages = 8 }: ImageUploaderProps) {
+export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product Images' }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -96,7 +97,7 @@ export function ImageUploader({ value, onChange, maxImages = 8 }: ImageUploaderP
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-          Product Images
+          {label}
         </label>
         <span className="text-xs text-gray-400">
           {value.length} / {maxImages}

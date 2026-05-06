@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Search, ToggleLeft, ToggleRight, X, Save, Upload } from 'lucide-react';
-import { useProducts, useCategories, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useProducts';
+import { useProducts, useCategories, useRooms, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useProducts';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Skeleton } from '../../components/ui/Skeleton';
@@ -12,13 +12,13 @@ import type { Product } from '../../types';
 
 interface ProductFormData {
   name: string; description: string; price: string; discount_price: string;
-  category_id: string; stock: string; status: 'active' | 'inactive';
+  category_id: string; room_id: string; stock: string; status: 'active' | 'inactive';
   material: string; dimensions: string; tags: string; images: string[];
 }
 
 const EMPTY_FORM: ProductFormData = {
   name: '', description: '', price: '', discount_price: '',
-  category_id: '', stock: '0', status: 'active',
+  category_id: '', room_id: '', stock: '0', status: 'active',
   material: '', dimensions: '', tags: '', images: [],
 };
 
@@ -32,6 +32,7 @@ export function AdminProducts() {
 
   const { data, isLoading } = useProducts({ search: search || undefined, page, limit: 15, status: undefined });
   const { data: categories } = useCategories();
+  const { data: rooms } = useRooms();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
@@ -44,7 +45,8 @@ export function AdminProducts() {
     setForm({
       name: p.name, description: p.description, price: String(p.price),
       discount_price: p.discount_price ? String(p.discount_price) : '',
-      category_id: p.category_id, stock: String(p.stock), status: p.status,
+      category_id: p.category_id, room_id: p.room_id ?? '',
+      stock: String(p.stock), status: p.status,
       material: p.material ?? '', dimensions: p.dimensions ?? '',
       tags: p.tags.join(', '), images: p.images ?? [],
     });
@@ -60,6 +62,7 @@ export function AdminProducts() {
       price: parseFloat(form.price),
       discount_price: form.discount_price ? parseFloat(form.discount_price) : null,
       category_id: form.category_id,
+      room_id: form.room_id || null,
       stock: parseInt(form.stock),
       status: form.status,
       material: form.material || null,
@@ -297,6 +300,16 @@ export function AdminProducts() {
                       >
                         <option value="">Select category</option>
                         {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">House Part / Room</label>
+                      <select value={form.room_id} onChange={e => setField('room_id', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                      >
+                        <option value="">— None —</option>
+                        {rooms?.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                       </select>
                     </div>
 

@@ -10,12 +10,14 @@ import { Layout } from './components/layout/Layout';
 import { AdminLayout } from './components/admin/AdminLayout';
 
 // Customer pages
+import { useParams } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
 import { Checkout } from './pages/Checkout';
 import { Auth } from './pages/Auth';
 import { Account } from './pages/Account';
+import { Wishlist } from './pages/Wishlist';
 
 // Admin pages
 import { AdminDashboard } from './pages/admin/Dashboard';
@@ -23,6 +25,14 @@ import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminCustomers } from './pages/admin/AdminCustomers';
 import { AdminReviews } from './pages/admin/AdminReviews';
+import { AdminCategories } from './pages/admin/AdminCategories';
+
+// Forces ProductDetail to remount when the product id changes,
+// so all local state (image gallery, qty, customization, scroll) resets
+function ProductDetailRoute() {
+  const { id } = useParams<{ id: string }>();
+  return <ProductDetail key={id} />;
+}
 
 export default function App() {
   const setSession = useAuthStore(s => s.setSession);
@@ -47,11 +57,12 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/products/:id" element={<ProductDetailRoute />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/account" element={<Account />} />
           <Route path="/account/orders" element={<Account />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/about" element={<Home />} />
         </Route>
 
@@ -64,6 +75,7 @@ export default function App() {
           <Route path="orders/:id" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="reviews" element={<AdminReviews />} />
+          <Route path="categories" element={<AdminCategories />} />
         </Route>
       </Routes>
     </HelmetProvider>

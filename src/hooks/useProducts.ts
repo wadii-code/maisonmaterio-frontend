@@ -59,3 +59,27 @@ export function useDeleteProduct() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['products'] }),
   });
 }
+
+export function useCreateCategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: categoriesApi.create,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['categories'] }),
+  });
+}
+
+export function useUpdateCategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => categoriesApi.update(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['categories'] }),
+  });
+}
+
+export function useDeleteCategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: categoriesApi.delete,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['categories'] }),
+  });
+}

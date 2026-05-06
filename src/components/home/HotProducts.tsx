@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Package } from 'lucide-react';
 import { useProducts } from '../../hooks/useProducts';
 import { ProductCard } from '../product/ProductCard';
 import { ProductCardSkeleton } from '../ui/Skeleton';
-import type { Product } from '../../types';
 
 const TABS = [
   { label: 'Latest Products', sort: 'created_at', order: 'desc' },
@@ -13,34 +12,11 @@ const TABS = [
   { label: 'Best Sellers', sort: 'review_count', order: 'desc' },
 ];
 
-const FALLBACK_PRODUCTS: Product[] = [
-  {
-    id: '1', name: 'Chair Padded Seat', slug: 'chair-padded-seat', description: 'Comfortable padded chair', price: 100, discount_price: 80,
-    category_id: '1', stock: 15, status: 'active', images: ['https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&q=80'],
-    tags: ['SALE'], rating: 4, review_count: 2, created_at: '', updated_at: '',
-  },
-  {
-    id: '2', name: 'Briarwood Decorative 2', slug: 'briarwood-decorative-2', description: 'Modern decorative chair', price: 400, discount_price: 25,
-    category_id: '1', stock: 8, status: 'active', images: ['https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&q=80'],
-    tags: ['HOT'], rating: 0, review_count: 0, created_at: '', updated_at: '',
-  },
-  {
-    id: '3', name: 'Aqua Globes 2', slug: 'aqua-globes-2', description: 'Elegant aqua globe chair', price: 400, discount_price: 25,
-    category_id: '1', stock: 5, status: 'active', images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80'],
-    tags: ['HOT', 'NEW'], rating: 0, review_count: 0, created_at: '', updated_at: '',
-  },
-  {
-    id: '4', name: 'Aqua Globes', slug: 'aqua-globes', description: 'Classic aqua globe design', price: 30, discount_price: undefined,
-    category_id: '1', stock: 22, status: 'active', images: ['https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=400&q=80'],
-    tags: ['HOT'], rating: 0, review_count: 0, created_at: '', updated_at: '',
-  },
-];
-
 export function HotProducts() {
   const [activeTab, setActiveTab] = useState(0);
   const tab = TABS[activeTab];
   const { data, isLoading } = useProducts({ sort: tab.sort, order: tab.order, limit: 8 });
-  const products = data?.data?.length ? data.data : FALLBACK_PRODUCTS;
+  const products = data?.data ?? [];
 
   return (
     <section className="py-20 bg-white">
@@ -89,9 +65,17 @@ export function HotProducts() {
           >
             {isLoading
               ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
-              : products.slice(0, 8).map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
+              : products.length === 0
+                ? (
+                  <div className="col-span-full bg-brand-card rounded-2xl p-12 text-center text-gray-400">
+                    <Package size={32} className="mx-auto mb-3 opacity-30" />
+                    <p className="font-semibold">No products available yet</p>
+                    <Link to="/admin/products/new" className="text-sm mt-1 text-brand-accent hover:underline inline-block">Add your first product →</Link>
+                  </div>
+                )
+                : products.slice(0, 8).map((product, i) => (
+                  <ProductCard key={product.id} product={product} index={i} />
+                ))}
           </motion.div>
         </AnimatePresence>
       </div>

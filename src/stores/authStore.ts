@@ -23,6 +23,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
   profile: null,
+  profileError: null,
   loading: false,
   initialized: false,
 
@@ -36,12 +37,43 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   fetchProfile: async (userId) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
-      .single();
-    set({ profile: data, initialized: true });
+      .maybeSingle();
+
+    if (error) {
+      console.error('[auth] Profile fetch failed:', error);
+      set({ profile: null, profileError: error.message, initialized: true });
+      return null;
+    }
+
+    if (!data) {
+      // Profile row missing — try to auto-create it (signup trigger may not have run)
+      const userEmail = get().user?.email ?? '';
+      const fallbackName = userEmail.split('@')[0] || 'User';
+      const { data: created, error: insertErr } = await supabase
+        .from('profiles')
+        .insert({ id: userId, full_name: fallbackName, role: 'customer' })
+        .select()
+        .single();
+
+      if (insertErr) {
+        console.error('[auth] Auto-create profile failed:', insertErr);
+        set({
+          profile: null,
+          profileError: `Profile missing for user ${userId.slice(0, 8)}. Auto-create failed: ${insertErr.message}`,
+          initialized: true,
+        });
+        return null;
+      }
+
+      set({ profile: created, profileError: null, initialized: true });
+      return created;
+    }
+
+    set({ profile: data, profileError: null, initialized: true });
     return data;
   },
 

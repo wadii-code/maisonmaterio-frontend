@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
@@ -6,6 +6,7 @@ import { ShoppingCart, Heart, Minus, Plus, ChevronRight, Truck, Shield, RotateCc
 import { useProduct, useProducts } from '../hooks/useProducts';
 import { useReviewEligibility, useCreateReview } from '../hooks/useReviews';
 import { useCartStore } from '../stores/cartStore';
+import { useWishlistStore } from '../stores/wishlistStore';
 import { useAuthStore } from '../stores/authStore';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -19,14 +20,20 @@ import toast from 'react-hot-toast';
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useProduct(id!);
-  const { data: related } = useProducts({ category: product?.category_id, limit: 4 });
+  const { data: related } = useProducts(
+    product?.categories?.slug ? { category: product.categories.slug, limit: 8 } : undefined
+  );
   const addItem = useCartStore(s => s.addItem);
+  const toggleWishlist = useWishlistStore(s => s.toggle);
+  const isInWishlist = useWishlistStore(s => (id ? s.has(id) : false));
   const { user } = useAuthStore();
   const { data: eligibility } = useReviewEligibility(id ?? '', !!user && !!id);
   const createReview = useCreateReview(id ?? '');
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [customization, setCustomization] = useState<{ selections: Record<string, string>; price: number }>({ selections: {}, price: 0 });
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); }, [id]);
 
   if (isLoading) {
     return (
@@ -207,9 +214,24 @@ export function ProductDetail() {
                   <Button variant="primary" size="lg" onClick={handleAddToCart} className="flex-1">
                     <ShoppingCart size={20} /> Add to Cart · ${(finalPrice * quantity).toFixed(2)}
                   </Button>
-                  <button className="hidden sm:flex p-4 border-2 border-gray-200 rounded-full hover:border-red-400 hover:text-red-400 transition-colors items-center justify-center">
-                    <Heart size={20} />
-                  </button>
+                  <motion.button
+                    onClick={() => {
+                      const added = toggleWishlist(product);
+                      toast.success(added ? 'Added to wishlist' : 'Removed from wishlist', {
+                        icon: added ? '❤️' : '💔',
+                        style: { borderRadius: '50px', fontWeight: '600' },
+                      });
+                    }}
+                    whileTap={{ scale: 0.85 }}
+                    className={`hidden sm:flex p-4 border-2 rounded-full transition-colors items-center justify-center ${
+                      isInWishlist
+                        ? 'bg-red-500 border-red-500 text-white'
+                        : 'border-gray-200 hover:border-red-400 hover:text-red-400'
+                    }`}
+                    aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart size={20} className={isInWishlist ? 'fill-white' : ''} />
+                  </motion.button>
                 </div>
               )}
 

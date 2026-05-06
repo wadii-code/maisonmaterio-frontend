@@ -4,18 +4,11 @@ import { ArrowRight, Sofa } from 'lucide-react';
 import { useCategories } from '../../hooks/useProducts';
 import { Skeleton } from '../ui/Skeleton';
 
-const FALLBACK_CATEGORIES = [
-  { id: '1', name: 'Dining Chair', slug: 'dining-chair', product_count: 48, image_url: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&q=80&auto=format&fit=crop' },
-  { id: '2', name: 'Sofas', slug: 'sofas', product_count: 32, image_url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80&auto=format&fit=crop' },
-  { id: '3', name: 'Tables', slug: 'tables', product_count: 26, image_url: 'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&q=80&auto=format&fit=crop' },
-  { id: '4', name: 'Lighting', slug: 'lighting', product_count: 61, image_url: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=400&q=80&auto=format&fit=crop' },
-  { id: '5', name: 'Bedroom', slug: 'bedroom', product_count: 44, image_url: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&q=80&auto=format&fit=crop' },
-  { id: '6', name: 'Storage', slug: 'storage', product_count: 19, image_url: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=400&q=80&auto=format&fit=crop' },
-];
-
 export function Categories() {
   const { data: categories, isLoading } = useCategories();
-  const displayCategories = (categories?.length ? categories : FALLBACK_CATEGORIES).slice(0, 6);
+  const displayCategories = (categories ?? []).slice(0, 6);
+
+  if (!isLoading && displayCategories.length === 0) return null;
 
   return (
     <section className="py-20 bg-white">

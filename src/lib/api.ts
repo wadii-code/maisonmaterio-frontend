@@ -42,6 +42,11 @@ export const productsApi = {
 // Categories & Rooms
 export const categoriesApi = {
   list: (): Promise<Category[]> => request('/categories'),
+  create: (data: { name: string; image_url?: string | null }): Promise<Category> =>
+    request('/categories', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: Partial<Category>): Promise<Category> =>
+    request(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string): Promise<void> => request(`/categories/${id}`, { method: 'DELETE' }),
 };
 
 export const roomsApi = {

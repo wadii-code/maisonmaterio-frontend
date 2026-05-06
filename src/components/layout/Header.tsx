@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Search, Menu, X, ChevronDown } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, ChevronDown, Heart } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
+import { useWishlistStore } from '../../stores/wishlistStore';
 import { SearchModal } from './SearchModal';
 
 const NAV_LINKS = [
@@ -30,6 +31,7 @@ export function Header() {
   const isHome = location.pathname === '/';
   const { toggleCart, totalItems } = useCartStore();
   const { user, profile, signOut } = useAuthStore();
+  const wishlistCount = useWishlistStore(s => s.items.length);
   const cartCount = totalItems();
 
   useEffect(() => {
@@ -104,6 +106,25 @@ export function Header() {
             >
               <Search size={20} />
             </button>
+
+            <Link
+              to="/wishlist"
+              aria-label="Wishlist"
+              className={`relative p-2 rounded-full hover:bg-white/10 transition-colors ${isTransparent ? 'text-white' : 'text-brand-text'}`}
+            >
+              <Heart size={20} className={wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''} />
+              <AnimatePresence>
+                {wishlistCount > 0 && (
+                  <motion.span
+                    key={wishlistCount}
+                    initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center"
+                  >
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Link>
 
             <button
               onClick={toggleCart}
@@ -231,6 +252,7 @@ function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
             </div>
             <Link to="/account" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Account</Link>
             <Link to="/account/orders" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Orders</Link>
+            <Link to="/wishlist" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Wishlist</Link>
             {profile?.role === 'admin' && (
               <Link to="/admin" onClick={() => setOpen(false)}
                 className="flex items-center gap-2 mx-2 my-1 px-3 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-brand-accent to-brand-orange rounded-xl hover:opacity-90 transition-opacity"
