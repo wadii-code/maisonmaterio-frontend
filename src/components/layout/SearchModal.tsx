@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, TrendingUp, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
+import { formatPrice, cleanProductName } from '../../lib/format';
 import type { Product } from '../../types';
 
 interface SearchModalProps {
@@ -151,14 +152,14 @@ function SearchResultItem({ product, onSelect }: { product: Product; onSelect: (
         <img src={img} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-brand-heading line-clamp-1 group-hover:text-brand-accent transition-colors">{product.name}</p>
+        <p className="font-semibold text-brand-heading line-clamp-1 group-hover:text-brand-accent transition-colors">{cleanProductName(product.name)}</p>
         <p className="text-xs text-gray-400 line-clamp-1">{(product as any).categories?.name ?? 'Product'}</p>
       </div>
       <div className="text-right shrink-0">
         {product.discount_price && (
-          <p className="text-xs text-gray-300 line-through">${product.price.toFixed(2)}</p>
+          <p className="text-xs text-gray-300 line-through">{formatPrice(product.price)}</p>
         )}
-        <p className="font-bold text-brand-accent">${price.toFixed(2)}</p>
+        <p className="font-bold text-brand-accent">{formatPrice(price)}</p>
       </div>
     </Link>
   );

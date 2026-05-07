@@ -7,6 +7,8 @@ import { useCartStore } from '../stores/cartStore';
 import { useAuthStore } from '../stores/authStore';
 import { useCreateOrder } from '../hooks/useOrders';
 import { Button } from '../components/ui/Button';
+import { formatPrice, cleanProductName } from '../lib/format';
+import { calcOrderTotals } from '../lib/pricing';
 import toast from 'react-hot-toast';
 
 type Step = 'shipping' | 'review' | 'confirmation';
@@ -68,11 +70,10 @@ export function Checkout() {
     }
   };
 
-  const subtotal = totalPrice();
-  const shipping = subtotal >= 100 ? 0 : 9.99;
-  const codFee = 2.50;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax + codFee;
+  const totals = calcOrderTotals(
+    items.map(i => ({ price: i.product.discount_price ?? i.product.price, quantity: i.quantity }))
+  );
+  const { subtotal, total } = totals;
 
   return (
     <>
@@ -121,7 +122,7 @@ export function Checkout() {
                     <Banknote size={20} />
                     <span className="font-bold">Cash on Delivery</span>
                   </div>
-                  <p className="text-sm text-gray-600">Pay <span className="font-black text-brand-heading">${total.toFixed(2)}</span> in cash when your order arrives.</p>
+                  <p className="text-sm text-gray-600">Pay <span className="font-black text-brand-heading">{formatPrice(total)}</span> in cash when your order arrives.</p>
                 </div>
                 {orderId && <p className="text-sm text-gray-400 mb-8">Order ID: <span className="font-mono font-bold">{orderId.slice(0, 8).toUpperCase()}</span></p>}
                 <div className="flex gap-3 justify-center flex-wrap px-4">
@@ -199,7 +200,7 @@ export function Checkout() {
                             <div>
                               <h3 className="font-black text-brand-heading mb-1">Cash on Delivery</h3>
                               <p className="text-sm text-gray-600 mb-3">
-                                The only payment method we accept. Have <span className="font-bold text-brand-heading">${total.toFixed(2)}</span> ready when our courier arrives.
+                                The only payment method we accept. Have <span className="font-bold text-brand-heading">{formatPrice(total)}</span> ready when our courier arrives.
                               </p>
                               <div className="flex flex-wrap gap-3 text-xs">
                                 <span className="flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-full">
@@ -236,7 +237,7 @@ export function Checkout() {
                         <div className="flex gap-3 flex-col sm:flex-row">
                           <Button variant="outline" onClick={() => setStep('shipping')} className="flex-1">Back</Button>
                           <Button variant="primary" size="lg" onClick={handlePlaceOrder} loading={createOrder.isPending} className="flex-1">
-                            Place Order · ${total.toFixed(2)}
+                            Place Order · {formatPrice(total)}
                           </Button>
                         </div>
                       </div>
@@ -262,31 +263,21 @@ export function Checkout() {
                             </span>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-brand-heading line-clamp-1">{item.product.name}</p>
-                            <p className="text-xs text-gray-400">${(item.product.discount_price ?? item.product.price).toFixed(2)} ea.</p>
+                            <p className="text-sm font-semibold text-brand-heading line-clamp-1">{cleanProductName(item.product.name)}</p>
+                            <p className="text-xs text-gray-400">{formatPrice(item.product.discount_price ?? item.product.price)} ea.</p>
                           </div>
                           <p className="text-sm font-bold shrink-0">
-                            ${((item.product.discount_price ?? item.product.price) * item.quantity).toFixed(2)}
+                            {formatPrice((item.product.discount_price ?? item.product.price) * item.quantity)}
                           </p>
                         </div>
                       ))}
                     </div>
                     <div className="mt-5 pt-5 border-t border-gray-100 space-y-2 text-sm">
                       <div className="flex justify-between text-gray-500">
-                        <span>Subtotal</span><span>${subtotal.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-500">
-                        <span>Shipping</span>
-                        <span>{shipping === 0 ? <span className="text-emerald-600 font-semibold">Free</span> : `$${shipping.toFixed(2)}`}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-500">
-                        <span>Tax (8%)</span><span>${tax.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-500">
-                        <span>COD Fee</span><span>${codFee.toFixed(2)}</span>
+                        <span>Subtotal</span><span>{formatPrice(subtotal)}</span>
                       </div>
                       <div className="flex justify-between font-black text-base text-brand-heading pt-3 border-t border-gray-100">
-                        <span>Total to Pay</span><span className="text-brand-accent">${total.toFixed(2)}</span>
+                        <span>Total to Pay</span><span className="text-brand-accent">{formatPrice(total)}</span>
                       </div>
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import { ChevronDown, Search, Eye, X } from 'lucide-react';
 import { useOrders, useUpdateOrderStatus, useOrder } from '../../hooks/useOrders';
 import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { formatPrice, cleanProductName } from '../../lib/format';
 import toast from 'react-hot-toast';
 import type { OrderStatus } from '../../types';
 
@@ -101,7 +102,7 @@ export function AdminOrders() {
                       <td className="px-4 py-4 font-mono text-xs text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</td>
                       <td className="px-4 py-4 font-semibold text-brand-heading">{order.profiles?.full_name ?? 'Guest'}</td>
                       <td className="px-4 py-4 text-gray-400 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString()}</td>
-                      <td className="px-4 py-4 font-bold">${order.total_amount.toFixed(2)}</td>
+                      <td className="px-4 py-4 font-bold">{formatPrice(order.total_amount)}</td>
                       <td className="px-4 py-4">
                         <span className={`px-2 py-0.5 text-xs font-bold rounded-full capitalize ${
                           order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'
@@ -178,14 +179,14 @@ export function AdminOrders() {
                       <p className="text-sm font-semibold line-clamp-1">{item.products?.name}</p>
                       <p className="text-xs text-gray-400">Qty: {item.quantity} · ${item.price_at_time}</p>
                     </div>
-                    <p className="text-sm font-bold shrink-0">${(item.price_at_time * item.quantity).toFixed(2)}</p>
+                    <p className="text-sm font-bold shrink-0">{formatPrice(item.price_at_time * item.quantity)}</p>
                   </div>
                 ))}
               </div>
               <div className="border-t pt-4 space-y-1 text-sm">
                 <div className="flex justify-between font-black">
                   <span>Total</span>
-                  <span className="text-brand-accent">${selectedOrder.total_amount.toFixed(2)}</span>
+                  <span className="text-brand-accent">{formatPrice(selectedOrder.total_amount)}</span>
                 </div>
               </div>
               {selectedOrder.shipping_address && (

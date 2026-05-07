@@ -7,19 +7,22 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { ImageUploader } from '../../components/admin/ImageUploader';
+import { ColorEditor } from '../../components/admin/ColorEditor';
+import { formatPrice, cleanProductName } from '../../lib/format';
+import type { ProductColor } from '../../types';
 import toast from 'react-hot-toast';
 import type { Product } from '../../types';
 
 interface ProductFormData {
   name: string; description: string; price: string; discount_price: string;
   category_id: string; room_id: string; stock: string; status: 'active' | 'inactive';
-  material: string; dimensions: string; tags: string; images: string[];
+  material: string; dimensions: string; tags: string; images: string[]; colors: ProductColor[];
 }
 
 const EMPTY_FORM: ProductFormData = {
   name: '', description: '', price: '', discount_price: '',
   category_id: '', room_id: '', stock: '0', status: 'active',
-  material: '', dimensions: '', tags: '', images: [],
+  material: '', dimensions: '', tags: '', images: [], colors: [],
 };
 
 export function AdminProducts() {
@@ -49,6 +52,7 @@ export function AdminProducts() {
       stock: String(p.stock), status: p.status,
       material: p.material ?? '', dimensions: p.dimensions ?? '',
       tags: p.tags.join(', '), images: p.images ?? [],
+      colors: p.colors ?? [],
     });
     setModalOpen(true);
   };
@@ -69,6 +73,7 @@ export function AdminProducts() {
       dimensions: form.dimensions || null,
       tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
       images: form.images,
+      colors: form.colors,
     };
     try {
       if (editProduct) {
@@ -169,7 +174,7 @@ export function AdminProducts() {
                           />
                         </div>
                         <div>
-                          <p className="font-semibold text-brand-heading line-clamp-1">{product.name}</p>
+                          <p className="font-semibold text-brand-heading line-clamp-1">{cleanProductName(product.name)}</p>
                           <p className="text-xs text-gray-400 font-mono">{product.id.slice(0, 8)}</p>
                         </div>
                       </div>
@@ -181,11 +186,11 @@ export function AdminProducts() {
                       <div className="flex items-center gap-1.5">
                         {product.discount_price ? (
                           <>
-                            <span className="font-bold text-brand-accent">${product.discount_price}</span>
-                            <span className="text-xs text-gray-300 line-through">${product.price}</span>
+                            <span className="font-bold text-brand-accent">{formatPrice(product.discount_price)}</span>
+                            <span className="text-xs text-gray-300 line-through">{formatPrice(product.price)}</span>
                           </>
                         ) : (
-                          <span className="font-bold">${product.price}</span>
+                          <span className="font-bold">{formatPrice(product.price)}</span>
                         )}
                       </div>
                     </td>
@@ -296,7 +301,7 @@ export function AdminProducts() {
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Category *</label>
                       <select required value={form.category_id} onChange={e => setField('category_id', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                        className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
                         <option value="">Select category</option>
                         {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -306,7 +311,7 @@ export function AdminProducts() {
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">House Part / Room</label>
                       <select value={form.room_id} onChange={e => setField('room_id', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                        className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
                         <option value="">— None —</option>
                         {rooms?.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -344,7 +349,7 @@ export function AdminProducts() {
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Status</label>
                       <select value={form.status} onChange={e => setField('status', e.target.value as 'active' | 'inactive')}
-                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white"
+                        className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
@@ -355,6 +360,13 @@ export function AdminProducts() {
                       <ImageUploader
                         value={form.images}
                         onChange={imgs => setForm(p => ({ ...p, images: imgs }))}
+                      />
+                    </div>
+
+                    <div className="col-span-full">
+                      <ColorEditor
+                        value={form.colors}
+                        onChange={cs => setForm(p => ({ ...p, colors: cs }))}
                       />
                     </div>
                   </div>

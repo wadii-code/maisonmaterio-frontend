@@ -6,6 +6,7 @@ import { StarRating } from '../ui/StarRating';
 import { CountdownTimer } from '../ui/CountdownTimer';
 import { useCartStore } from '../../stores/cartStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
+import { formatPrice, cleanProductName } from '../../lib/format';
 import type { Product } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -88,17 +89,17 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         <StarRating rating={product.rating} count={product.review_count} />
         <Link to={`/products/${product.id}`}>
           <h3 className="text-sm font-semibold text-brand-heading line-clamp-2 hover:text-brand-accent transition-colors">
-            {product.name}
+            {cleanProductName(product.name)}
           </h3>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {product.discount_price ? (
             <>
-              <span className="text-gray-400 line-through text-sm">${product.price.toFixed(2)}</span>
-              <span className="text-brand-accent font-bold text-base">${product.discount_price.toFixed(2)}</span>
+              <span className="text-gray-400 line-through text-xs">{formatPrice(product.price)}</span>
+              <span className="text-brand-accent font-bold text-sm">{formatPrice(product.discount_price)}</span>
             </>
           ) : (
-            <span className="text-brand-heading font-bold text-base">${product.price.toFixed(2)}</span>
+            <span className="text-brand-heading font-bold text-sm">{formatPrice(product.price)}</span>
           )}
         </div>
       </div>

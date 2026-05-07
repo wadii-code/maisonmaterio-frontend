@@ -1,3 +1,9 @@
+export interface ProductColor {
+  name: string;
+  hex: string;
+  price_delta: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -13,6 +19,7 @@ export interface Product {
   status: 'active' | 'inactive';
   images: string[];
   tags: string[];
+  colors?: ProductColor[];
   rating: number;
   review_count: number;
   created_at: string;

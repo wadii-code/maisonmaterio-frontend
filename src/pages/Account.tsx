@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, User, MapPin, LogOut, ChevronRight, Clock } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
+import { useI18n } from '../stores/i18nStore';
 import { useOrders } from '../hooks/useOrders';
 import { Button } from '../components/ui/Button';
+import { formatPrice } from '../lib/format';
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -16,6 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export function Account() {
   const { user, profile, signOut } = useAuthStore();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { data: ordersData, isLoading } = useOrders();
   const orders = ordersData?.data ?? [];
@@ -61,9 +64,9 @@ export function Account() {
 
               <nav className="bg-white rounded-3xl p-3 space-y-1">
                 {[
-                  { icon: Package, label: 'My Orders', href: '/account/orders' },
-                  { icon: User, label: 'Profile Settings', href: '/account/settings' },
-                  { icon: MapPin, label: 'Saved Addresses', href: '/account/addresses' },
+                  { icon: Package, label: t('nav.myOrders'), href: '/account/orders' },
+                  { icon: User, label: t('account.profileSettings'), href: '/account/profile' },
+                  { icon: MapPin, label: t('account.savedAddresses'), href: '/account/addresses' },
                 ].map(({ icon: Icon, label, href }) => (
                   <Link key={href} to={href}
                     className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-brand-text hover:text-brand-accent hover:bg-gray-50 rounded-xl transition-all"
@@ -75,21 +78,21 @@ export function Account() {
                 ))}
                 {profile?.role === 'admin' && (
                   <Link to="/admin" className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-brand-accent hover:bg-gray-50 rounded-xl transition-all">
-                    <Package size={16} /> Admin Dashboard <ChevronRight size={14} className="ml-auto" />
+                    <Package size={16} /> {t('nav.adminDashboard')} <ChevronRight size={14} className="ml-auto" />
                   </Link>
                 )}
                 <button
                   onClick={handleSignOut}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-all"
                 >
-                  <LogOut size={16} /> Sign Out
+                  <LogOut size={16} /> {t('nav.signOut')}
                 </button>
               </nav>
             </div>
 
             {/* Orders list */}
             <div className="lg:col-span-3">
-              <h2 className="text-2xl font-black text-brand-heading mb-6">Order History</h2>
+              <h2 className="text-2xl font-black text-brand-heading mb-6">{t('account.history')}</h2>
               {isLoading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -99,8 +102,8 @@ export function Account() {
               ) : orders.length === 0 ? (
                 <div className="bg-white rounded-3xl p-12 text-center">
                   <Package size={48} className="mx-auto text-gray-200 mb-4" />
-                  <p className="font-semibold text-gray-400">No orders yet</p>
-                  <Button variant="primary" size="sm" className="mt-4" onClick={() => navigate('/products')}>Start Shopping</Button>
+                  <p className="font-semibold text-gray-400">{t('account.noOrders')}</p>
+                  <Button variant="primary" size="sm" className="mt-4" onClick={() => navigate('/products')}>{t('account.startShopping')}</Button>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -113,7 +116,7 @@ export function Account() {
                       <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div>
                           <p className="text-xs font-mono text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</p>
-                          <p className="font-bold text-brand-heading mt-1">${order.total_amount.toFixed(2)}</p>
+                          <p className="font-bold text-brand-heading mt-1">{formatPrice(order.total_amount)}</p>
                           <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
                             <Clock size={12} /> {new Date(order.created_at).toLocaleDateString()}
                           </p>

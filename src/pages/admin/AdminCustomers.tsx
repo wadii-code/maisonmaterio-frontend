@@ -6,6 +6,7 @@ import { Search, User, Mail, Calendar, ShoppingBag, DollarSign } from 'lucide-re
 import { supabase } from '../../lib/supabase';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { Badge } from '../../components/ui/Badge';
+import { formatPrice } from '../../lib/format';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -102,7 +103,7 @@ export function AdminCustomers() {
                   <div className="flex items-center gap-1 text-xs text-gray-400">
                     <DollarSign size={11} /> Total spent
                   </div>
-                  <p className="font-black text-brand-accent mt-0.5">${c.total_spent?.toFixed(2) ?? '0.00'}</p>
+                  <p className="font-black text-brand-accent mt-0.5">{formatPrice(c.total_spent ?? 0)}</p>
                 </div>
               </div>
             </motion.div>

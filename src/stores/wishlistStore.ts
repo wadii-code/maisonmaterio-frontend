@@ -1,50 +1,77 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import type { Product } from '../types';
+
+const GUEST_KEY = 'swipo-wishlist:guest';
+const userKey = (userId: string) => `swipo-wishlist:user:${userId}`;
 
 interface WishlistState {
   items: Product[];
-  toggle: (product: Product) => boolean; // returns new "isInWishlist" state
+  currentUserId: string | null;
+  toggle: (product: Product) => boolean;
   add: (product: Product) => void;
   remove: (productId: string) => void;
   clear: () => void;
   has: (productId: string) => boolean;
   count: () => number;
+  hydrate: (userId: string | null) => void;
 }
 
-export const useWishlistStore = create<WishlistState>()(
-  persist(
-    (set, get) => ({
-      items: [],
+const loadFor = (userId: string | null): Product[] => {
+  try {
+    const raw = localStorage.getItem(userId ? userKey(userId) : GUEST_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
 
-      toggle: (product) => {
-        const exists = get().items.some(p => p.id === product.id);
-        if (exists) {
-          set(state => ({ items: state.items.filter(p => p.id !== product.id) }));
-          return false;
-        }
-        set(state => ({ items: [product, ...state.items] }));
-        return true;
-      },
+const saveFor = (userId: string | null, items: Product[]) => {
+  try {
+    localStorage.setItem(userId ? userKey(userId) : GUEST_KEY, JSON.stringify(items));
+  } catch { /* quota exceeded — ignore */ }
+};
 
-      add: (product) => {
-        if (get().items.some(p => p.id === product.id)) return;
-        set(state => ({ items: [product, ...state.items] }));
-      },
+export const useWishlistStore = create<WishlistState>((set, get) => ({
+  items: loadFor(null), // initial: guest
+  currentUserId: null,
 
-      remove: (productId) => {
-        set(state => ({ items: state.items.filter(p => p.id !== productId) }));
-      },
+  hydrate: (userId) => {
+    const prevUserId = get().currentUserId;
+    if (prevUserId === userId) return; // no-op
+    const items = loadFor(userId);
+    set({ items, currentUserId: userId });
+  },
 
-      clear: () => set({ items: [] }),
+  toggle: (product) => {
+    const exists = get().items.some(p => p.id === product.id);
+    const next = exists
+      ? get().items.filter(p => p.id !== product.id)
+      : [product, ...get().items];
+    saveFor(get().currentUserId, next);
+    set({ items: next });
+    return !exists;
+  },
 
-      has: (productId) => get().items.some(p => p.id === productId),
+  add: (product) => {
+    if (get().items.some(p => p.id === product.id)) return;
+    const next = [product, ...get().items];
+    saveFor(get().currentUserId, next);
+    set({ items: next });
+  },
 
-      count: () => get().items.length,
-    }),
-    {
-      name: 'swipo-wishlist',
-      partialize: (state) => ({ items: state.items }),
-    }
-  )
-);
+  remove: (productId) => {
+    const next = get().items.filter(p => p.id !== productId);
+    saveFor(get().currentUserId, next);
+    set({ items: next });
+  },
+
+  clear: () => {
+    saveFor(get().currentUserId, []);
+    set({ items: [] });
+  },
+
+  has: (productId) => get().items.some(p => p.id === productId),
+  count: () => get().items.length,
+}));

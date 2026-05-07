@@ -5,22 +5,28 @@ import { ShoppingCart, User, Search, Menu, X, ChevronDown, Heart } from 'lucide-
 import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
+import { useI18n } from '../../stores/i18nStore';
 import { SearchModal } from './SearchModal';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
-const NAV_LINKS = [
-  { label: 'Home', to: '/' },
-  { label: 'Shop', to: '/products' },
-  {
-    label: 'Rooms', to: '#',
-    children: [
-      { label: 'Living Room', to: '/products?room=living-room' },
-      { label: 'Dining Room', to: '/products?room=dining-room' },
-      { label: 'Bedroom', to: '/products?room=bedroom' },
-      { label: 'Office', to: '/products?room=office' },
-    ],
-  },
-  { label: 'About', to: '/about' },
-];
+function useNavLinks() {
+  const { t } = useI18n();
+  return [
+    { label: t('nav.home'), to: '/' },
+    { label: t('nav.shop'), to: '/products' },
+    {
+      label: t('nav.rooms'), to: '#',
+      children: [
+        { label: t('nav.livingRoom'), to: '/products?room=living-room' },
+        { label: t('nav.diningRoom'), to: '/products?room=dining-room' },
+        { label: t('nav.bedroom'), to: '/products?room=bedroom' },
+        { label: t('nav.office'), to: '/products?room=office' },
+      ],
+    },
+    { label: t('nav.about'), to: '/about' },
+    { label: t('nav.personalize'), to: '/personalize' },
+  ];
+}
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -33,6 +39,8 @@ export function Header() {
   const { user, profile, signOut } = useAuthStore();
   const wishlistCount = useWishlistStore(s => s.items.length);
   const cartCount = totalItems();
+  const { t } = useI18n();
+  const NAV_LINKS = useNavLinks();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -98,10 +106,14 @@ export function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 lg:gap-4">
+          <div className="flex items-center gap-2 lg:gap-3">
+            <div className="hidden md:block">
+              <LanguageSwitcher variant={isTransparent ? 'light' : 'dark'} />
+            </div>
+
             <button
               onClick={() => setSearchOpen(true)}
-              aria-label="Search products"
+              aria-label={t('nav.search')}
               className={`p-2 rounded-full hover:bg-white/10 transition-colors ${isTransparent ? 'text-white' : 'text-brand-text'}`}
             >
               <Search size={20} />
@@ -152,7 +164,7 @@ export function Header() {
                   ? 'border-white/50 text-white hover:bg-white hover:text-brand-dark'
                   : 'border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-white'
               }`}>
-                Sign In
+                {t('nav.signIn')}
               </Link>
             )}
 
@@ -184,13 +196,18 @@ export function Header() {
                 </Link>
               ))}
               <hr className="my-2" />
+              <div className="px-4 py-2 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{t('lang.label')}</span>
+                <LanguageSwitcher />
+              </div>
+              <hr className="my-2" />
               {user ? (
                 <>
-                  <Link to="/account" className="block px-4 py-3 text-sm font-semibold text-brand-text hover:bg-gray-50 rounded-lg">My Account</Link>
-                  <button onClick={signOut} className="block w-full text-left px-4 py-3 text-sm font-semibold text-red-500 hover:bg-gray-50 rounded-lg">Sign Out</button>
+                  <Link to="/account" className="block px-4 py-3 text-sm font-semibold text-brand-text hover:bg-gray-50 rounded-lg">{t('nav.myAccount')}</Link>
+                  <button onClick={signOut} className="block w-full text-left px-4 py-3 text-sm font-semibold text-red-500 hover:bg-gray-50 rounded-lg">{t('nav.signOut')}</button>
                 </>
               ) : (
-                <Link to="/auth" className="block px-4 py-3 text-sm font-semibold text-brand-accent hover:bg-gray-50 rounded-lg">Sign In / Register</Link>
+                <Link to="/auth" className="block px-4 py-3 text-sm font-semibold text-brand-accent hover:bg-gray-50 rounded-lg">{t('nav.signInRegister')}</Link>
               )}
             </div>
           </motion.nav>
@@ -210,6 +227,7 @@ interface UserMenuProps {
 
 function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
@@ -250,21 +268,26 @@ function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
                 <span className="inline-block mt-1 px-2 py-0.5 bg-brand-accent text-white text-[10px] font-black rounded uppercase tracking-wider">Admin</span>
               )}
             </div>
-            <Link to="/account" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Account</Link>
-            <Link to="/account/orders" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Orders</Link>
-            <Link to="/wishlist" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">My Wishlist</Link>
+            <Link to="/account" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myAccount')}</Link>
+            <Link to="/account/orders" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myOrders')}</Link>
+            <Link to="/wishlist" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myWishlist')}</Link>
             {profile?.role === 'admin' && (
               <Link to="/admin" onClick={() => setOpen(false)}
                 className="flex items-center gap-2 mx-2 my-1 px-3 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-brand-accent to-brand-orange rounded-xl hover:opacity-90 transition-opacity"
               >
-                <span>🛠️</span> Admin Dashboard
+                <span>🛠️</span> {t('nav.adminDashboard')}
               </Link>
             )}
+            <hr className="my-1 border-gray-100" />
+            <div className="px-4 py-2 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{t('lang.label')}</span>
+              <LanguageSwitcher />
+            </div>
             <hr className="my-1 border-gray-100" />
             <button onClick={() => { setOpen(false); signOut(); }}
               className="block w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
             >
-              Sign Out
+              {t('nav.signOut')}
             </button>
           </motion.div>
         )}

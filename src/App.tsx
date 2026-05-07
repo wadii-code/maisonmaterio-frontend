@@ -4,6 +4,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
+import { useWishlistStore } from './stores/wishlistStore';
+import { ScrollToTop } from './components/layout/ScrollToTop';
+import { useI18nStore } from './stores/i18nStore';
 
 // Layout
 import { Layout } from './components/layout/Layout';
@@ -18,6 +21,10 @@ import { Checkout } from './pages/Checkout';
 import { Auth } from './pages/Auth';
 import { Account } from './pages/Account';
 import { Wishlist } from './pages/Wishlist';
+import { About } from './pages/About';
+import { ProfileSettings } from './pages/ProfileSettings';
+import { SavedAddresses } from './pages/SavedAddresses';
+import { Personalize } from './pages/Personalize';
 
 // Admin pages
 import { AdminDashboard } from './pages/admin/Dashboard';
@@ -36,12 +43,25 @@ function ProductDetailRoute() {
 
 export default function App() {
   const setSession = useAuthStore(s => s.setSession);
+  const hydrateWishlist = useWishlistStore(s => s.hydrate);
+  const locale = useI18nStore(s => s.locale);
+
+  // Keep <html lang> in sync with the chosen locale.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      hydrateWishlist(session?.user?.id ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      hydrateWishlist(session?.user?.id ?? null);
+    });
     return () => subscription.unsubscribe();
-  }, [setSession]);
+  }, [setSession, hydrateWishlist]);
 
   return (
     <HelmetProvider>
@@ -52,6 +72,7 @@ export default function App() {
           style: { borderRadius: '12px', fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: '600' },
         }}
       />
+      <ScrollToTop />
       <Routes>
         {/* Customer routes */}
         <Route element={<Layout />}>
@@ -62,8 +83,12 @@ export default function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/account" element={<Account />} />
           <Route path="/account/orders" element={<Account />} />
+          <Route path="/account/profile" element={<ProfileSettings />} />
+          <Route path="/account/addresses" element={<SavedAddresses />} />
           <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/about" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/personalize" element={<Personalize />} />
+          <Route path="/auth/reset-password" element={<Auth />} />
         </Route>
 
         {/* Admin routes */}

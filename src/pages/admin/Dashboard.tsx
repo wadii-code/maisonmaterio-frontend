@@ -5,6 +5,7 @@ import { useDashboardStats } from '../../hooks/useOrders';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { RevenueChart } from '../../components/admin/RevenueChart';
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../../lib/format';
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -20,7 +21,7 @@ export function AdminDashboard() {
   const METRIC_CARDS = [
     {
       label: 'Total Revenue',
-      value: stats ? `$${stats.total_revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—',
+      value: stats ? formatPrice(stats.total_revenue) : '—',
       icon: DollarSign,
       color: 'bg-emerald-500',
       change: '+12.5%',
@@ -125,7 +126,7 @@ export function AdminDashboard() {
                       <td className="px-6 py-4 text-gray-400">
                         {new Date(order.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 font-bold">${order.total_amount.toFixed(2)}</td>
+                      <td className="px-6 py-4 font-bold">{formatPrice(order.total_amount)}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-full capitalize ${STATUS_COLORS[order.status]}`}>
                           {order.status}

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Skeleton } from '../ui/Skeleton';
+import { formatPrice } from '../../lib/format';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -34,7 +35,7 @@ export function RevenueChart() {
           <h2 className="font-black text-brand-heading flex items-center gap-2">
             <TrendingUp size={18} className="text-brand-accent" /> Revenue Overview
           </h2>
-          {data && <p className="text-xs text-gray-400 mt-0.5">Total: <span className="font-black text-brand-heading">${data.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></p>}
+          {data && <p className="text-xs text-gray-400 mt-0.5">Total: <span className="font-black text-brand-heading">{formatPrice(data.total)}</span></p>}
         </div>
         <div className="flex bg-gray-100 p-1 rounded-full">
           {(['7d', '30d', '90d'] as const).map(p => (
@@ -72,10 +73,10 @@ export function RevenueChart() {
                         ? 'bg-gradient-to-t from-brand-accent to-brand-orange hover:from-brand-orange hover:to-brand-accent'
                         : 'bg-gray-100'
                     }`}
-                    title={`${point.date}: $${point.revenue.toFixed(2)}`}
+                    title={`${point.date}: ${formatPrice(point.revenue)}`}
                   />
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-brand-dark text-white text-xs font-bold rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                    ${point.revenue.toFixed(2)}
+                    {formatPrice(point.revenue)}
                   </div>
                 </motion.div>
               );

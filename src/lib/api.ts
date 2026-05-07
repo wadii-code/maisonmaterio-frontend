@@ -3,8 +3,13 @@ import type { ProductsResponse, Product, Category, Room, Order, DashboardStats }
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
-async function getHeaders(): Promise<HeadersInit> {
-  const { data: { session } } = await supabase.auth.getSession();
+async function getHeaders(forceRefresh = false): Promise<HeadersInit> {
+  let session = (await supabase.auth.getSession()).data.session;
+  // If asked, or session is close to expiring, refresh
+  if (forceRefresh || (session && session.expires_at && session.expires_at * 1000 < Date.now() + 30_000)) {
+    const refreshed = await supabase.auth.refreshSession();
+    session = refreshed.data.session ?? session;
+  }
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (session?.access_token) {
     headers['Authorization'] = `Bearer ${session.access_token}`;
@@ -12,11 +17,17 @@ async function getHeaders(): Promise<HeadersInit> {
   return headers;
 }
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const headers = await getHeaders();
+async function request<T>(path: string, options?: RequestInit, retried = false): Promise<T> {
+  const headers = await getHeaders(retried);
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers: { ...headers, ...options?.headers } });
+
+  // Auto-retry once on 401 with a refreshed token (handles expired access tokens)
+  if (res.status === 401 && !retried) {
+    return request<T>(path, options, true);
+  }
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: 'Request failed' }));
+    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
     throw new Error(err.error ?? `HTTP ${res.status}`);
   }
   if (res.status === 204) return undefined as T;

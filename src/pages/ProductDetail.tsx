@@ -8,6 +8,7 @@ import { useReviewEligibility, useCreateReview } from '../hooks/useReviews';
 import { useCartStore } from '../stores/cartStore';
 import { useWishlistStore } from '../stores/wishlistStore';
 import { useAuthStore } from '../stores/authStore';
+import { formatPrice, cleanProductName } from '../lib/format';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { StarRating } from '../components/ui/StarRating';
@@ -69,7 +70,7 @@ export function ProductDetail() {
 
   const handleAddToCart = () => {
     addItem({ ...product, price: finalPrice, discount_price: null }, quantity);
-    toast.success(`${product.name} added to cart!`, {
+    toast.success(`${cleanProductName(product.name)} added to cart!`, {
       style: { borderRadius: '50px', fontWeight: '600' },
       iconTheme: { primary: '#f5a623', secondary: '#fff' },
     });
@@ -82,7 +83,7 @@ export function ProductDetail() {
   return (
     <>
       <Helmet>
-        <title>{product.name} — SWIPO</title>
+        <title>{cleanProductName(product.name)} — SWIPO</title>
         <meta name="description" content={product.description} />
       </Helmet>
       <div className="pt-20 min-h-screen">
@@ -93,7 +94,7 @@ export function ProductDetail() {
             <ChevronRight size={12} />
             <Link to="/products" className="hover:text-brand-accent transition-colors">Shop</Link>
             <ChevronRight size={12} />
-            <span className="text-brand-text font-medium truncate">{product.name}</span>
+            <span className="text-brand-text font-medium truncate">{cleanProductName(product.name)}</span>
           </div>
         </div>
 
@@ -141,7 +142,7 @@ export function ProductDetail() {
                 {product.stock <= 5 && product.stock > 0 && <Badge label={`Only ${product.stock} left`} color="red" />}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-brand-heading leading-tight">{product.name}</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-brand-heading leading-tight">{cleanProductName(product.name)}</h1>
 
               <StarRating rating={product.rating} count={product.review_count} size="md" />
 
@@ -152,22 +153,34 @@ export function ProductDetail() {
                 animate={{ scale: 1 }}
                 className="flex items-baseline gap-3 flex-wrap"
               >
-                <span className="text-3xl sm:text-4xl font-black text-brand-accent">${finalPrice.toFixed(2)}</span>
+                <span className="text-3xl sm:text-4xl font-black text-brand-accent">{formatPrice(finalPrice)}</span>
                 {product.discount_price && finalPrice === basePrice && (
-                  <span className="text-lg sm:text-xl text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                  <span className="text-lg sm:text-xl text-gray-400 line-through">{formatPrice(product.price)}</span>
                 )}
               </motion.div>
 
               <p className="text-gray-600 leading-relaxed text-sm sm:text-base">{product.description}</p>
 
-              {/* Customization */}
-              <div className="bg-brand-card rounded-2xl p-5">
-                <h3 className="text-sm font-black text-brand-heading mb-4">Customize Your Order</h3>
-                <ProductCustomization
-                  basePrice={basePrice}
-                  onChange={(selections, price) => setCustomization({ selections, price })}
-                />
-              </div>
+              {/* Customization (colors from product, only if defined) */}
+              {(product.colors?.length ?? 0) > 0 && (
+                <div className="bg-brand-card rounded-2xl p-5">
+                  <h3 className="text-sm font-black text-brand-heading mb-4">Choose your color</h3>
+                  <ProductCustomization
+                    basePrice={basePrice}
+                    options={[{
+                      type: 'color',
+                      label: 'Color',
+                      options: product.colors!.map(c => ({
+                        value: c.hex,
+                        label: c.name,
+                        swatch: c.hex,
+                        priceDelta: c.price_delta,
+                      })),
+                    }]}
+                    onChange={(selections, price) => setCustomization({ selections, price })}
+                  />
+                </div>
+              )}
 
               {/* Specs */}
               {(product.material || product.dimensions) && (
@@ -212,7 +225,7 @@ export function ProductDetail() {
                     </button>
                   </div>
                   <Button variant="primary" size="lg" onClick={handleAddToCart} className="flex-1">
-                    <ShoppingCart size={20} /> Add to Cart · ${(finalPrice * quantity).toFixed(2)}
+                    <ShoppingCart size={20} /> Add to Cart · {formatPrice(finalPrice * quantity)}
                   </Button>
                   <motion.button
                     onClick={() => {
