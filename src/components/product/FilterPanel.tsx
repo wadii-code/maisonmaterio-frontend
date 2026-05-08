@@ -109,24 +109,24 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Min</label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400">MAD</span>
                         <input
                           type="number" min="0" placeholder="0"
                           value={local.min_price ?? ''}
                           onChange={e => updateLocal({ min_price: e.target.value || undefined })}
-                          className="w-full pl-7 pr-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
+                          className="w-full pl-12 pr-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
                         />
                       </div>
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Max</label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400">MAD</span>
                         <input
                           type="number" min="0" placeholder="Any"
                           value={local.max_price ?? ''}
                           onChange={e => updateLocal({ max_price: e.target.value || undefined })}
-                          className="w-full pl-7 pr-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
+                          className="w-full pl-12 pr-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
                         />
                       </div>
                     </div>
@@ -134,10 +134,10 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                   {/* Quick price chips */}
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {[
-                      { label: 'Under $50', min: '', max: '50' },
-                      { label: '$50–$200', min: '50', max: '200' },
-                      { label: '$200–$500', min: '200', max: '500' },
-                      { label: '$500+', min: '500', max: '' },
+                      { label: '< 500 MAD', min: '', max: '500' },
+                      { label: '500–2k', min: '500', max: '2000' },
+                      { label: '2k–5k', min: '2000', max: '5000' },
+                      { label: '5k+', min: '5000', max: '' },
                     ].map(p => (
                       <button key={p.label}
                         onClick={() => updateLocal({ min_price: p.min || undefined, max_price: p.max || undefined })}

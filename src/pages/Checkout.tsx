@@ -26,7 +26,7 @@ export function Checkout() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('shipping');
   const [shippingData, setShippingData] = useState({
-    full_name: '', address_line1: '', address_line2: '', city: '', state: '', postal_code: '', country: 'US', phone: '',
+    full_name: '', address_line1: '', address_line2: '', city: '', state: '', postal_code: '', country: 'Morocco', phone: '',
   });
   const [orderId, setOrderId] = useState<string | null>(null);
 
@@ -57,7 +57,13 @@ export function Checkout() {
   const handlePlaceOrder = async () => {
     try {
       const order = await createOrder.mutateAsync({
-        items: items.map(i => ({ product_id: i.product.id, quantity: i.quantity })),
+        items: items.map(i => ({
+          product_id: i.product.id,
+          quantity: i.quantity,
+          customization: i.customization?.color
+            ? { color: i.customization.color, unitPrice: i.customization.unitPrice ?? null }
+            : undefined,
+        })),
         shipping_address: shippingData,
         payment_method: 'cod',
       });
@@ -71,7 +77,10 @@ export function Checkout() {
   };
 
   const totals = calcOrderTotals(
-    items.map(i => ({ price: i.product.discount_price ?? i.product.price, quantity: i.quantity }))
+    items.map(i => ({
+      price: i.customization?.unitPrice ?? i.product.discount_price ?? i.product.price,
+      quantity: i.quantity,
+    }))
   );
   const { subtotal, total } = totals;
 
@@ -250,8 +259,11 @@ export function Checkout() {
                   <div className="bg-white rounded-3xl p-6 lg:sticky lg:top-24">
                     <h3 className="font-black text-brand-heading mb-5">Order Summary</h3>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {items.map(item => (
-                        <div key={item.product.id} className="flex items-center gap-3">
+                      {items.map(item => {
+                        const unit = item.customization?.unitPrice ?? item.product.discount_price ?? item.product.price;
+                        const color = item.customization?.color;
+                        return (
+                        <div key={item.key} className="flex items-center gap-3">
                           <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 relative">
                             <img
                               src={item.product.images?.[0] ?? `https://placehold.co/56x56/f5f5f5/999?text=${encodeURIComponent(item.product.name)}`}
@@ -264,13 +276,20 @@ export function Checkout() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-brand-heading line-clamp-1">{cleanProductName(item.product.name)}</p>
-                            <p className="text-xs text-gray-400">{formatPrice(item.product.discount_price ?? item.product.price)} ea.</p>
+                            {color && (
+                              <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
+                                <span className="w-2.5 h-2.5 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
+                                {color.name}
+                              </span>
+                            )}
+                            <p className="text-xs text-gray-400">{formatPrice(unit)} ea.</p>
                           </div>
                           <p className="text-sm font-bold shrink-0">
-                            {formatPrice((item.product.discount_price ?? item.product.price) * item.quantity)}
+                            {formatPrice(unit * item.quantity)}
                           </p>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                     <div className="mt-5 pt-5 border-t border-gray-100 space-y-2 text-sm">
                       <div className="flex justify-between text-gray-500">

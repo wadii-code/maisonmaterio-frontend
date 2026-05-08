@@ -64,11 +64,12 @@ export function CartDrawer() {
                   </motion.div>
                 ) : (
                   items.map((item) => {
-                    const price = item.product.discount_price ?? item.product.price;
+                    const unit = item.customization?.unitPrice ?? item.product.discount_price ?? item.product.price;
                     const img = item.product.images?.[0] ?? `https://placehold.co/80x80/f5f5f5/999?text=${encodeURIComponent(item.product.name)}`;
+                    const color = item.customization?.color;
                     return (
                       <motion.div
-                        key={item.product.id}
+                        key={item.key}
                         layout
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -78,17 +79,23 @@ export function CartDrawer() {
                         <img src={img} alt={item.product.name} className="w-20 h-20 object-cover rounded-lg bg-gray-100 shrink-0" />
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-semibold text-brand-heading line-clamp-2">{cleanProductName(item.product.name)}</h4>
-                          <p className="text-brand-accent font-bold text-sm mt-1">{formatPrice(price * item.quantity)}</p>
+                          {color && (
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="w-3 h-3 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
+                              <span className="text-xs text-gray-500">{color.name}</span>
+                            </div>
+                          )}
+                          <p className="text-brand-accent font-bold text-sm mt-1">{formatPrice(unit * item.quantity)}</p>
                           <div className="flex items-center gap-2 mt-2">
                             <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                              onClick={() => updateQuantity(item.key, item.quantity - 1)}
                               className="p-1 rounded-full bg-white border border-gray-200 hover:border-brand-accent transition-colors"
                             >
                               <Minus size={12} />
                             </button>
                             <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
                             <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                              onClick={() => updateQuantity(item.key, item.quantity + 1)}
                               disabled={item.quantity >= item.product.stock}
                               className="p-1 rounded-full bg-white border border-gray-200 hover:border-brand-accent transition-colors disabled:opacity-50"
                             >
@@ -97,7 +104,7 @@ export function CartDrawer() {
                           </div>
                         </div>
                         <button
-                          onClick={() => removeItem(item.product.id)}
+                          onClick={() => removeItem(item.key)}
                           className="text-gray-300 hover:text-red-500 transition-colors p-1 self-start"
                         >
                           <Trash2 size={16} />

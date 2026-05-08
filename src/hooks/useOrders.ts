@@ -27,11 +27,12 @@ export function useCreateOrder() {
 export function useUpdateOrderStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status, notes }: { id: string; status: string; notes?: string }) =>
-      ordersApi.updateStatus(id, status, notes),
+    mutationFn: ({ id, status, notes, payment_status }: { id: string; status?: string; notes?: string; payment_status?: string }) =>
+      ordersApi.updateStatus(id, { status, notes, payment_status }),
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: ['orders'] });
       qc.invalidateQueries({ queryKey: ['order', id] });
+      qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
     },
   });
 }

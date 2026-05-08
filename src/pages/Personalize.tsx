@@ -27,8 +27,8 @@ export function Personalize() {
     setForm(p => ({ ...p, [k]: v }));
 
   const validate = (): string | null => {
-    if (!form.category) return t('personalize.categoryPlaceholder');
-    if (form.fullName.trim().length < 2) return t('personalize.fullNamePlaceholder');
+    if (!form.category) return t('personalize.missingCategory');
+    if (form.fullName.trim().length < 2) return t('personalize.missingName');
     // Loose phone check: at least 7 digits, allow + space - ()
     const digits = form.phone.replace(/[^\d]/g, '');
     if (digits.length < 7) return t('personalize.invalidPhone');
@@ -156,7 +156,7 @@ export function Personalize() {
                   {t('personalize.message')}
                 </label>
                 <textarea
-                  required minLength={10} rows={6}
+                  required minLength={10} maxLength={1000} rows={6}
                   placeholder={t('personalize.messagePlaceholder')}
                   value={form.message}
                   onChange={e => setField('message', e.target.value)}

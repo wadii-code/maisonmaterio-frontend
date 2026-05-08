@@ -70,6 +70,7 @@ export interface OrderItem {
   product_id: string;
   quantity: number;
   price_at_time: number;
+  customization?: { color?: { name: string; hex: string } } | Record<string, any> | null;
   products?: Product;
 }
 
@@ -105,8 +106,16 @@ export interface Review {
 }
 
 export interface CartItem {
+  /** Stable key per (product, customization) combo — used for cart matching. */
+  key: string;
   product: Product;
   quantity: number;
+  /** Selected customization (e.g. color). Persisted with the order. */
+  customization?: {
+    color?: { name: string; hex: string };
+    /** Effective unit price after customization deltas. */
+    unitPrice?: number;
+  };
 }
 
 export interface Pagination {

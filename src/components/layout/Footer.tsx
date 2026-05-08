@@ -66,9 +66,9 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-gray-300">{t('footer.contact')}</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li className="flex items-center gap-2"><Mail size={14} /><span>hello@swipo.com</span></li>
-              <li className="flex items-center gap-2"><Phone size={14} /><span>+1 (800) 794-7660</span></li>
-              <li className="flex items-start gap-2"><MapPin size={14} className="shrink-0 mt-0.5" /><span>123 Design St,<br />New York, NY 10001</span></li>
+              <li className="flex items-center gap-2"><Mail size={14} /><span>hello@swipo.ma</span></li>
+              <li className="flex items-center gap-2"><Phone size={14} /><span>+212 6 00 00 00 00</span></li>
+              <li className="flex items-start gap-2"><MapPin size={14} className="shrink-0 mt-0.5" /><span>Boulevard Mohammed V,<br />Casablanca, Morocco</span></li>
             </ul>
           </div>
         </div>

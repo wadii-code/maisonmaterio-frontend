@@ -96,6 +96,8 @@ export const translations = {
     'personalize.step3': 'Our team responds personally to finalize the details',
     'personalize.invalidPhone': 'Please enter a valid phone number',
     'personalize.tooShortMessage': 'Tell us a bit more (at least 10 characters)',
+    'personalize.missingCategory': 'Please choose a category',
+    'personalize.missingName': 'Please enter your full name',
 
     // Footer
     'footer.newsletterTitle': 'Stay in the loop',
@@ -214,6 +216,8 @@ export const translations = {
     'personalize.step3': 'Notre équipe vous répond personnellement pour finaliser',
     'personalize.invalidPhone': 'Veuillez saisir un numéro de téléphone valide',
     'personalize.tooShortMessage': 'Donnez-nous plus de détails (au moins 10 caractères)',
+    'personalize.missingCategory': 'Veuillez choisir une catégorie',
+    'personalize.missingName': 'Veuillez saisir votre nom complet',
 
     // Footer
     'footer.newsletterTitle': 'Restez informé',

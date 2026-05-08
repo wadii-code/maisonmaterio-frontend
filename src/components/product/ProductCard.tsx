@@ -3,7 +3,6 @@ import { ShoppingCart, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../ui/Badge';
 import { StarRating } from '../ui/StarRating';
-import { CountdownTimer } from '../ui/CountdownTimer';
 import { useCartStore } from '../../stores/cartStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
 import { formatPrice, cleanProductName } from '../../lib/format';
@@ -14,8 +13,6 @@ interface ProductCardProps {
   product: Product;
   index?: number;
 }
-
-const SALE_END = new Date(Date.now() + 259 * 24 * 60 * 60 * 1000);
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const addItem = useCartStore(s => s.addItem);
@@ -83,9 +80,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       </Link>
 
       <div className="p-4 space-y-2">
-        {product.tags.includes('SALE') || discount ? (
-          <CountdownTimer endDate={SALE_END} />
-        ) : null}
         <StarRating rating={product.rating} count={product.review_count} />
         <Link to={`/products/${product.id}`}>
           <h3 className="text-sm font-semibold text-brand-heading line-clamp-2 hover:text-brand-accent transition-colors">

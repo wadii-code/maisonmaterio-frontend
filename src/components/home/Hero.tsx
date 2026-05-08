@@ -26,16 +26,14 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            <span className="inline-block px-4 py-1.5 bg-brand-accent/20 border border-brand-accent/40 text-brand-accent text-sm font-semibold rounded-full mb-6 tracking-wider uppercase">
-              New Collection 2025
-            </span>
+            
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-            className="text-5xl sm:text-7xl lg:text-9xl font-black text-white leading-none tracking-tighter mb-4 sm:mb-6"
+            className="text-4xl sm:text-5xl lg:text-8xl font-black text-white leading-none tracking-tighter mb-4 sm:mb-6"
           >
             SWIPO
           </motion.h1>

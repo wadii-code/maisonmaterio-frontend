@@ -44,6 +44,18 @@ export function AdminOrders() {
     }
   };
 
+  const handleTogglePayment = async (orderId: string, currentlyPaid: boolean) => {
+    setUpdatingId(orderId);
+    try {
+      await updateStatus.mutateAsync({ id: orderId, payment_status: currentlyPaid ? 'pending' : 'paid' });
+      toast.success(currentlyPaid ? 'Marked as unpaid' : 'Marked as paid');
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   return (
     <>
       <Helmet><title>Orders — SWIPO Admin</title></Helmet>
@@ -104,11 +116,16 @@ export function AdminOrders() {
                       <td className="px-4 py-4 text-gray-400 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString()}</td>
                       <td className="px-4 py-4 font-bold">{formatPrice(order.total_amount)}</td>
                       <td className="px-4 py-4">
-                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full capitalize ${
-                          order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'
-                        }`}>
+                        <button
+                          onClick={e => { e.stopPropagation(); handleTogglePayment(order.id, order.payment_status === 'paid'); }}
+                          disabled={updatingId === order.id}
+                          title={order.payment_status === 'paid' ? 'Click to mark unpaid' : 'Click to mark paid'}
+                          className={`px-2.5 py-0.5 text-xs font-bold rounded-full capitalize cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50 ${
+                            order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'
+                          }`}
+                        >
                           {order.payment_status}
-                        </span>
+                        </button>
                       </td>
                       <td className="px-4 py-4">
                         <div className="relative" onClick={e => e.stopPropagation()}>
@@ -169,7 +186,9 @@ export function AdminOrders() {
                 <p className="text-gray-500">{new Date(selectedOrder.created_at).toLocaleString()}</p>
               </div>
               <div className="space-y-3">
-                {selectedOrder.order_items?.map(item => (
+                {selectedOrder.order_items?.map(item => {
+                  const color = (item.customization as any)?.color;
+                  return (
                   <div key={item.id} className="flex gap-3 items-center">
                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                       <img src={item.products?.images?.[0] ?? 'https://placehold.co/48x48/f5f5f5/999?text=P'}
@@ -177,11 +196,18 @@ export function AdminOrders() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold line-clamp-1">{item.products?.name}</p>
-                      <p className="text-xs text-gray-400">Qty: {item.quantity} · ${item.price_at_time}</p>
+                      {color && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
+                          <span className="w-2.5 h-2.5 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
+                          {color.name}
+                        </span>
+                      )}
+                      <p className="text-xs text-gray-400">Qty: {item.quantity} · {formatPrice(item.price_at_time)}</p>
                     </div>
                     <p className="text-sm font-bold shrink-0">{formatPrice(item.price_at_time * item.quantity)}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
               <div className="border-t pt-4 space-y-1 text-sm">
                 <div className="flex justify-between font-black">

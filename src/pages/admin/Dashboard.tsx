@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { DollarSign, ShoppingBag, Clock, AlertTriangle, TrendingUp, ArrowUpRight } from 'lucide-react';
+import { DollarSign, ShoppingBag, Clock, AlertTriangle, ArrowUpRight } from 'lucide-react';
 import { useDashboardStats } from '../../hooks/useOrders';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { RevenueChart } from '../../components/admin/RevenueChart';
@@ -24,28 +24,24 @@ export function AdminDashboard() {
       value: stats ? formatPrice(stats.total_revenue) : '—',
       icon: DollarSign,
       color: 'bg-emerald-500',
-      change: '+12.5%',
     },
     {
       label: "Today's Orders",
       value: stats?.orders_today ?? '—',
       icon: ShoppingBag,
       color: 'bg-blue-500',
-      change: '+3',
     },
     {
       label: 'Pending Orders',
       value: stats?.pending_orders ?? '—',
       icon: Clock,
       color: 'bg-yellow-500',
-      change: '',
     },
     {
       label: 'Low Stock Items',
       value: stats?.low_stock_items ?? '—',
       icon: AlertTriangle,
       color: 'bg-red-500',
-      change: '',
     },
   ];
 
@@ -60,7 +56,7 @@ export function AdminDashboard() {
 
         {/* Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {METRIC_CARDS.map(({ label, value, icon: Icon, color, change }, i) => (
+          {METRIC_CARDS.map(({ label, value, icon: Icon, color }, i) => (
             <motion.div
               key={label}
               initial={{ opacity: 0, y: 20 }}
@@ -72,11 +68,6 @@ export function AdminDashboard() {
                 <div className={`p-3 rounded-xl ${color}`}>
                   <Icon size={20} className="text-white" />
                 </div>
-                {change && (
-                  <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                    <TrendingUp size={10} /> {change}
-                  </span>
-                )}
               </div>
               {isLoading ? (
                 <Skeleton className="h-8 w-24 mb-1" />

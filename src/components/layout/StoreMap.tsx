@@ -2,13 +2,13 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
 
 const STORE = {
-  address: '123 Design Street, New York, NY 10001',
-  phone: '+1 (800) 794-7660',
-  email: 'hello@swipo.com',
+  address: 'Boulevard Mohammed V, Casablanca, Morocco',
+  phone: '+212 6 00 00 00 00',
+  email: 'hello@swipo.ma',
   hours: 'Mon - Sat: 10am - 8pm',
-  // Coordinates: NYC SoHo area
-  lat: 40.7234,
-  lng: -73.9988,
+  // Coordinates: Casablanca city center
+  lat: 33.5731,
+  lng: -7.5898,
 };
 
 export function StoreMap() {
@@ -121,7 +121,7 @@ export function StoreMap() {
               </div>
               <div>
                 <p className="text-xs font-black text-brand-heading">SWIPO Flagship</p>
-                <p className="text-[10px] text-gray-400">SoHo, New York</p>
+                <p className="text-[10px] text-gray-400">Casablanca, Morocco</p>
               </div>
             </div>
           </motion.div>

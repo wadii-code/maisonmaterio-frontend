@@ -4,9 +4,10 @@ import { translations, type Locale, type TranslationKey } from '../lib/translati
 const STORAGE_KEY = 'swipo-locale';
 
 function loadLocale(): Locale {
-  if (typeof window === 'undefined') return 'en';
+  // French is the default — only switch to English if the user explicitly chose it.
+  if (typeof window === 'undefined') return 'fr';
   const saved = localStorage.getItem(STORAGE_KEY);
-  return saved === 'fr' ? 'fr' : 'en';
+  return saved === 'en' ? 'en' : 'fr';
 }
 
 interface I18nState {

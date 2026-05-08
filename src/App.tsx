@@ -25,6 +25,7 @@ import { About } from './pages/About';
 import { ProfileSettings } from './pages/ProfileSettings';
 import { SavedAddresses } from './pages/SavedAddresses';
 import { Personalize } from './pages/Personalize';
+import { OrderDetail } from './pages/OrderDetail';
 
 // Admin pages
 import { AdminDashboard } from './pages/admin/Dashboard';
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/account" element={<Account />} />
           <Route path="/account/orders" element={<Account />} />
+          <Route path="/account/orders/:id" element={<OrderDetail />} />
           <Route path="/account/profile" element={<ProfileSettings />} />
           <Route path="/account/addresses" element={<SavedAddresses />} />
           <Route path="/wishlist" element={<Wishlist />} />

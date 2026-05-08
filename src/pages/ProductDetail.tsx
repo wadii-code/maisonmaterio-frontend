@@ -69,7 +69,17 @@ export function ProductDetail() {
   const finalPrice = customization.price || basePrice;
 
   const handleAddToCart = () => {
-    addItem({ ...product, price: finalPrice, discount_price: null }, quantity);
+    // The customization component uses option.value = c.hex for color selections.
+    const selectedHex = customization.selections['Color'];
+    const selectedColor = product.colors?.find(c => c.hex === selectedHex);
+
+    addItem(
+      product,
+      quantity,
+      selectedColor
+        ? { color: { name: selectedColor.name, hex: selectedColor.hex }, unitPrice: finalPrice }
+        : { unitPrice: finalPrice }
+    );
     toast.success(`${cleanProductName(product.name)} added to cart!`, {
       style: { borderRadius: '50px', fontWeight: '600' },
       iconTheme: { primary: '#f5a623', secondary: '#fff' },
@@ -252,7 +262,7 @@ export function ProductDetail() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-gray-100">
                 {[
                   { icon: Banknote, label: 'Cash on Delivery', sub: 'Pay when you receive' },
-                  { icon: Truck, label: 'Free Shipping', sub: 'On orders over $100' },
+                  { icon: Truck, label: 'Free Shipping', sub: 'On orders over 500 MAD' },
                   { icon: RotateCcw, label: '30-Day Returns', sub: 'Easy & free returns' },
                   { icon: Shield, label: '2-Year Warranty', sub: 'On all products' },
                 ].map(({ icon: Icon, label, sub }) => (
