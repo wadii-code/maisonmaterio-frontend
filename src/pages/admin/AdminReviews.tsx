@@ -11,22 +11,22 @@ export function AdminReviews() {
   const deleteReview = useDeleteReview();
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this review? This cannot be undone.')) return;
+    if (!confirm('Supprimer cet avis ? Cette action est irréversible.')) return;
     try {
       await deleteReview.mutateAsync(id);
-      toast.success('Review deleted');
+      toast.success('Avis supprimé');
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to delete');
+      toast.error(err.message ?? 'Échec de la suppression');
     }
   };
 
   return (
     <>
-      <Helmet><title>Reviews — SWIPO Admin</title></Helmet>
+      <Helmet><title>Avis — SWIPO Admin</title></Helmet>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-black text-brand-heading">Reviews</h1>
-          <p className="text-gray-400 text-sm mt-0.5">{reviews?.length ?? 0} customer reviews</p>
+          <h1 className="text-2xl font-black text-brand-heading">Avis</h1>
+          <p className="text-gray-400 text-sm mt-0.5">{reviews?.length ?? 0} avis clients</p>
         </div>
 
         {isLoading ? (
@@ -36,7 +36,7 @@ export function AdminReviews() {
         ) : !reviews?.length ? (
           <div className="bg-white rounded-2xl p-12 text-center text-gray-400">
             <MessageCircle size={32} className="mx-auto mb-3 opacity-30" />
-            <p className="font-semibold">No reviews yet</p>
+            <p className="font-semibold">Aucun avis pour le moment</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -59,7 +59,7 @@ export function AdminReviews() {
                   <div className="flex items-center justify-between gap-3 flex-wrap mb-2">
                     <div>
                       <p className="font-bold text-brand-heading text-sm line-clamp-1">{r.products?.name}</p>
-                      <p className="text-xs text-gray-400">by {r.profiles?.full_name ?? 'Anonymous'}</p>
+                      <p className="text-xs text-gray-400">par {r.profiles?.full_name ?? 'Anonyme'}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <StarRating rating={r.rating} />
@@ -71,7 +71,7 @@ export function AdminReviews() {
                 <button
                   onClick={() => handleDelete(r.id)}
                   className="self-end sm:self-start p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                  title="Delete review"
+                  title="Supprimer l'avis"
                 >
                   <Trash2 size={16} />
                 </button>

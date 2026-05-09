@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Search, User, Mail, Calendar, ShoppingBag, DollarSign } from 'lucide-react';
+import { Search, User, Phone as PhoneIcon, Calendar, ShoppingBag, DollarSign } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { Badge } from '../../components/ui/Badge';
@@ -34,18 +34,18 @@ export function AdminCustomers() {
 
   return (
     <>
-      <Helmet><title>Customers — SWIPO Admin</title></Helmet>
+      <Helmet><title>Clients — SWIPO Admin</title></Helmet>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-black text-brand-heading">Customers</h1>
-          <p className="text-gray-400 text-sm mt-0.5">{customers?.length ?? 0} total customers</p>
+          <h1 className="text-2xl font-black text-brand-heading">Clients</h1>
+          <p className="text-gray-400 text-sm mt-0.5">{customers?.length ?? 0} clients au total</p>
         </div>
 
         <div className="bg-white rounded-2xl p-4">
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
-              type="text" placeholder="Search by name..."
+              type="text" placeholder="Rechercher par nom…"
               value={search} onChange={e => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
             />
@@ -58,7 +58,7 @@ export function AdminCustomers() {
           ) : filtered.length === 0 ? (
             <div className="col-span-full bg-white rounded-2xl p-12 text-center text-gray-400">
               <User size={32} className="mx-auto mb-3 opacity-30" />
-              <p className="font-semibold">No customers found</p>
+              <p className="font-semibold">Aucun client trouvé</p>
             </div>
           ) : filtered.map((c: any, i: number) => (
             <motion.div
@@ -82,11 +82,11 @@ export function AdminCustomers() {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-gray-500">
                   <Calendar size={12} className="shrink-0" />
-                  <span className="text-xs">Joined {new Date(c.created_at).toLocaleDateString()}</span>
+                  <span className="text-xs">Inscrit le {new Date(c.created_at).toLocaleDateString('fr-MA')}</span>
                 </div>
                 {c.phone && (
                   <div className="flex items-center gap-2 text-gray-500">
-                    <Mail size={12} className="shrink-0" />
+                    <PhoneIcon size={12} className="shrink-0" />
                     <span className="text-xs truncate">{c.phone}</span>
                   </div>
                 )}
@@ -95,13 +95,13 @@ export function AdminCustomers() {
               <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
                 <div>
                   <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <ShoppingBag size={11} /> Orders
+                    <ShoppingBag size={11} /> Commandes
                   </div>
                   <p className="font-black text-brand-heading mt-0.5">{c.total_orders}</p>
                 </div>
                 <div>
                   <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <DollarSign size={11} /> Total spent
+                    <DollarSign size={11} /> Total dépensé
                   </div>
                   <p className="font-black text-brand-accent mt-0.5">{formatPrice(c.total_spent ?? 0)}</p>
                 </div>

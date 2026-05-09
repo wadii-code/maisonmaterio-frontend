@@ -17,29 +17,29 @@ export function Wishlist() {
 
   const handleAddToCart = (product: any) => {
     addToCart(product);
-    toast.success('Added to cart', { icon: '🛒', style: { borderRadius: '50px', fontWeight: '600' } });
+    toast.success('Ajouté au panier', { icon: '🛒', style: { borderRadius: '50px', fontWeight: '600' } });
   };
 
   const handleClearAll = () => {
     if (!items.length) return;
-    if (!confirm(`Remove all ${items.length} items from your wishlist?`)) return;
+    if (!confirm(`Retirer tous les ${items.length} articles de votre liste de souhaits ?`)) return;
     clear();
-    toast.success('Wishlist cleared');
+    toast.success('Liste de souhaits vidée');
   };
 
   return (
     <>
-      <Helmet><title>My Wishlist — SWIPO</title></Helmet>
+      <Helmet><title>Ma liste de souhaits — SWIPO</title></Helmet>
       <div className="pt-20 min-h-screen bg-white">
         <div className="bg-brand-card py-10 lg:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl lg:text-4xl font-black text-brand-heading flex items-center gap-3">
                 <Heart size={28} className="text-red-500 fill-red-500" />
-                My Wishlist
+                Ma liste de souhaits
               </h1>
               <p className="text-gray-500 mt-2 text-sm">
-                {items.length} {items.length === 1 ? 'item saved' : 'items saved'}
+                {items.length} {items.length === 1 ? 'article enregistré' : 'articles enregistrés'}
               </p>
             </div>
             {items.length > 0 && (
@@ -47,7 +47,7 @@ export function Wishlist() {
                 onClick={handleClearAll}
                 className="flex items-center gap-1.5 text-sm font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-full transition-colors"
               >
-                <Trash2 size={14} /> Clear all
+                <Trash2 size={14} /> Tout effacer
               </button>
             )}
           </div>

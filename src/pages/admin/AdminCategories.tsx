@@ -36,38 +36,38 @@ export function AdminCategories() {
     try {
       if (editing) {
         await updateCategory.mutateAsync({ id: editing.id, data: payload });
-        toast.success('Category updated');
+        toast.success('Catégorie mise à jour');
       } else {
         await createCategory.mutateAsync(payload as any);
-        toast.success('Category created');
+        toast.success('Catégorie créée');
       }
       setModalOpen(false);
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to save');
+      toast.error(err.message ?? 'Échec de l\'enregistrement');
     }
   };
 
   const handleDelete = async (cat: Category) => {
-    if (!confirm(`Delete "${cat.name}"? This cannot be undone.`)) return;
+    if (!confirm(`Supprimer « ${cat.name} » ? Cette action est irréversible.`)) return;
     try {
       await deleteCategory.mutateAsync(cat.id);
-      toast.success('Category deleted');
+      toast.success('Catégorie supprimée');
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to delete');
+      toast.error(err.message ?? 'Échec de la suppression');
     }
   };
 
   return (
     <>
-      <Helmet><title>Categories — SWIPO Admin</title></Helmet>
+      <Helmet><title>Catégories — SWIPO Admin</title></Helmet>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-black text-brand-heading">Categories</h1>
-            <p className="text-gray-400 text-sm mt-0.5">{categories?.length ?? 0} categories — appear automatically on the storefront</p>
+            <h1 className="text-2xl font-black text-brand-heading">Catégories</h1>
+            <p className="text-gray-400 text-sm mt-0.5">{categories?.length ?? 0} catégories — affichées automatiquement sur la boutique</p>
           </div>
           <Button variant="primary" onClick={openNew}>
-            <Plus size={16} /> Add Category
+            <Plus size={16} /> Ajouter une catégorie
           </Button>
         </div>
 
@@ -78,10 +78,10 @@ export function AdminCategories() {
         ) : categories?.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center">
             <FolderTree size={36} className="mx-auto text-gray-300 mb-3" />
-            <p className="font-semibold text-gray-500 mb-1">No categories yet</p>
-            <p className="text-sm text-gray-400 mb-5">Create your first category to start organizing products</p>
+            <p className="font-semibold text-gray-500 mb-1">Aucune catégorie</p>
+            <p className="text-sm text-gray-400 mb-5">Créez votre première catégorie pour organiser vos produits</p>
             <Button variant="primary" onClick={openNew}>
-              <Plus size={16} /> Create Category
+              <Plus size={16} /> Créer une catégorie
             </Button>
           </div>
         ) : (
@@ -110,7 +110,7 @@ export function AdminCategories() {
                       <p className="text-xs text-gray-400 font-mono mt-0.5">/{cat.slug}</p>
                     </div>
                     <span className="px-2.5 py-1 bg-brand-accent/10 text-brand-accent text-xs font-bold rounded-full whitespace-nowrap">
-                      {cat.product_count ?? 0} {cat.product_count === 1 ? 'item' : 'items'}
+                      {cat.product_count ?? 0} {cat.product_count === 1 ? 'article' : 'articles'}
                     </span>
                   </div>
                   <div className="flex gap-1 mt-3 pt-3 border-t border-gray-100">
@@ -118,13 +118,13 @@ export function AdminCategories() {
                       onClick={() => openEdit(cat)}
                       className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-brand-text hover:text-brand-accent hover:bg-gray-50 rounded-lg transition-all"
                     >
-                      <Pencil size={12} /> Edit
+                      <Pencil size={12} /> Modifier
                     </button>
                     <button
                       onClick={() => handleDelete(cat)}
                       className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                     >
-                      <Trash2 size={12} /> Delete
+                      <Trash2 size={12} /> Supprimer
                     </button>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export function AdminCategories() {
               <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
                   <h2 className="text-xl font-black text-brand-heading">
-                    {editing ? 'Edit Category' : 'New Category'}
+                    {editing ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
                   </h2>
                   <button onClick={() => setModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
                     <X size={18} />
@@ -160,29 +160,29 @@ export function AdminCategories() {
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Name *</label>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Nom *</label>
                     <input
                       required value={form.name}
                       onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                       className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                      placeholder="e.g. Bedroom Furniture"
+                      placeholder="ex. Mobilier de chambre"
                     />
                     <p className="text-xs text-gray-400 mt-1.5">
-                      URL slug will be: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">/{form.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'category-name'}</code>
+                      URL générée&nbsp;: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">/{form.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'nom-categorie'}</code>
                     </p>
                   </div>
 
                   <ImageUploader
-                    label="Category Image"
+                    label="Image de la catégorie"
                     maxImages={1}
                     value={form.image_url ? [form.image_url] : []}
                     onChange={imgs => setForm(p => ({ ...p, image_url: imgs[0] ?? '' }))}
                   />
 
                   <div className="flex gap-3 pt-2">
-                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Annuler</Button>
                     <Button type="submit" variant="primary" loading={createCategory.isPending || updateCategory.isPending} className="flex-1">
-                      <Save size={14} /> {editing ? 'Save' : 'Create'}
+                      <Save size={14} /> {editing ? 'Enregistrer' : 'Créer'}
                     </Button>
                   </div>
                 </form>

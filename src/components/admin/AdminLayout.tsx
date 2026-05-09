@@ -6,12 +6,12 @@ import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../ui/Button';
 
 const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard', to: '/admin' },
-  { icon: Package, label: 'Products', to: '/admin/products' },
-  { icon: FolderTree, label: 'Categories', to: '/admin/categories' },
-  { icon: ShoppingBag, label: 'Orders', to: '/admin/orders' },
-  { icon: Users, label: 'Customers', to: '/admin/customers' },
-  { icon: Star, label: 'Reviews', to: '/admin/reviews' },
+  { icon: LayoutDashboard, label: 'Tableau de bord', to: '/admin' },
+  { icon: Package, label: 'Produits', to: '/admin/products' },
+  { icon: FolderTree, label: 'Catégories', to: '/admin/categories' },
+  { icon: ShoppingBag, label: 'Commandes', to: '/admin/orders' },
+  { icon: Users, label: 'Clients', to: '/admin/customers' },
+  { icon: Star, label: 'Avis', to: '/admin/reviews' },
 ];
 
 export function AdminLayout() {
@@ -36,7 +36,7 @@ export function AdminLayout() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin w-10 h-10 border-4 border-brand-accent border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-sm text-gray-500 font-semibold">Verifying admin access...</p>
+          <p className="text-sm text-gray-500 font-semibold">Vérification de l'accès administrateur…</p>
         </div>
       </div>
     );
@@ -50,10 +50,10 @@ export function AdminLayout() {
           <div className="w-16 h-16 bg-brand-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <LogIn size={28} className="text-brand-accent" />
           </div>
-          <h2 className="text-2xl font-black text-brand-heading mb-2">Sign in required</h2>
-          <p className="text-sm text-gray-500 mb-6">You need to be signed in as an admin to access this page.</p>
+          <h2 className="text-2xl font-black text-brand-heading mb-2">Connexion requise</h2>
+          <p className="text-sm text-gray-500 mb-6">Vous devez être connecté en tant qu'administrateur pour accéder à cette page.</p>
           <Button variant="primary" fullWidth onClick={() => navigate('/auth?redirect=/admin')}>
-            Sign In
+            Se connecter
           </Button>
         </div>
       </div>
@@ -68,31 +68,31 @@ export function AdminLayout() {
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <ShieldAlert size={28} className="text-red-500" />
           </div>
-          <h2 className="text-2xl font-black text-brand-heading mb-2">Admin access required</h2>
+          <h2 className="text-2xl font-black text-brand-heading mb-2">Accès administrateur requis</h2>
           <p className="text-sm text-gray-500 mb-1">
-            You're signed in as <span className="font-bold text-brand-heading">{profile?.full_name ?? user.email}</span>
+            Vous êtes connecté en tant que <span className="font-bold text-brand-heading">{profile?.full_name ?? user.email}</span>
           </p>
           <p className="text-sm text-gray-500 mb-6">
-            Current role: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">{profile?.role ?? 'unknown'}</span>
+            Rôle actuel&nbsp;: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">{profile?.role ?? 'inconnu'}</span>
           </p>
 
           {profileError ? (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-left">
-              <p className="text-xs font-bold text-red-700 mb-2">⚠ Profile fetch error</p>
+              <p className="text-xs font-bold text-red-700 mb-2">⚠ Erreur de récupération du profil</p>
               <p className="text-xs text-red-700 break-words font-mono">{profileError}</p>
-              <p className="text-xs text-red-700 mt-3 font-semibold">Most likely cause: profile row missing or RLS blocking read.</p>
-              <p className="text-xs text-red-700 mt-2">Run this in Supabase SQL Editor to fix:</p>
+              <p className="text-xs text-red-700 mt-3 font-semibold">Cause probable&nbsp;: ligne de profil manquante ou RLS bloquant la lecture.</p>
+              <p className="text-xs text-red-700 mt-2">Exécutez ceci dans l'éditeur SQL Supabase&nbsp;:</p>
               <code className="block mt-1 bg-red-100 p-2 rounded text-[10px] break-all">
                 INSERT INTO profiles (id, role, full_name) VALUES ('{user.id}', 'admin', 'Admin') ON CONFLICT (id) DO UPDATE SET role = 'admin';
               </code>
             </div>
           ) : (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
-              <p className="text-xs font-bold text-amber-700 mb-2">If you just promoted yourself in Supabase:</p>
+              <p className="text-xs font-bold text-amber-700 mb-2">Si vous venez de vous promouvoir dans Supabase&nbsp;:</p>
               <ol className="text-xs text-amber-700 space-y-1 list-decimal list-inside">
-                <li>Click "Refresh Profile" below — no sign-out needed</li>
-                <li>Or sign out and sign back in</li>
-                <li>Verify in Supabase:</li>
+                <li>Cliquez sur «&nbsp;Actualiser le profil&nbsp;» ci-dessous — pas besoin de se déconnecter</li>
+                <li>Ou déconnectez-vous puis reconnectez-vous</li>
+                <li>Vérifiez dans Supabase&nbsp;:</li>
               </ol>
               <code className="block mt-2 bg-amber-100 p-2 rounded text-[10px] break-all">
                 SELECT role FROM profiles WHERE id = '{user.id}';
@@ -102,7 +102,7 @@ export function AdminLayout() {
 
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => navigate('/')} className="flex-1">
-              Back to Store
+              Retour à la boutique
             </Button>
             <Button
               variant="primary"
@@ -117,7 +117,7 @@ export function AdminLayout() {
               }}
               className="flex-1"
             >
-              <RefreshCw size={14} /> Refresh Profile
+              <RefreshCw size={14} /> Actualiser le profil
             </Button>
           </div>
         </div>
@@ -170,14 +170,14 @@ export function AdminLayout() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white truncate">{profile.full_name}</p>
-              <p className="text-xs text-white/40">Administrator</p>
+              <p className="text-xs text-white/40">Administrateur</p>
             </div>
           </div>
           <button
             onClick={async () => { await signOut(); navigate('/'); }}
             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all"
           >
-            <LogOut size={16} /> Sign Out
+            <LogOut size={16} /> Déconnexion
           </button>
         </div>
       </aside>
@@ -201,7 +201,7 @@ export function AdminLayout() {
             )}
           </div>
           <Link to="/" target="_blank" className="text-xs font-semibold text-gray-400 hover:text-brand-accent transition-colors">
-            View Store ↗
+            Voir la boutique ↗
           </Link>
         </header>
 

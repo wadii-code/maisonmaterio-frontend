@@ -10,11 +10,11 @@ import { Button } from '../components/ui/Button';
 import { FilterPanel, type FilterValues } from '../components/product/FilterPanel';
 
 const SORT_OPTIONS = [
-  { value: 'created_at-desc', label: 'Newest First' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating-desc', label: 'Top Rated' },
-  { value: 'review_count-desc', label: 'Most Popular' },
+  { value: 'created_at-desc', label: 'Plus récents' },
+  { value: 'price-asc', label: 'Prix : croissant' },
+  { value: 'price-desc', label: 'Prix : décroissant' },
+  { value: 'rating-desc', label: 'Mieux notés' },
+  { value: 'review_count-desc', label: 'Plus populaires' },
 ];
 
 export function Products() {
@@ -83,17 +83,17 @@ export function Products() {
   return (
     <>
       <Helmet>
-        <title>{categoryName ?? 'Shop All Products'} — SWIPO</title>
+        <title>{categoryName ?? 'Tous les produits'} — SWIPO</title>
       </Helmet>
       <div className="pt-20 min-h-screen bg-white">
         {/* Page Header */}
         <div className="bg-brand-card py-10 lg:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-3xl lg:text-4xl font-black text-brand-heading">
-              {categoryName ?? 'All Products'}
+              {categoryName ?? 'Tous les produits'}
             </h1>
             <p className="text-gray-500 mt-2 text-sm">
-              {pagination?.total ?? 0} {pagination?.total === 1 ? 'product' : 'products'} found
+              {pagination?.total ?? 0} {pagination?.total === 1 ? 'produit trouvé' : 'produits trouvés'}
             </p>
           </div>
         </div>
@@ -122,7 +122,7 @@ export function Products() {
                   onClick={() => setFilterOpen(true)}
                   className="lg:hidden flex items-center gap-2 px-4 py-2.5 border-2 border-gray-200 rounded-full text-sm font-bold hover:border-brand-accent transition-colors"
                 >
-                  <SlidersHorizontal size={14} /> Filters
+                  <SlidersHorizontal size={14} /> Filtres
                   {activeFilters.length > 0 && (
                     <span className="bg-brand-accent text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
                       {activeFilters.length}
@@ -151,29 +151,39 @@ export function Products() {
                     exit={{ opacity: 0, height: 0 }}
                     className="flex flex-wrap gap-2 mb-6 overflow-hidden"
                   >
-                    {activeFilters.map(([key, value]) => (
-                      <motion.button
-                        key={key}
-                        layout
-                        onClick={() => removeFilter(key)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-accent/10 text-brand-accent text-xs font-bold rounded-full hover:bg-brand-accent hover:text-white transition-colors"
-                      >
-                        <span className="capitalize">{key.replace('_', ' ')}:</span>
-                        <span>
-                          {key === 'category'
-                            ? categories?.find(c => c.slug === value)?.name ?? value
-                            : key === 'min_price' ? `$${value}+`
-                            : key === 'max_price' ? `Up to $${value}`
-                            : value}
-                        </span>
-                        <X size={12} />
-                      </motion.button>
-                    ))}
+                    {activeFilters.map(([key, value]) => {
+                      const label =
+                        key === 'category' ? 'Catégorie'
+                        : key === 'min_price' ? 'Prix min'
+                        : key === 'max_price' ? 'Prix max'
+                        : key === 'tags' ? 'Étiquettes'
+                        : key === 'search' ? 'Recherche'
+                        : String(key);
+
+                      return (
+                        <motion.button
+                          key={key}
+                          layout
+                          onClick={() => removeFilter(key)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-accent/10 text-brand-accent text-xs font-bold rounded-full hover:bg-brand-accent hover:text-white transition-colors"
+                        >
+                          <span className="capitalize">{label.replace('_', ' ')}&nbsp;:</span>
+                          <span>
+                            {key === 'category'
+                              ? categories?.find(c => c.slug === value)?.name ?? value
+                              : key === 'min_price' ? `${value}+ MAD`
+                              : key === 'max_price' ? `Jusqu'à ${value} MAD`
+                              : value}
+                          </span>
+                          <X size={12} />
+                        </motion.button>
+                      );
+                    })}
                     <button
                       onClick={clearAll}
                       className="text-xs font-bold text-red-500 hover:underline px-2"
                     >
-                      Clear all
+                      Tout effacer
                     </button>
                   </motion.div>
                 )}
@@ -187,11 +197,11 @@ export function Products() {
                     ? (
                       <div className="col-span-full bg-brand-card rounded-3xl text-center py-16 px-6">
                         <Package size={36} className="mx-auto text-gray-300 mb-3" />
-                        <p className="text-lg font-bold text-brand-heading">No products found</p>
-                        <p className="text-sm text-gray-400 mt-1">Try adjusting your filters or search</p>
+                        <p className="text-lg font-bold text-brand-heading">Aucun produit trouvé</p>
+                        <p className="text-sm text-gray-400 mt-1">Essayez d'ajuster vos filtres ou votre recherche</p>
                         {activeFilters.length > 0 && (
                           <Button variant="outline" size="sm" className="mt-4" onClick={clearAll}>
-                            Clear filters
+                            Effacer les filtres
                           </Button>
                         )}
                       </div>
@@ -208,7 +218,7 @@ export function Products() {
                     disabled={page === 1}
                     onClick={() => { setPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   >
-                    Previous
+                    Précédent
                   </Button>
                   <div className="flex gap-1">
                     {Array.from({ length: pagination.pages }, (_, i) => i + 1)
@@ -232,7 +242,7 @@ export function Products() {
                     disabled={page === pagination.pages}
                     onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   >
-                    Next
+                    Suivant
                   </Button>
                 </div>
               )}

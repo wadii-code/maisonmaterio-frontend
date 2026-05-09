@@ -65,9 +65,9 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
               {/* Header */}
               <div className="flex items-center justify-between p-5 border-b border-gray-100">
                 <div>
-                  <h3 className="font-black text-brand-heading">Filters</h3>
+                  <h3 className="font-black text-brand-heading">Filtres</h3>
                   {activeCount > 0 && (
-                    <p className="text-xs text-brand-accent font-bold mt-0.5">{activeCount} active</p>
+                    <p className="text-xs text-brand-accent font-bold mt-0.5">{activeCount} actif{activeCount > 1 ? 's' : ''}</p>
                   )}
                 </div>
                 <button onClick={onClose} className="lg:hidden p-1.5 hover:bg-gray-100 rounded-full">
@@ -77,7 +77,7 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
 
               <div className="flex-1 overflow-y-auto p-5 space-y-6">
                 {/* Categories */}
-                <FilterSection title="Category">
+                <FilterSection title="Catégorie">
                   <div className="space-y-1">
                     <label className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-2 py-1.5 rounded-lg">
                       <input
@@ -86,7 +86,7 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                         onChange={() => updateLocal({ category: undefined })}
                         className="accent-brand-accent"
                       />
-                      <span className="text-sm text-brand-text">All Categories</span>
+                      <span className="text-sm text-brand-text">Toutes les catégories</span>
                     </label>
                     {categories?.map(cat => (
                       <label key={cat.id} className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-2 py-1.5 rounded-lg">
@@ -104,7 +104,7 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                 </FilterSection>
 
                 {/* Price Range */}
-                <FilterSection title="Price Range">
+                <FilterSection title="Fourchette de prix">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Min</label>
@@ -123,7 +123,7 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400">MAD</span>
                         <input
-                          type="number" min="0" placeholder="Any"
+                          type="number" min="0" placeholder="Aucun"
                           value={local.max_price ?? ''}
                           onChange={e => updateLocal({ max_price: e.target.value || undefined })}
                           className="w-full pl-12 pr-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
@@ -150,7 +150,7 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
                 </FilterSection>
 
                 {/* Tags */}
-                <FilterSection title="Special">
+                <FilterSection title="Spécial">
                   <div className="flex flex-wrap gap-2">
                     {TAG_OPTIONS.map(tag => {
                       const isActive = (local.tags ?? '').split(',').includes(tag);
@@ -173,13 +173,13 @@ export function FilterPanel({ open, onClose, values, onChange, onClear, totalRes
               {/* Footer actions */}
               <div className="p-4 border-t border-gray-100 space-y-2 bg-white">
                 <Button variant="primary" fullWidth onClick={apply}>
-                  {totalResults !== undefined ? `Show ${totalResults} results` : 'Apply Filters'}
+                  {totalResults !== undefined ? `Voir ${totalResults} résultat${totalResults > 1 ? 's' : ''}` : 'Appliquer les filtres'}
                 </Button>
                 <button
                   onClick={() => { onClear(); onClose(); }}
                   className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-gray-500 hover:text-red-500 py-2 transition-colors"
                 >
-                  <RotateCcw size={12} /> Clear all filters
+                  <RotateCcw size={12} /> Effacer tous les filtres
                 </button>
               </div>
             </motion.aside>

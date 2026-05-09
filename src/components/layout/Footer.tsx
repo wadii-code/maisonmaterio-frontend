@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 import { useI18n } from '../../stores/i18nStore';
-import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Footer() {
   const { t } = useI18n();
@@ -33,9 +32,6 @@ export function Footer() {
             <p className="mt-3 text-sm text-gray-400 leading-relaxed">
               {t('footer.tagline')}
             </p>
-            <div className="mt-4">
-              <LanguageSwitcher variant="light" />
-            </div>
             <div className="flex gap-3 mt-5">
               {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (
                 <a key={i} href="#" className="p-2 bg-white/10 hover:bg-brand-accent rounded-full transition-colors">

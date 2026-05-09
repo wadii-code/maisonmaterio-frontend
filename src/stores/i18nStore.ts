@@ -4,10 +4,13 @@ import { translations, type Locale, type TranslationKey } from '../lib/translati
 const STORAGE_KEY = 'swipo-locale';
 
 function loadLocale(): Locale {
-  // French is the default — only switch to English if the user explicitly chose it.
-  if (typeof window === 'undefined') return 'fr';
-  const saved = localStorage.getItem(STORAGE_KEY);
-  return saved === 'en' ? 'en' : 'fr';
+  // SWIPO is French-only. The store still exists so existing `t('…')` calls
+  // keep working, but there is no longer any way to switch to English.
+  // Clear any old preference left over from when the toggle existed.
+  if (typeof window !== 'undefined') {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  }
+  return 'fr';
 }
 
 interface I18nState {
@@ -20,15 +23,12 @@ interface I18nState {
 export const useI18nStore = create<I18nState>((set, get) => ({
   locale: loadLocale(),
 
-  setLocale: (locale) => {
-    localStorage.setItem(STORAGE_KEY, locale);
-    document.documentElement.lang = locale;
-    set({ locale });
+  setLocale: (_locale) => {
+    // Locked to French. No-op so any lingering callers don't break.
   },
 
   toggle: () => {
-    const next: Locale = get().locale === 'en' ? 'fr' : 'en';
-    get().setLocale(next);
+    // Locked to French. No-op.
   },
 
   t: (key) => {

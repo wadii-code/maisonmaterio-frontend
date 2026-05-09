@@ -20,25 +20,25 @@ export function AdminDashboard() {
 
   const METRIC_CARDS = [
     {
-      label: 'Total Revenue',
+      label: 'Revenu total',
       value: stats ? formatPrice(stats.total_revenue) : '—',
       icon: DollarSign,
       color: 'bg-emerald-500',
     },
     {
-      label: "Today's Orders",
+      label: "Commandes aujourd'hui",
       value: stats?.orders_today ?? '—',
       icon: ShoppingBag,
       color: 'bg-blue-500',
     },
     {
-      label: 'Pending Orders',
+      label: 'Commandes en attente',
       value: stats?.pending_orders ?? '—',
       icon: Clock,
       color: 'bg-yellow-500',
     },
     {
-      label: 'Low Stock Items',
+      label: 'Stock faible',
       value: stats?.low_stock_items ?? '—',
       icon: AlertTriangle,
       color: 'bg-red-500',
@@ -47,11 +47,11 @@ export function AdminDashboard() {
 
   return (
     <>
-      <Helmet><title>Dashboard — SWIPO Admin</title></Helmet>
+      <Helmet><title>Tableau de bord — SWIPO Admin</title></Helmet>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-black text-brand-heading">Dashboard</h1>
-          <p className="text-gray-400 text-sm mt-1">Welcome back, here's what's happening today.</p>
+          <h1 className="text-2xl font-black text-brand-heading">Tableau de bord</h1>
+          <p className="text-gray-400 text-sm mt-1">Bon retour&nbsp;! Voici ce qui se passe aujourd'hui.</p>
         </div>
 
         {/* Metric Cards */}
@@ -84,9 +84,9 @@ export function AdminDashboard() {
         {/* Recent Orders */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-            <h2 className="font-black text-brand-heading">Recent Orders</h2>
+            <h2 className="font-black text-brand-heading">Commandes récentes</h2>
             <Link to="/admin/orders" className="text-xs font-bold text-brand-accent hover:underline flex items-center gap-1">
-              View all <ArrowUpRight size={12} />
+              Voir tout <ArrowUpRight size={12} />
             </Link>
           </div>
           <div className="overflow-x-auto">
@@ -98,7 +98,7 @@ export function AdminDashboard() {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    {['Order ID', 'Customer', 'Date', 'Total', 'Status'].map(h => (
+                    {['N° Commande', 'Client', 'Date', 'Total', 'Statut'].map(h => (
                       <th key={h} className="text-left px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
                     ))}
                   </tr>
@@ -112,7 +112,7 @@ export function AdminDashboard() {
                         </Link>
                       </td>
                       <td className="px-6 py-4 font-semibold text-brand-heading">
-                        {(order as any).profiles?.full_name ?? 'Guest'}
+                        {(order as any).profiles?.full_name ?? 'Invité'}
                       </td>
                       <td className="px-6 py-4 text-gray-400">
                         {new Date(order.created_at).toLocaleDateString()}
@@ -126,7 +126,7 @@ export function AdminDashboard() {
                     </tr>
                   ))}
                   {!stats?.recent_orders?.length && (
-                    <tr><td colSpan={5} className="px-6 py-8 text-center text-gray-400">No orders yet</td></tr>
+                    <tr><td colSpan={5} className="px-6 py-8 text-center text-gray-400">Aucune commande pour le moment</td></tr>
                   )}
                 </tbody>
               </table>
@@ -137,10 +137,10 @@ export function AdminDashboard() {
         {/* Quick Actions */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: 'Add Product', to: '/admin/products/new', color: 'bg-brand-accent' },
-            { label: 'View Orders', to: '/admin/orders', color: 'bg-blue-500' },
-            { label: 'Manage Stock', to: '/admin/products?filter=low-stock', color: 'bg-yellow-500' },
-            { label: 'View Store', to: '/', color: 'bg-brand-dark', external: true },
+            { label: 'Ajouter un produit', to: '/admin/products/new', color: 'bg-brand-accent' },
+            { label: 'Voir les commandes', to: '/admin/orders', color: 'bg-blue-500' },
+            { label: 'Gérer le stock', to: '/admin/products?filter=low-stock', color: 'bg-yellow-500' },
+            { label: 'Voir la boutique', to: '/', color: 'bg-brand-dark', external: true },
           ].map(action => (
             <Link
               key={action.label}

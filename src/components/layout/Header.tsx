@@ -7,7 +7,6 @@ import { useAuthStore } from '../../stores/authStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
 import { useI18n } from '../../stores/i18nStore';
 import { SearchModal } from './SearchModal';
-import { LanguageSwitcher } from './LanguageSwitcher';
 
 function useNavLinks() {
   const { t } = useI18n();
@@ -107,10 +106,6 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 lg:gap-3">
-            <div className="hidden md:block">
-              <LanguageSwitcher variant={isTransparent ? 'light' : 'dark'} />
-            </div>
-
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={t('nav.search')}
@@ -196,11 +191,6 @@ export function Header() {
                 </Link>
               ))}
               <hr className="my-2" />
-              <div className="px-4 py-2 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{t('lang.label')}</span>
-                <LanguageSwitcher />
-              </div>
-              <hr className="my-2" />
               {user ? (
                 <>
                   <Link to="/account" className="block px-4 py-3 text-sm font-semibold text-brand-text hover:bg-gray-50 rounded-lg">{t('nav.myAccount')}</Link>
@@ -278,11 +268,6 @@ function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
                 <span>🛠️</span> {t('nav.adminDashboard')}
               </Link>
             )}
-            <hr className="my-1 border-gray-100" />
-            <div className="px-4 py-2 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{t('lang.label')}</span>
-              <LanguageSwitcher />
-            </div>
             <hr className="my-1 border-gray-100" />
             <button onClick={() => { setOpen(false); signOut(); }}
               className="block w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"

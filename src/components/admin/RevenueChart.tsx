@@ -100,11 +100,11 @@ export function RevenueChart() {
       <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
         <div>
           <h2 className="font-black text-brand-heading flex items-center gap-2">
-            <TrendingUp size={18} className="text-brand-accent" /> Revenue Overview
+            <TrendingUp size={18} className="text-brand-accent" /> Aperçu des revenus
           </h2>
           {data && (
             <p className="text-xs text-gray-400 mt-0.5">
-              Total: <span className="font-black text-brand-heading">{formatPrice(data.total)}</span>
+              Total&nbsp;: <span className="font-black text-brand-heading">{formatPrice(data.total)}</span>
             </p>
           )}
         </div>
@@ -115,7 +115,7 @@ export function RevenueChart() {
                 period === p ? 'bg-white text-brand-heading shadow-sm' : 'text-gray-400'
               }`}
             >
-              {p === '7d' ? '7 days' : p === '30d' ? '30 days' : '90 days'}
+              {p === '7d' ? '7 jours' : p === '30d' ? '30 jours' : '90 jours'}
             </button>
           ))}
         </div>
@@ -127,8 +127,8 @@ export function RevenueChart() {
         ) : series.length === 0 || !hasAnyRevenue ? (
           <div className="h-56 flex flex-col items-center justify-center text-gray-400 text-sm gap-1.5">
             <TrendingUp size={28} className="opacity-30" />
-            <p className="font-semibold">No revenue yet for this period</p>
-            <p className="text-xs">Mark an order as <span className="font-bold text-purple-500">shipped</span> or <span className="font-bold text-emerald-500">delivered</span> to see the curve.</p>
+            <p className="font-semibold">Aucun revenu pour cette période</p>
+            <p className="text-xs">Marquez une commande comme <span className="font-bold text-purple-500">expédiée</span> ou <span className="font-bold text-emerald-500">livrée</span> pour voir la courbe.</p>
           </div>
         ) : (
           <div className="relative">

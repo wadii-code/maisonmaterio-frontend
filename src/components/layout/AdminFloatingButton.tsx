@@ -28,7 +28,7 @@ export function AdminFloatingButton() {
             <div className="bg-brand-accent group-hover:bg-white/20 transition-colors p-1.5 rounded-full">
               <LayoutDashboard size={14} />
             </div>
-            <span className="text-sm font-bold">Admin Panel</span>
+            <span className="text-sm font-bold">Espace admin</span>
             <span className="hidden sm:inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
           </Link>
         </motion.div>

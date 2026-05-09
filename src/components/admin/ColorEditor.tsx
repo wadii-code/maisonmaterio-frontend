@@ -8,14 +8,14 @@ interface ColorEditorProps {
 }
 
 const PRESETS: { name: string; hex: string }[] = [
-  { name: 'Natural Oak', hex: '#c8a97e' },
-  { name: 'Walnut',      hex: '#5d4037' },
-  { name: 'Matte Black', hex: '#1a1a1a' },
-  { name: 'Pure White',  hex: '#f5f5f5' },
-  { name: 'Beige',       hex: '#d7c4a8' },
-  { name: 'Olive',       hex: '#708238' },
-  { name: 'Navy',        hex: '#1f3a93' },
-  { name: 'Burgundy',    hex: '#7a1e1e' },
+  { name: 'Chêne naturel',  hex: '#c8a97e' },
+  { name: 'Noyer',          hex: '#5d4037' },
+  { name: 'Noir mat',       hex: '#1a1a1a' },
+  { name: 'Blanc pur',      hex: '#f5f5f5' },
+  { name: 'Beige',          hex: '#d7c4a8' },
+  { name: 'Olive',          hex: '#708238' },
+  { name: 'Bleu marine',    hex: '#1f3a93' },
+  { name: 'Bordeaux',       hex: '#7a1e1e' },
 ];
 
 export function ColorEditor({ value, onChange }: ColorEditorProps) {
@@ -28,7 +28,7 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
       ...value,
       preset
         ? { name: preset.name, hex: preset.hex, price_delta: 0 }
-        : { name: 'New Color', hex: '#000000', price_delta: 0 },
+        : { name: 'Nouvelle couleur', hex: '#000000', price_delta: 0 },
     ]);
   };
 
@@ -36,16 +36,16 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-          Color Variants
+          Variantes de couleur
         </label>
-        <span className="text-xs text-gray-400">{value.length} added</span>
+        <span className="text-xs text-gray-400">{value.length} ajoutée(s)</span>
       </div>
 
       {value.length === 0 ? (
         <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center">
           <Palette size={20} className="mx-auto text-gray-300 mb-2" />
-          <p className="text-sm font-semibold text-gray-500 mb-1">No color variants</p>
-          <p className="text-xs text-gray-400">Add colors so customers can pick — each can have its own price.</p>
+          <p className="text-sm font-semibold text-gray-500 mb-1">Aucune variante de couleur</p>
+          <p className="text-xs text-gray-400">Ajoutez des couleurs pour que vos clients puissent choisir — chacune peut avoir son propre prix.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -85,7 +85,7 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
                 <input
                   value={color.name}
                   onChange={e => update(i, { name: e.target.value })}
-                  placeholder="Color name"
+                  placeholder="Nom de la couleur"
                   className="flex-1 min-w-0 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-accent"
                 />
 
@@ -105,7 +105,7 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
                 <button
                   type="button"
                   onClick={() => remove(i)}
-                  aria-label="Remove color"
+                  aria-label="Supprimer la couleur"
                   className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"
                 >
                   <X size={14} />
@@ -133,13 +133,13 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
           onClick={() => add()}
           className="flex items-center gap-1 px-2.5 py-1.5 border border-dashed border-gray-300 hover:border-brand-accent text-gray-600 hover:text-brand-accent text-xs font-bold rounded-full transition-colors"
         >
-          <Plus size={12} /> Custom
+          <Plus size={12} /> Personnalisée
         </button>
       </div>
 
       {value.length > 0 && (
         <p className="text-xs text-gray-400">
-          The first color is the default. Price delta is added/subtracted from the base product price.
+          La première couleur est celle par défaut. Le différentiel de prix est ajouté/soustrait au prix de base du produit.
         </p>
       )}
     </div>

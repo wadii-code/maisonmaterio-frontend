@@ -78,10 +78,10 @@ export function AdminProducts() {
     try {
       if (editProduct) {
         await updateProduct.mutateAsync({ id: editProduct.id, data: payload });
-        toast.success('Product updated');
+        toast.success('Produit mis à jour');
       } else {
         await createProduct.mutateAsync(payload as any);
-        toast.success('Product created');
+        toast.success('Produit créé');
       }
       setModalOpen(false);
     } catch (err: any) {
@@ -90,10 +90,10 @@ export function AdminProducts() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this product?')) return;
+    if (!confirm('Supprimer ce produit ?')) return;
     try {
       await deleteProduct.mutateAsync(id);
-      toast.success('Product deleted');
+      toast.success('Produit supprimé');
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -107,15 +107,15 @@ export function AdminProducts() {
 
   return (
     <>
-      <Helmet><title>Products — SWIPO Admin</title></Helmet>
+      <Helmet><title>Produits — SWIPO Admin</title></Helmet>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-black text-brand-heading">Products</h1>
-            <p className="text-gray-400 text-sm mt-0.5">{data?.pagination?.total ?? 0} total products</p>
+            <h1 className="text-2xl font-black text-brand-heading">Produits</h1>
+            <p className="text-gray-400 text-sm mt-0.5">{data?.pagination?.total ?? 0} produits au total</p>
           </div>
           <Button variant="primary" onClick={openNew}>
-            <Plus size={16} /> Add Product
+            <Plus size={16} /> Ajouter un produit
           </Button>
         </div>
 
@@ -124,16 +124,16 @@ export function AdminProducts() {
           <div className="relative flex-1">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
-              type="text" placeholder="Search products..."
+              type="text" placeholder="Rechercher des produits…"
               value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
             />
           </div>
           {selectedIds.size > 0 && (
             <div className="flex gap-2">
-              <span className="text-sm font-semibold text-gray-500">{selectedIds.size} selected</span>
-              <Button variant="danger" size="sm" onClick={() => { if (confirm(`Delete ${selectedIds.size} products?`)) { selectedIds.forEach(id => deleteProduct.mutate(id)); setSelectedIds(new Set()); }}}>
-                Delete selected
+              <span className="text-sm font-semibold text-gray-500">{selectedIds.size} sélectionné(s)</span>
+              <Button variant="danger" size="sm" onClick={() => { if (confirm(`Supprimer ${selectedIds.size} produits ?`)) { selectedIds.forEach(id => deleteProduct.mutate(id)); setSelectedIds(new Set()); }}}>
+                Supprimer la sélection
               </Button>
             </div>
           )}
@@ -149,7 +149,7 @@ export function AdminProducts() {
                     <input type="checkbox" onChange={e => setSelectedIds(e.target.checked ? new Set(products.map(p => p.id)) : new Set())}
                       checked={selectedIds.size === products.length && products.length > 0} className="rounded" />
                   </th>
-                  {['Product', 'Category', 'Price', 'Stock', 'Status', 'Actions'].map(h => (
+                  {['Produit', 'Catégorie', 'Prix', 'Stock', 'Statut', 'Actions'].map(h => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
@@ -201,7 +201,7 @@ export function AdminProducts() {
                     </td>
                     <td className="px-4 py-3">
                       <Badge
-                        label={product.status}
+                        label={product.status === 'active' ? 'actif' : 'inactif'}
                         color={product.status === 'active' ? 'green' : 'gray'}
                       />
                     </td>
@@ -222,7 +222,7 @@ export function AdminProducts() {
                   </tr>
                 ))}
                 {!isLoading && products.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-12 text-center text-gray-400">No products found</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-12 text-center text-gray-400">Aucun produit trouvé</td></tr>
                 )}
               </tbody>
             </table>
@@ -261,7 +261,7 @@ export function AdminProducts() {
               <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl z-10">
                   <h2 className="text-xl font-black text-brand-heading">
-                    {editProduct ? 'Edit Product' : 'Add New Product'}
+                    {editProduct ? 'Modifier le produit' : 'Nouveau produit'}
                   </h2>
                   <button onClick={() => setModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
                     <X size={20} />
@@ -271,49 +271,49 @@ export function AdminProducts() {
                 <form onSubmit={handleSubmit} className="p-6 space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="col-span-full">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Product Name *</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Nom du produit *</label>
                       <input required value={form.name} onChange={e => setField('name', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="e.g. Modern Lounge Chair" />
+                        placeholder="ex. Chaise lounge moderne" />
                     </div>
 
                     <div className="col-span-full">
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Description *</label>
                       <textarea required rows={3} value={form.description} onChange={e => setField('description', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm resize-none"
-                        placeholder="Product description..." />
+                        placeholder="Description du produit…" />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Price *</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Prix *</label>
                       <input required type="number" min="0" step="0.01" value={form.price} onChange={e => setField('price', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
                         placeholder="0.00" />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Discount Price</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Prix promotionnel</label>
                       <input type="number" min="0" step="0.01" value={form.discount_price} onChange={e => setField('discount_price', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="0.00 (optional)" />
+                        placeholder="0.00 (facultatif)" />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Category *</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Catégorie *</label>
                       <select required value={form.category_id} onChange={e => setField('category_id', e.target.value)}
                         className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
-                        <option value="">Select category</option>
+                        <option value="">Choisir une catégorie</option>
                         {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">House Part / Room</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Pièce de la maison</label>
                       <select value={form.room_id} onChange={e => setField('room_id', e.target.value)}
                         className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
-                        <option value="">— None —</option>
+                        <option value="">— Aucune —</option>
                         {rooms?.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                       </select>
                     </div>
@@ -326,33 +326,33 @@ export function AdminProducts() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Material</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Matériau</label>
                       <input value={form.material} onChange={e => setField('material', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="e.g. Oak, Steel, Fabric" />
+                        placeholder="ex. Chêne, Acier, Tissu" />
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Dimensions</label>
                       <input value={form.dimensions} onChange={e => setField('dimensions', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="e.g. 80 x 60 x 45 cm" />
+                        placeholder="ex. 80 x 60 x 45 cm" />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Tags (comma-separated)</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Étiquettes (séparées par virgules)</label>
                       <input value={form.tags} onChange={e => setField('tags', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
                         placeholder="HOT, NEW, SALE" />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Status</label>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Statut</label>
                       <select value={form.status} onChange={e => setField('status', e.target.value as 'active' | 'inactive')}
                         className="w-full px-4 py-3 pr-10 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm bg-white appearance-none bg-[url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:12px_12px] hover:border-gray-200 transition-colors cursor-pointer"
                       >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active">Actif</option>
+                        <option value="inactive">Inactif</option>
                       </select>
                     </div>
 
@@ -372,9 +372,9 @@ export function AdminProducts() {
                   </div>
 
                   <div className="flex gap-3 pt-2">
-                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Annuler</Button>
                     <Button type="submit" variant="primary" loading={createProduct.isPending || updateProduct.isPending} className="flex-1">
-                      <Save size={16} /> {editProduct ? 'Save Changes' : 'Create Product'}
+                      <Save size={16} /> {editProduct ? 'Enregistrer' : 'Créer le produit'}
                     </Button>
                   </div>
                 </form>

@@ -15,7 +15,7 @@ const BUCKET = 'product-images';
 const MAX_SIZE_MB = 5;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product Images' }: ImageUploaderProps) {
+export function ImageUploader({ value, onChange, maxImages = 8, label = 'Images du produit' }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,11 +29,11 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
     // Validate
     for (const file of fileArr) {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        toast.error(`${file.name}: unsupported type. Use JPG, PNG, WebP or GIF.`);
+        toast.error(`${file.name} : type non pris en charge. Utilisez JPG, PNG, WebP ou GIF.`);
         return;
       }
       if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        toast.error(`${file.name}: exceeds ${MAX_SIZE_MB}MB limit.`);
+        toast.error(`${file.name} : dépasse la limite de ${MAX_SIZE_MB} Mo.`);
         return;
       }
     }
@@ -50,7 +50,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
           .upload(path, file, { cacheControl: '3600', upsert: false });
 
         if (uploadErr) {
-          toast.error(`Upload failed: ${uploadErr.message}`);
+          toast.error(`Échec du téléversement : ${uploadErr.message}`);
           continue;
         }
 
@@ -60,7 +60,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
 
       if (uploadedUrls.length > 0) {
         onChange([...value, ...uploadedUrls]);
-        toast.success(`${uploadedUrls.length} image${uploadedUrls.length > 1 ? 's' : ''} uploaded`);
+        toast.success(`${uploadedUrls.length} image${uploadedUrls.length > 1 ? 's' : ''} téléversée${uploadedUrls.length > 1 ? 's' : ''}`);
       }
     } finally {
       setUploading(false);
@@ -120,7 +120,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
                 <img src={url} alt="" className="w-full h-full object-cover" />
                 {i === 0 && (
                   <span className="absolute top-1.5 left-1.5 bg-brand-accent text-white text-[10px] font-black px-2 py-0.5 rounded-full">
-                    PRIMARY
+                    PRINCIPALE
                   </span>
                 )}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
@@ -129,7 +129,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
                       type="button"
                       onClick={() => moveImage(i, i - 1)}
                       className="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 text-xs font-bold"
-                      title="Move left (set as primary if first)"
+                      title="Déplacer à gauche (la première image devient principale)"
                     >
                       ←
                     </button>
@@ -138,7 +138,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
                     type="button"
                     onClick={() => removeImage(i)}
                     className="p-1.5 bg-red-500 hover:bg-red-600 rounded-lg text-white"
-                    title="Remove"
+                    title="Supprimer"
                   >
                     <X size={14} />
                   </button>
@@ -147,7 +147,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
                       type="button"
                       onClick={() => moveImage(i, i + 1)}
                       className="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 text-xs font-bold"
-                      title="Move right"
+                      title="Déplacer à droite"
                     >
                       →
                     </button>
@@ -183,7 +183,7 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
           {uploading ? (
             <>
               <Loader2 size={24} className="text-brand-accent animate-spin" />
-              <p className="text-sm font-semibold text-gray-500">Uploading...</p>
+              <p className="text-sm font-semibold text-gray-500">Téléversement…</p>
             </>
           ) : (
             <>
@@ -196,10 +196,10 @@ export function ImageUploader({ value, onChange, maxImages = 8, label = 'Product
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-brand-heading">
-                  {value.length === 0 ? 'Add product images' : 'Add more images'}
+                  {value.length === 0 ? 'Ajouter des images' : 'Ajouter plus d\'images'}
                 </p>
                 <p className="text-xs text-gray-400 mt-0.5">
-                  Drag & drop or click to browse · JPG, PNG, WebP up to {MAX_SIZE_MB}MB
+                  Glissez-déposez ou cliquez pour parcourir · JPG, PNG, WebP jusqu'à {MAX_SIZE_MB} Mo
                 </p>
               </div>
             </>

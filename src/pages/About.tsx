@@ -5,29 +5,29 @@ import { Award, Sparkles, Truck, ShieldCheck, Heart, Users, ArrowRight, Quote } 
 import { Button } from '../components/ui/Button';
 
 const VALUES = [
-  { icon: Award, title: 'Quality first', text: 'Every piece is hand-picked by our designers — built to outlast trends.' },
-  { icon: Sparkles, title: 'Modern aesthetic', text: 'Clean lines, warm materials. Pieces that feel timeless from day one.' },
-  { icon: Truck, title: 'Fast delivery', text: 'Free nationwide delivery on orders over 500 MAD — direct to your door.' },
-  { icon: ShieldCheck, title: 'Cash on delivery', text: 'Inspect your items before you pay. No upfront cost, no surprises.' },
+  { icon: Award, title: 'La qualité d\'abord', text: 'Chaque pièce est sélectionnée par nos designers — conçue pour durer au-delà des tendances.' },
+  { icon: Sparkles, title: 'Esthétique moderne', text: 'Des lignes épurées, des matériaux chaleureux. Des pièces intemporelles dès le premier jour.' },
+  { icon: Truck, title: 'Livraison rapide', text: 'Livraison gratuite dans tout le Maroc pour toute commande de plus de 500 MAD — directement chez vous.' },
+  { icon: ShieldCheck, title: 'Paiement à la livraison', text: 'Inspectez vos articles avant de payer. Aucun frais à l\'avance, aucune surprise.' },
 ];
 
 const STATS = [
-  { value: '10k+', label: 'Happy customers' },
-  { value: '200+', label: 'Curated products' },
-  { value: '50+', label: 'Premium brands' },
-  { value: '4.9/5', label: 'Average rating' },
+  { value: '10k+', label: 'Clients satisfaits' },
+  { value: '200+', label: 'Produits sélectionnés' },
+  { value: '50+', label: 'Marques premium' },
+  { value: '4.9/5', label: 'Note moyenne' },
 ];
 
 const TEAM = [
-  { name: 'Yasmine Alaoui',  role: 'Creative Director',   img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-  { name: 'Karim Benali',    role: 'Head of Operations',  img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' },
-  { name: 'Layla El Khayat', role: 'Lead Designer',       img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80' },
+  { name: 'Yasmine Alaoui',  role: 'Directrice Créative',     img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
+  { name: 'Karim Benali',    role: 'Responsable Opérations', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' },
+  { name: 'Layla El Khayat', role: 'Designer Principale',    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80' },
 ];
 
 export function About() {
   return (
     <>
-      <Helmet><title>About Us — SWIPO</title></Helmet>
+      <Helmet><title>À propos — SWIPO</title></Helmet>
       <div className="pt-20">
         {/* Hero */}
         <section className="relative bg-brand-dark text-white overflow-hidden">
@@ -46,20 +46,20 @@ export function About() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="inline-block px-4 py-1.5 bg-brand-accent/20 border border-brand-accent/40 text-brand-accent text-xs font-bold rounded-full mb-6 tracking-[0.2em] uppercase"
             >
-              Our Story
+              Notre Histoire
             </motion.span>
             <motion.h1
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
               className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6"
             >
-              Spaces that feel<br /><span className="text-brand-accent">unmistakably yours</span>
+              Des espaces qui vous<br /><span className="text-brand-accent">ressemblent vraiment</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
             >
-              SWIPO was born from a simple idea: every home deserves furniture that tells a story.
-              We're a small team of designers and craftsmen obsessed with the details.
+              SWIPO est né d'une idée simple : chaque maison mérite des meubles qui racontent une histoire.
+              Nous sommes une petite équipe de designers et d'artisans obsédés par les détails.
             </motion.p>
           </div>
         </section>
@@ -94,20 +94,20 @@ export function About() {
               viewport={{ once: true }}
               className="order-2 lg:order-1"
             >
-              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">Our Mission</span>
+              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">Notre Mission</span>
               <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-3 mb-6">
-                Beautiful furniture should be<br/><span className="text-brand-accent">accessible to everyone</span>
+                Le mobilier de qualité doit être<br/><span className="text-brand-accent">accessible à tous</span>
               </h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                For too long, design-led furniture has been reserved for those willing to pay luxury markups.
-                We work directly with manufacturers — cutting out the layers — so you get pieces designed
-                with intent, at a price that respects your budget.
+                Pendant trop longtemps, le mobilier design est resté réservé à ceux prêts à payer le prix fort.
+                Nous travaillons directement avec les fabricants — sans intermédiaires — pour vous offrir des
+                pièces conçues avec soin, à un prix qui respecte votre budget.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Pay only when your order arrives. Inspect every piece before you commit. That's the SWIPO promise.
+                Payez uniquement à la livraison. Inspectez chaque article avant de vous engager. C'est la promesse SWIPO.
               </p>
               <Link to="/products">
-                <Button variant="primary">Browse the collection <ArrowRight size={16} /></Button>
+                <Button variant="primary">Découvrir la collection <ArrowRight size={16} /></Button>
               </Link>
             </motion.div>
             <motion.div
@@ -126,8 +126,8 @@ export function About() {
         <section className="py-16 lg:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">What we stand for</span>
-              <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-3">Built on four principles</h2>
+              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">Ce qui nous anime</span>
+              <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-3">Bâti sur quatre principes</h2>
               <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full mx-auto" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -159,8 +159,8 @@ export function About() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <Users size={20} className="mx-auto text-brand-accent mb-2" />
-              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">The team</span>
-              <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-2">People behind the pieces</h2>
+              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">L'équipe</span>
+              <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-2">Les visages derrière les pièces</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {TEAM.map((m, i) => (
@@ -188,7 +188,7 @@ export function About() {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <Quote size={32} className="mx-auto text-brand-accent mb-6" />
             <p className="text-2xl lg:text-3xl font-black leading-relaxed mb-6">
-              "We don't sell furniture. We help people build the home they imagine when they close their eyes."
+              «&nbsp;Nous ne vendons pas des meubles. Nous aidons les gens à construire la maison qu'ils imaginent quand ils ferment les yeux.&nbsp;»
             </p>
             <div className="flex items-center justify-center gap-3">
               <img src={TEAM[0].img} alt="" className="w-10 h-10 rounded-full object-cover" />
@@ -204,10 +204,10 @@ export function About() {
         <section className="py-16 lg:py-20 bg-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <Heart size={28} className="mx-auto text-brand-accent mb-4 fill-brand-accent/20" />
-            <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mb-4">Ready to start?</h2>
-            <p className="text-gray-500 mb-8">Browse the collection and find pieces that feel like home.</p>
+            <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mb-4">Prêt à commencer&nbsp;?</h2>
+            <p className="text-gray-500 mb-8">Parcourez la collection et trouvez les pièces qui se sentent comme à la maison.</p>
             <Link to="/products">
-              <Button variant="primary" size="lg">Shop now <ArrowRight size={18} /></Button>
+              <Button variant="primary" size="lg">Acheter maintenant <ArrowRight size={18} /></Button>
             </Link>
           </div>
         </section>
