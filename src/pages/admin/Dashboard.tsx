@@ -50,7 +50,7 @@ export function AdminDashboard() {
       <Helmet><title>Tableau de bord — Maison Materio Admin</title></Helmet>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-black text-brand-heading">Tableau de bord</h1>
+          <h1 className="text-2xl font-black text-brand-heading text-center sm:text-left">Tableau de bord</h1>
           <p className="text-gray-400 text-sm mt-1">Bon retour&nbsp;! Voici ce qui se passe aujourd'hui.</p>
         </div>
 

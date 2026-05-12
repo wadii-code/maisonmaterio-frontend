@@ -11,7 +11,6 @@ const NAV_ITEMS = [
   { icon: FolderTree, label: 'Catégories', to: '/admin/categories' },
   { icon: ShoppingBag, label: 'Commandes', to: '/admin/orders' },
   { icon: Users, label: 'Clients', to: '/admin/customers' },
-  { icon: Star, label: 'Avis', to: '/admin/reviews' },
 ];
 
 export function AdminLayout() {

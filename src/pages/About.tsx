@@ -12,16 +12,16 @@ const VALUES = [
 ];
 
 const STATS = [
-  { value: '10k+', label: 'Clients satisfaits' },
+  { value: '2k+', label: 'Clients satisfaits' },
   { value: '200+', label: 'Produits sélectionnés' },
   { value: '50+', label: 'Marques premium' },
   { value: '4.9/5', label: 'Note moyenne' },
 ];
 
 const TEAM = [
-  { name: 'Yasmine Alaoui',  role: 'Directrice Créative',     img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-  { name: 'Karim Benali',    role: 'Responsable Opérations', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' },
-  { name: 'Layla El Khayat', role: 'Designer Principale',    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80' },
+  { name: 'Wadii bogos',  role: 'Directrice Créative',     img: '../../src/assets/images/wadii.jpeg' },
+  { name: 'Ziad ziad',    role: 'Responsable Opérations', img: '../../src/assets/images/wadii.jpeg' },
+  { name: 'Mehdi Mehdi', role: 'Designer Principale',    img: '../../src/assets/images/wadii.jpeg' },
 ];
 
 export function About() {

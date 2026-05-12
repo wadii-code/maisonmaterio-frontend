@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
@@ -36,6 +36,15 @@ export function ProductDetail() {
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); }, [id]);
 
+  // IMPORTANT: this hook must be declared before any early returns
+  // (otherwise React hook order mismatches cause a blank page).
+  const handleCustomizationChange = useCallback(
+    (selections: Record<string, string>, price: number) => {
+      setCustomization({ selections, price });
+    },
+    []
+  );
+
   if (isLoading) {
     return (
       <div className="pt-20 max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -63,7 +72,7 @@ export function ProductDetail() {
     : [`https://placehold.co/600x600/f5f5f5/999?text=${encodeURIComponent(product.name)}`];
 
   const basePrice = product.discount_price ?? product.price;
-  const discount = product.discount_price
+  const discount = product.discount_price && product.price
     ? Math.round((1 - product.discount_price / product.price) * 100)
     : null;
   const finalPrice = customization.price || basePrice;
@@ -187,7 +196,7 @@ export function ProductDetail() {
                         priceDelta: c.price_delta,
                       })),
                     }]}
-                    onChange={(selections, price) => setCustomization({ selections, price })}
+                    onChange={handleCustomizationChange}
                   />
                 </div>
               )}

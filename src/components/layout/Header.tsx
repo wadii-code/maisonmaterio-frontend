@@ -21,7 +21,7 @@ function useNavLinks() {
         { label: t('nav.livingRoom'), to: '/products?room=living-room' },
         { label: t('nav.diningRoom'), to: '/products?room=dining-room' },
         { label: t('nav.bedroom'), to: '/products?room=bedroom' },
-        { label: t('nav.office'), to: '/products?room=office' },
+        { label: t('nav.bathroom'), to: '/products?room=bathroom' },
       ],
     },
     { label: t('nav.about'), to: '/about' },

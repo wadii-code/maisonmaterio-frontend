@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ChevronDown, Search, Eye, X } from 'lucide-react';
@@ -22,11 +23,16 @@ const STATUS_OPTIONS: OrderStatus[] = ['pending', 'processing', 'shipped', 'deli
 export function AdminOrders() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [search] = useDebounce(searchTerm, 300);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  const { data, isLoading } = useOrders(statusFilter ? { status: statusFilter, page: String(page) } : { page: String(page) });
+  const { data, isLoading } = useOrders({
+    status: statusFilter,
+    page: String(page),
+    search,
+  });
   const { data: selectedOrder } = useOrder(selectedOrderId ?? '');
   const updateStatus = useUpdateOrderStatus();
 
@@ -81,7 +87,7 @@ export function AdminOrders() {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text" placeholder="Rechercher des commandes…"
-              value={search} onChange={e => setSearch(e.target.value)}
+              value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
             />
           </div>
@@ -99,8 +105,9 @@ export function AdminOrders() {
 
         {/* Table + Detail pane */}
         <div className="flex gap-6">
-          <div className={`bg-white rounded-2xl shadow-sm overflow-hidden flex-1 ${selectedOrderId ? 'xl:flex-none xl:w-1/2' : ''}`}>
-            <div className="overflow-x-auto">
+          <div className={`bg-white rounded-2xl shadow-sm overflow-hidden flex-1 ${selectedOrderId ? 'hidden xl:block xl:w-1/2' : ''}`}>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
@@ -165,6 +172,29 @@ export function AdminOrders() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile card list */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {isLoading ? (
+                Array.from({ length: 8 }).map((_, i) => <div key={i} className="p-4"><Skeleton className="h-24" /></div>)
+              ) : orders.map(order => (
+                <div key={order.id} className="p-4" onClick={() => setSelectedOrderId(order.id)}>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-mono text-xs text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</span>
+                    <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full capitalize ${STATUS_COLORS[order.status]}`}>{STATUS_LABELS[order.status]}</span>
+                  </div>
+                  <p className="font-semibold text-brand-heading">{order.profiles?.full_name ?? 'Invité'}</p>
+                  <div className="flex justify-between items-center mt-1">
+                    <span className="text-gray-400 text-sm">{new Date(order.created_at).toLocaleDateString()}</span>
+                    <span className="font-bold">{formatPrice(order.total_amount)}</span>
+                  </div>
+                </div>
+              ))}
+              {!isLoading && orders.length === 0 && (
+                <div className="p-12 text-center text-gray-400">Aucune commande trouvée</div>
+              )}
+            </div>
+
             {data?.pagination && data.pagination.pages > 1 && (
               <div className="flex justify-center gap-2 px-6 py-4 border-t border-gray-100">
                 {Array.from({ length: data.pagination.pages }, (_, i) => i + 1).map(p => (
@@ -176,66 +206,92 @@ export function AdminOrders() {
             )}
           </div>
 
-          {/* Order Detail Panel */}
+          {/* Order Detail Panel (Desktop) */}
           {selectedOrderId && selectedOrder && (
             <motion.div
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
               className="hidden xl:block w-96 bg-white rounded-2xl shadow-sm p-6 h-fit sticky top-24 space-y-5"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-brand-heading">Détails de la commande</h3>
-                <button onClick={() => setSelectedOrderId(null)} className="p-1.5 hover:bg-gray-100 rounded-full">
-                  <X size={16} />
-                </button>
+              <OrderDetailContent order={selectedOrder} onClose={() => setSelectedOrderId(null)} />
+            </motion.div>
+          )}
+
+          {/* Order Detail Modal (Mobile) */}
+          {selectedOrderId && selectedOrder && (
+            <motion.div
+              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="xl:hidden fixed inset-0 bg-black bg-opacity-50 z-50"
+              onClick={() => setSelectedOrderId(null)}
+            >
+              <div
+                className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 max-h-[85vh] overflow-y-auto"
+                onClick={e => e.stopPropagation()}
+              >
+                <OrderDetailContent order={selectedOrder} onClose={() => setSelectedOrderId(null)} />
               </div>
-              <div className="text-xs space-y-2 bg-gray-50 rounded-xl p-4">
-                <p className="font-mono text-gray-400">#{selectedOrder.id}</p>
-                <p className="font-semibold">{selectedOrder.profiles?.full_name}</p>
-                <p className="text-gray-500">{new Date(selectedOrder.created_at).toLocaleString()}</p>
-              </div>
-              <div className="space-y-3">
-                {selectedOrder.order_items?.map(item => {
-                  const color = (item.customization as any)?.color;
-                  return (
-                  <div key={item.id} className="flex gap-3 items-center">
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                      <img src={item.products?.images?.[0] ?? 'https://placehold.co/48x48/f5f5f5/999?text=P'}
-                        alt={item.products?.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold line-clamp-1">{item.products?.name}</p>
-                      {color && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
-                          <span className="w-2.5 h-2.5 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
-                          {color.name}
-                        </span>
-                      )}
-                      <p className="text-xs text-gray-400">Qté&nbsp;: {item.quantity} · {formatPrice(item.price_at_time)}</p>
-                    </div>
-                    <p className="text-sm font-bold shrink-0">{formatPrice(item.price_at_time * item.quantity)}</p>
-                  </div>
-                  );
-                })}
-              </div>
-              <div className="border-t pt-4 space-y-1 text-sm">
-                <div className="flex justify-between font-black">
-                  <span>Total</span>
-                  <span className="text-brand-accent">{formatPrice(selectedOrder.total_amount)}</span>
-                </div>
-              </div>
-              {selectedOrder.shipping_address && (
-                <div className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4 space-y-1">
-                  <p className="font-bold text-gray-700 mb-2">Adresse de livraison</p>
-                  <p>{selectedOrder.shipping_address.full_name}</p>
-                  <p>{selectedOrder.shipping_address.address_line1}</p>
-                  <p>{selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} {selectedOrder.shipping_address.postal_code}</p>
-                  <p>{selectedOrder.shipping_address.country}</p>
-                </div>
-              )}
             </motion.div>
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+function OrderDetailContent({ order, onClose }: { order: any, onClose: () => void }) {
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <h3 className="font-black text-brand-heading">Détails de la commande</h3>
+        <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full">
+          <X size={16} />
+        </button>
+      </div>
+      <div className="text-xs space-y-2 bg-gray-50 rounded-xl p-4">
+        <p className="font-mono text-gray-400">#{order.id}</p>
+        <p className="font-semibold">{order.profiles?.full_name}</p>
+        <p className="text-gray-500">{order.profiles?.phone}</p>
+        <p className="text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
+      </div>
+      <div className="space-y-3">
+        {order.order_items?.map((item: any) => {
+          const color = (item.customization as any)?.color;
+          return (
+          <div key={item.id} className="flex gap-3 items-center">
+            <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+              <img src={item.products?.images?.[0] ?? 'https://placehold.co/48x48/f5f5f5/999?text=P'}
+                alt={item.products?.name} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold line-clamp-1">{item.products?.name}</p>
+              {color && (
+                <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
+                  <span className="w-2.5 h-2.5 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
+                  {color.name}
+                </span>
+              )}
+              <p className="text-xs text-gray-400">Qté&nbsp;: {item.quantity} · {formatPrice(item.price_at_time)}</p>
+            </div>
+            <p className="text-sm font-bold shrink-0">{formatPrice(item.price_at_time * item.quantity)}</p>
+          </div>
+          );
+        })}
+      </div>
+      <div className="border-t pt-4 space-y-1 text-sm">
+        <div className="flex justify-between font-black">
+          <span>Total</span>
+          <span className="text-brand-accent">{formatPrice(order.total_amount)}</span>
+        </div>
+      </div>
+      {order.shipping_address && (
+        <div className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4 space-y-1">
+          <p className="font-bold text-gray-700 mb-2">Adresse de livraison</p>
+          <p>{order.shipping_address.full_name}</p>
+          <p>{order.shipping_address.address_line1}</p>
+          <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
+          <p>{order.shipping_address.country}</p>
+        </div>
+      )}
     </>
   );
 }
