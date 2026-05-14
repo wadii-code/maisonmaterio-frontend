@@ -22,6 +22,12 @@ export interface Product {
   colors?: ProductColor[];
   rating: number;
   review_count: number;
+  /** Long-form keyword-rich description rendered hidden in the page for SEO. */
+  seo_description?: string | null;
+  /** Optional override for <title>. Falls back to the product name. */
+  meta_title?: string | null;
+  /** Optional override for the meta description. Falls back to `description`. */
+  meta_description?: string | null;
   created_at: string;
   updated_at: string;
   categories?: { name: string; slug: string };

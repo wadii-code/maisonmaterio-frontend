@@ -17,12 +17,16 @@ interface ProductFormData {
   name: string; description: string; price: string; discount_price: string;
   category_id: string; room_id: string; stock: string; status: 'active' | 'inactive';
   material: string; dimensions: string; tags: string; images: string[]; colors: ProductColor[];
+  seo_description: string;
+  meta_title: string;
+  meta_description: string;
 }
 
 const EMPTY_FORM: ProductFormData = {
   name: '', description: '', price: '', discount_price: '',
   category_id: '', room_id: '', stock: '0', status: 'active',
   material: '', dimensions: '', tags: '', images: [], colors: [],
+  seo_description: '', meta_title: '', meta_description: '',
 };
 
 export function AdminProducts() {
@@ -53,6 +57,9 @@ export function AdminProducts() {
       material: p.material ?? '', dimensions: p.dimensions ?? '',
       tags: p.tags.join(', '), images: p.images ?? [],
       colors: p.colors ?? [],
+      seo_description: p.seo_description ?? '',
+      meta_title: p.meta_title ?? '',
+      meta_description: p.meta_description ?? '',
     });
     setModalOpen(true);
   };
@@ -74,6 +81,9 @@ export function AdminProducts() {
       tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
       images: form.images,
       colors: form.colors,
+      seo_description: form.seo_description.trim() || null,
+      meta_title: form.meta_title.trim() || null,
+      meta_description: form.meta_description.trim() || null,
     };
     try {
       if (editProduct) {
@@ -368,6 +378,85 @@ export function AdminProducts() {
                         value={form.colors}
                         onChange={cs => setForm(p => ({ ...p, colors: cs }))}
                       />
+                    </div>
+
+                    {/* SEO section */}
+                    <div className="col-span-full mt-2 pt-5 border-t border-gray-100">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="text-sm font-black text-brand-heading">SEO &amp; référencement</h3>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                          Indexable par Google
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-4">
+                        Ces champs ne sont pas affichés visuellement aux clients mais sont présents dans le HTML pour les moteurs de recherche.
+                      </p>
+                    </div>
+
+                    <div className="col-span-full">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                        Description SEO (longue, riche en mots-clés)
+                      </label>
+                      <textarea
+                        rows={6}
+                        maxLength={10000}
+                        value={form.seo_description}
+                        onChange={e => setField('seo_description', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm resize-y"
+                        placeholder="Description longue avec mots-clés pour le référencement Google. Décrivez les matériaux, les usages, les pièces de la maison, les avantages, les marques associées, les termes de recherche fréquents…"
+                      />
+                      <div className="flex items-center justify-between mt-1.5">
+                        <p className="text-[11px] text-gray-400">
+                          Idéalement 300–1500 caractères. Inclut des termes de recherche que les clients utilisent.
+                        </p>
+                        <span className={`text-[11px] font-mono ${form.seo_description.length > 9500 ? 'text-red-500' : 'text-gray-400'}`}>
+                          {form.seo_description.length} / 10000
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-span-full">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                        Meta title (balise &lt;title&gt;)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={200}
+                        value={form.meta_title}
+                        onChange={e => setField('meta_title', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
+                        placeholder="ex. Chaise lounge moderne en chêne — SWIPO Maroc"
+                      />
+                      <div className="flex items-center justify-between mt-1.5">
+                        <p className="text-[11px] text-gray-400">
+                          Recommandé : 50–60 caractères. Vide = utilise le nom du produit.
+                        </p>
+                        <span className={`text-[11px] font-mono ${form.meta_title.length > 60 ? 'text-amber-500' : 'text-gray-400'}`}>
+                          {form.meta_title.length} / 60
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-span-full">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                        Meta description (extrait Google)
+                      </label>
+                      <textarea
+                        rows={3}
+                        maxLength={500}
+                        value={form.meta_description}
+                        onChange={e => setField('meta_description', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm resize-y"
+                        placeholder="Résumé qui apparaîtra sous le titre dans les résultats de recherche Google."
+                      />
+                      <div className="flex items-center justify-between mt-1.5">
+                        <p className="text-[11px] text-gray-400">
+                          Recommandé : 120–160 caractères. Vide = utilise la description du produit.
+                        </p>
+                        <span className={`text-[11px] font-mono ${form.meta_description.length > 160 ? 'text-amber-500' : 'text-gray-400'}`}>
+                          {form.meta_description.length} / 160
+                        </span>
+                      </div>
                     </div>
                   </div>
 

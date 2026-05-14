@@ -102,8 +102,45 @@ export function ProductDetail() {
   return (
     <>
       <Helmet>
-        <title>{cleanProductName(product.name)} — Maison Materio</title>
-        <meta name="description" content={product.description} />
+        <title>{product.meta_title?.trim() || `${cleanProductName(product.name)} — Maison Materio`}</title>
+        <meta name="description" content={product.meta_description?.trim() || product.description} />
+        {/* Open Graph */}
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={product.meta_title?.trim() || cleanProductName(product.name)} />
+        <meta property="og:description" content={product.meta_description?.trim() || product.description} />
+        {product.images?.[0] && <meta property="og:image" content={product.images[0]} />}
+        {/* Twitter card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={product.meta_title?.trim() || cleanProductName(product.name)} />
+        <meta name="twitter:description" content={product.meta_description?.trim() || product.description} />
+        {product.images?.[0] && <meta name="twitter:image" content={product.images[0]} />}
+        {/* Product / Offer structured data for Google rich results */}
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: cleanProductName(product.name),
+          description: product.seo_description?.trim() || product.description,
+          image: product.images ?? [],
+          sku: product.id,
+          brand: { '@type': 'Brand', name: 'Maison Materio' },
+          ...(product.material ? { material: product.material } : {}),
+          ...(product.review_count > 0 ? {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: product.rating,
+              reviewCount: product.review_count,
+            },
+          } : {}),
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'MAD',
+            price: product.discount_price ?? product.price,
+            availability: product.stock > 0
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+            url: typeof window !== 'undefined' ? window.location.href : undefined,
+          },
+        })}</script>
       </Helmet>
       <div className="pt-20 min-h-screen">
         {/* Breadcrumb */}
@@ -313,6 +350,40 @@ export function ProductDetail() {
             </div>
           )}
         </div>
+
+        {/*
+          SEO content — long-form keyword-rich description that's part of the rendered HTML
+          (so Google crawls and indexes it) but visually hidden from users.
+          We use the .sr-only-style pattern instead of `display:none` because search engines
+          discount truly hidden content but treat off-screen-positioned content as indexable.
+        */}
+        {product.seo_description && product.seo_description.trim().length > 0 && (
+          <section
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              width: '1px',
+              height: '1px',
+              padding: 0,
+              margin: '-1px',
+              overflow: 'hidden',
+              clip: 'rect(0, 0, 0, 0)',
+              whiteSpace: 'normal',
+              border: 0,
+            }}
+          >
+            <h2>{cleanProductName(product.name)}</h2>
+            {product.categories?.name && <p>Catégorie : {product.categories.name}</p>}
+            {product.material && <p>Matériau : {product.material}</p>}
+            {product.dimensions && <p>Dimensions : {product.dimensions}</p>}
+            {product.tags?.length > 0 && <p>Mots-clés : {product.tags.join(', ')}</p>}
+            <div>
+              {product.seo_description.split(/\n\n+/).map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </>
   );
