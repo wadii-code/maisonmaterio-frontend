@@ -18,12 +18,6 @@ const STATS = [
   { value: '4.9/5', label: 'Note moyenne' },
 ];
 
-const TEAM = [
-  { name: 'Wadii bogos',  role: 'Directrice Créative',     img: '../../src/assets/images/wadii.jpeg' },
-  { name: 'Ziad ziad',    role: 'Responsable Opérations', img: '../../src/assets/images/wadii.jpeg' },
-  { name: 'Mehdi Mehdi', role: 'Designer Principale',    img: '../../src/assets/images/wadii.jpeg' },
-];
-
 export function About() {
   return (
     <>
@@ -154,35 +148,6 @@ export function About() {
           </div>
         </section>
 
-        {/* Team */}
-        <section className="py-16 lg:py-24 bg-brand-card">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <Users size={20} className="mx-auto text-brand-accent mb-2" />
-              <span className="text-xs font-bold text-brand-accent uppercase tracking-[0.2em]">L'équipe</span>
-              <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-2">Les visages derrière les pièces</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {TEAM.map((m, i) => (
-                <motion.div
-                  key={m.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="aspect-square rounded-3xl overflow-hidden mb-4">
-                    <img src={m.img} alt={m.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                  </div>
-                  <h3 className="font-black text-brand-heading">{m.name}</h3>
-                  <p className="text-sm text-brand-accent font-semibold mt-0.5">{m.role}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Quote */}
         <section className="py-16 lg:py-24 bg-brand-dark text-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -190,13 +155,6 @@ export function About() {
             <p className="text-2xl lg:text-3xl font-black leading-relaxed mb-6">
               «&nbsp;Nous ne vendons pas des meubles. Nous aidons les gens à construire la maison qu'ils imaginent quand ils ferment les yeux.&nbsp;»
             </p>
-            <div className="flex items-center justify-center gap-3">
-              <img src={TEAM[0].img} alt="" className="w-10 h-10 rounded-full object-cover" />
-              <div className="text-left">
-                <p className="font-bold text-sm">{TEAM[0].name}</p>
-                <p className="text-xs text-white/60">{TEAM[0].role}</p>
-              </div>
-            </div>
           </div>
         </section>
 

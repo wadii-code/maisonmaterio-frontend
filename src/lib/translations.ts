@@ -1,5 +1,5 @@
 /**
- * SWIPO translation dictionary.
+ * Maison Materio translation dictionary.
  * Add new keys here and use them via the `t()` function from useI18n().
  */
 
@@ -150,8 +150,8 @@ export const translations = {
     // Auth
     'auth.welcomeBack': 'Bon retour',
     'auth.createAccount': 'Créez votre compte',
-    'auth.signInSubtitle': 'Connectez-vous à votre compte SWIPO',
-    'auth.signUpSubtitle': 'Rejoignez SWIPO dès aujourd\'hui',
+    'auth.signInSubtitle': 'Connectez-vous à votre compte Maison Materio',
+    'auth.signUpSubtitle': 'Rejoignez Maison Materio dès aujourd\'hui',
     'auth.signIn': 'Connexion',
     'auth.register': 'Inscription',
     'auth.fullName': 'Nom complet',

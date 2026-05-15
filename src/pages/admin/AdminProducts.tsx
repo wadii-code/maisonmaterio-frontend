@@ -425,7 +425,7 @@ export function AdminProducts() {
                         value={form.meta_title}
                         onChange={e => setField('meta_title', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="ex. Chaise lounge moderne en chêne — SWIPO Maroc"
+                        placeholder="ex. Chaise lounge moderne en chêne — Maison Materio Maroc"
                       />
                       <div className="flex items-center justify-between mt-1.5">
                         <p className="text-[11px] text-gray-400">
