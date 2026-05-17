@@ -9,7 +9,7 @@ export function Home() {
   return (
     <>
       <Helmet>
-        <title>Maison Materio</title>
+        <title>Maison Materiau</title>
         <meta name="description" content="Premium home decorations, furniture and building materials. Shop 200+ unique products." />
       </Helmet>
       <Hero />

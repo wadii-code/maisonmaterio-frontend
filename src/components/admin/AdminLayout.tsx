@@ -1,24 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Package, FolderTree, ShoppingBag, Users, Star, LogOut, Menu, X, ShieldAlert, RefreshCw, LogIn } from 'lucide-react';
+import { LayoutDashboard, Package, FolderTree, ShoppingBag, Users, LogOut, Menu, X, ShieldAlert, RefreshCw, LogIn, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../ui/Button';
 
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Tableau de bord', to: '/admin' },
+type NavItem = { icon: any; label: string; to: string; superOnly?: boolean };
+
+const NAV_ITEMS: NavItem[] = [
+  { icon: LayoutDashboard, label: 'Tableau de bord', to: '/admin', superOnly: true },
   { icon: Package, label: 'Produits', to: '/admin/products' },
-  { icon: FolderTree, label: 'Catégories', to: '/admin/categories' },
-  { icon: ShoppingBag, label: 'Commandes', to: '/admin/orders' },
-  { icon: Users, label: 'Clients', to: '/admin/customers' },
+  { icon: FolderTree, label: 'Catégories', to: '/admin/categories', superOnly: true },
+  { icon: ShoppingBag, label: 'Commandes', to: '/admin/orders', superOnly: true },
+  { icon: Users, label: 'Clients', to: '/admin/customers', superOnly: true },
+  { icon: ShieldCheck, label: 'Administrateurs', to: '/admin/admins', superOnly: true },
 ];
 
 export function AdminLayout() {
-  const { user, profile, profileError, signOut, initialized, refreshProfile } = useAuthStore();
+  const { user, profile, profileError, signOut, initialized, refreshProfile, isSuperAdmin, isAdmin } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const superAdmin = isSuperAdmin();
+  const visibleNav = NAV_ITEMS.filter(n => !n.superOnly || superAdmin);
 
   // Always refetch profile when entering /admin so a freshly-promoted role takes effect
   // without requiring a sign-out / sign-in cycle.
@@ -28,6 +33,14 @@ export function AdminLayout() {
       refreshProfile().finally(() => setRefreshing(false));
     }
   }, [user, refreshProfile]);
+
+  // Sub-admins landing on a super-admin-only page get bounced to /admin/products.
+  useEffect(() => {
+    if (!profile || isSuperAdmin()) return;
+    const hit = NAV_ITEMS.find(n => n.to === location.pathname || (n.to !== '/admin' && location.pathname.startsWith(n.to)));
+    if (hit?.superOnly) navigate('/admin/products', { replace: true });
+    if (location.pathname === '/admin') navigate('/admin/products', { replace: true });
+  }, [profile, location.pathname, isSuperAdmin, navigate]);
 
   // Loading state
   if (!initialized || refreshing) {
@@ -59,8 +72,8 @@ export function AdminLayout() {
     );
   }
 
-  // Signed in but not admin — show clear message
-  if (profile?.role !== 'admin') {
+  // Signed in but no admin role — show clear message
+  if (!isAdmin()) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center shadow-sm">
@@ -110,9 +123,12 @@ export function AdminLayout() {
                 setRefreshing(true);
                 const updated = await refreshProfile();
                 setRefreshing(false);
-                if (updated?.role !== 'admin') {
-                  // Stay on this page — message will show updated role
+                const adminRoles = ['admin', 'super_admin', 'sub_admin'];
+                if (updated && adminRoles.includes(updated.role)) {
+                  // Role is now an admin role — the layout will re-render and show the dashboard.
+                  // (If a sub_admin landed here, the redirect effect will bounce them to /admin/products.)
                 }
+                // Otherwise stay on this page; the rendered role will show what we got.
               }}
               className="flex-1"
             >
@@ -136,7 +152,7 @@ export function AdminLayout() {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         <div className="p-6 border-b border-white/10 flex items-center justify-between">
-          <Link to="/" className="text-xl font-black">Maison materio</Link>
+          <Link to="/" className="text-xl font-black">Maison Materiau</Link>
           <span className="text-xs bg-brand-accent px-2 py-0.5 rounded font-bold">Admin</span>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/60 hover:text-white">
             <X size={18} />
@@ -144,7 +160,7 @@ export function AdminLayout() {
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1">
-          {NAV_ITEMS.map(({ icon: Icon, label, to }) => {
+          {visibleNav.map(({ icon: Icon, label, to }) => {
             const active = location.pathname === to || (to !== '/admin' && location.pathname.startsWith(to));
             return (
               <Link
@@ -169,7 +185,7 @@ export function AdminLayout() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white truncate">{profile.full_name}</p>
-              <p className="text-xs text-white/40">Administrateur</p>
+              <p className="text-xs text-white/40">{superAdmin ? 'Super administrateur' : 'Sous-administrateur'}</p>
             </div>
           </div>
           <button

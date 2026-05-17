@@ -63,7 +63,7 @@ export function Header() {
           <Link to="/" className="flex-shrink-0">
             <img
               src={logo}
-              alt="Maison Materio"
+              alt="Maison Materiau"
               className={`h-12 w-auto object-contain transition-opacity ${
                 isTransparent ? 'opacity-100' : 'opacity-100'
               }`}
@@ -244,7 +244,7 @@ function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
       >
         <User size={20} />
         <span className="text-sm font-medium hidden xl:block">{profile?.full_name?.split(' ')[0]}</span>
-        {profile?.role === 'admin' && (
+        {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
           <span className="hidden xl:inline-block w-1.5 h-1.5 bg-brand-accent rounded-full" />
         )}
       </button>
@@ -260,14 +260,14 @@ function UserMenu({ isTransparent, profile, signOut }: UserMenuProps) {
           >
             <div className="px-4 py-3 border-b border-gray-100">
               <p className="text-sm font-bold text-brand-heading truncate">{profile?.full_name ?? 'Account'}</p>
-              {profile?.role === 'admin' && (
+              {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
                 <span className="inline-block mt-1 px-2 py-0.5 bg-brand-accent text-white text-[10px] font-black rounded uppercase tracking-wider">Admin</span>
               )}
             </div>
             <Link to="/account" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myAccount')}</Link>
             <Link to="/account/orders" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myOrders')}</Link>
             <Link to="/wishlist" onClick={() => setOpen(false)} className="block px-4 py-2.5 text-sm text-brand-text hover:text-brand-accent hover:bg-gray-50 transition-colors">{t('nav.myWishlist')}</Link>
-            {profile?.role === 'admin' && (
+            {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
               <Link to="/admin" onClick={() => setOpen(false)}
                 className="flex items-center gap-2 mx-2 my-1 px-3 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-brand-accent to-brand-orange rounded-xl hover:opacity-90 transition-opacity"
               >

@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { ProductsResponse, Product, Category, Room, Order, DashboardStats } from '../types';
+import type { ProductsResponse, Product, Category, Room, Order, DashboardStats, AdminAccount } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -102,4 +102,28 @@ export const ordersApi = {
     return request(`/orders/${id}/status`, { method: 'PUT', body: JSON.stringify(body) });
   },
   getDashboardStats: (): Promise<DashboardStats> => request('/orders/dashboard-stats'),
+};
+
+// Admins (super_admin only)
+export interface CreateAdminPayload {
+  email: string;
+  password: string;
+  full_name: string;
+  role?: 'super_admin' | 'sub_admin';
+}
+
+export interface UpdateAdminPayload {
+  full_name?: string;
+  role?: 'super_admin' | 'sub_admin';
+  password?: string;
+}
+
+export const adminsApi = {
+  list: (): Promise<AdminAccount[]> => request('/admins'),
+  create: (data: CreateAdminPayload): Promise<AdminAccount> =>
+    request('/admins', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: UpdateAdminPayload): Promise<AdminAccount> =>
+    request(`/admins/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string): Promise<void> =>
+    request(`/admins/${id}`, { method: 'DELETE' }),
 };

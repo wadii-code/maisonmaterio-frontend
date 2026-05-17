@@ -102,7 +102,7 @@ export function ProductDetail() {
   return (
     <>
       <Helmet>
-        <title>{product.meta_title?.trim() || `${cleanProductName(product.name)} — Maison Materio`}</title>
+        <title>{product.meta_title?.trim() || `${cleanProductName(product.name)} — Maison Materiau`}</title>
         <meta name="description" content={product.meta_description?.trim() || product.description} />
         {/* Open Graph */}
         <meta property="og:type" content="product" />
@@ -122,7 +122,7 @@ export function ProductDetail() {
           description: product.seo_description?.trim() || product.description,
           image: product.images ?? [],
           sku: product.id,
-          brand: { '@type': 'Brand', name: 'Maison Materio' },
+          brand: { '@type': 'Brand', name: 'Maison Materiau' },
           ...(product.material ? { material: product.material } : {}),
           ...(product.review_count > 0 ? {
             aggregateRating: {

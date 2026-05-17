@@ -23,10 +23,13 @@ export function ProductCustomization({ basePrice, options, onChange }: ProductCu
   );
 
   const totalPrice = useMemo(() => {
+    // Convention: each option's `priceDelta` is treated as the FINAL price for that variant.
+    // If 0/undefined, fall back to the product's base price.
+    // (If multiple options each set a price, the last non-zero one wins.)
     let total = basePrice;
     for (const opt of opts) {
       const selected = opt.options.find(o => o.value === selections[opt.label]);
-      if (selected?.priceDelta) total += selected.priceDelta;
+      if (selected?.priceDelta && selected.priceDelta > 0) total = selected.priceDelta;
     }
     return total;
   }, [basePrice, opts, selections]);
@@ -60,7 +63,7 @@ export function ProductCustomization({ basePrice, options, onChange }: ProductCu
                     onClick={() => setSelection(opt.label, option.value)}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
-                    title={`${option.label}${option.priceDelta ? ` (${option.priceDelta > 0 ? '+' : ''}${option.priceDelta} MAD)` : ''}`}
+                    title={`${option.label}${option.priceDelta && option.priceDelta > 0 ? ` (${option.priceDelta} MAD)` : ''}`}
                     className={`relative w-10 h-10 rounded-full border-2 transition-all ${
                       isSelected ? 'border-brand-accent ring-2 ring-brand-accent/30 ring-offset-2' : 'border-gray-200 hover:border-gray-300'
                     }`}
@@ -91,9 +94,9 @@ export function ProductCustomization({ basePrice, options, onChange }: ProductCu
                     }`}
                   >
                     {option.label}
-                    {option.priceDelta !== undefined && option.priceDelta !== 0 && (
+                    {option.priceDelta !== undefined && option.priceDelta > 0 && (
                       <span className={`ml-1.5 text-xs ${isSelected ? 'text-white/80' : 'text-gray-400'}`}>
-                        {option.priceDelta > 0 ? '+' : ''}{option.priceDelta} MAD
+                        {option.priceDelta} MAD
                       </span>
                     )}
                   </motion.button>

@@ -139,7 +139,7 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
 
       {value.length > 0 && (
         <p className="text-xs text-gray-400">
-          La première couleur est celle par défaut. Le différentiel de prix est ajouté/soustrait au prix de base du produit.
+          La première couleur est celle par défaut. Le champ MAD est le <b>prix final</b> pour cette couleur (laissez 0 pour utiliser le prix de base du produit).
         </p>
       )}
     </div>

@@ -34,7 +34,7 @@ export function AdminCustomers() {
 
   return (
     <>
-      <Helmet><title>Clients — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Clients — Maison Materiau Admin</title></Helmet>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-black text-brand-heading">Clients</h1>
@@ -76,7 +76,8 @@ export function AdminCustomers() {
                   <p className="font-bold text-brand-heading truncate">{c.full_name}</p>
                   <p className="text-xs text-gray-400 font-mono truncate">{c.id.slice(0, 8)}</p>
                 </div>
-                {c.role === 'admin' && <Badge label="Admin" color="orange" />}
+                {(c.role === 'admin' || c.role === 'super_admin') && <Badge label="Super admin" color="orange" />}
+                {c.role === 'sub_admin' && <Badge label="Sous-admin" color="orange" />}
               </div>
 
               <div className="space-y-2 text-sm">

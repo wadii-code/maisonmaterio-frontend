@@ -47,7 +47,7 @@ export function AdminDashboard() {
 
   return (
     <>
-      <Helmet><title>Tableau de bord — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Tableau de bord — Maison Materiau Admin</title></Helmet>
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-black text-brand-heading text-center sm:text-left">Tableau de bord</h1>

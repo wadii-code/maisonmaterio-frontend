@@ -21,7 +21,7 @@ const STATS = [
 export function About() {
   return (
     <>
-      <Helmet><title>À propos — Maison Materio</title></Helmet>
+      <Helmet><title>À propos — Maison Materiau</title></Helmet>
       <div className="pt-20">
         {/* Hero */}
         <section className="relative bg-brand-dark text-white overflow-hidden">
@@ -52,7 +52,7 @@ export function About() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
             >
-              Maison Materio est né d'une idée simple : chaque maison mérite des meubles qui racontent une histoire.
+              Maison Materiau est né d'une idée simple : chaque maison mérite des meubles qui racontent une histoire.
               Nous sommes une petite équipe de designers et d'artisans obsédés par les détails.
             </motion.p>
           </div>
@@ -98,7 +98,7 @@ export function About() {
                 pièces conçues avec soin, à un prix qui respecte votre budget.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Payez uniquement à la livraison. Inspectez chaque article avant de vous engager. C'est la promesse Maison Materio.
+                Payez uniquement à la livraison. Inspectez chaque article avant de vous engager. C'est la promesse Maison Materiau.
               </p>
               <Link to="/products">
                 <Button variant="primary">Découvrir la collection <ArrowRight size={16} /></Button>

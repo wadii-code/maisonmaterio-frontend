@@ -59,7 +59,7 @@ export function AdminCategories() {
 
   return (
     <>
-      <Helmet><title>Catégories — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Catégories — Maison Materiau Admin</title></Helmet>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

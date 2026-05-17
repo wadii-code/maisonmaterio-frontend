@@ -38,7 +38,7 @@ export function Personalize() {
 
   const buildWhatsAppLink = (): string => {
     const lines = [
-      locale === 'fr' ? '🎯 *Demande de personnalisation Maison Materio*' : '🎯 *Maison Materio Personalization Request*',
+      locale === 'fr' ? '🎯 *Demande de personnalisation Maison Materiau*' : '🎯 *Maison Materiau Personalization Request*',
       '',
       `*${t('personalize.fullName')}:* ${form.fullName.trim()}`,
       `*${t('personalize.phone')}:* ${form.phone.trim()}`,
@@ -68,7 +68,7 @@ export function Personalize() {
 
   return (
     <>
-      <Helmet><title>{t('personalize.title')} — Maison Materio</title></Helmet>
+      <Helmet><title>{t('personalize.title')} — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           {/* Hero */}
@@ -77,7 +77,7 @@ export function Personalize() {
             className="text-center mb-10 lg:mb-14"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-              <Sparkles size={14} /> Maison Materio Custom
+              <Sparkles size={14} /> Maison Materiau Custom
             </div>
             <h1 className="text-3xl lg:text-5xl font-black text-brand-heading mb-3">
               {t('personalize.title')}

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Search, ToggleLeft, ToggleRight, X, Save, Upload } from 'lucide-react';
 import { useProducts, useCategories, useRooms, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useProducts';
+import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Skeleton } from '../../components/ui/Skeleton';
@@ -37,7 +38,17 @@ export function AdminProducts() {
   const [form, setForm] = useState<ProductFormData>(EMPTY_FORM);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const { data, isLoading } = useProducts({ search: search || undefined, page, limit: 15, status: undefined });
+  const { user, profile, isSuperAdmin } = useAuthStore();
+  const isSuper = isSuperAdmin();
+  // Sub-admins see only the products they created (the backend filters when ?mine=1 is set).
+  // Super-admins see everything in the catalogue.
+  const { data, isLoading } = useProducts({
+    search: search || undefined,
+    page,
+    limit: 15,
+    status: undefined,
+    mine: isSuper ? undefined : '1',
+  });
   const { data: categories } = useCategories();
   const { data: rooms } = useRooms();
   const createProduct = useCreateProduct();
@@ -117,7 +128,7 @@ export function AdminProducts() {
 
   return (
     <>
-      <Helmet><title>Produits — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Produits — Maison Materiau Admin</title></Helmet>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
@@ -139,7 +150,7 @@ export function AdminProducts() {
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-accent"
             />
           </div>
-          {selectedIds.size > 0 && (
+          {isSuper && selectedIds.size > 0 && (
             <div className="flex gap-2">
               <span className="text-sm font-semibold text-gray-500">{selectedIds.size} sélectionné(s)</span>
               <Button variant="danger" size="sm" onClick={() => { if (confirm(`Supprimer ${selectedIds.size} produits ?`)) { selectedIds.forEach(id => deleteProduct.mutate(id)); setSelectedIds(new Set()); }}}>
@@ -155,10 +166,12 @@ export function AdminProducts() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="w-10 px-4 py-3">
-                    <input type="checkbox" onChange={e => setSelectedIds(e.target.checked ? new Set(products.map(p => p.id)) : new Set())}
-                      checked={selectedIds.size === products.length && products.length > 0} className="rounded" />
-                  </th>
+                  {isSuper && (
+                    <th className="w-10 px-4 py-3">
+                      <input type="checkbox" onChange={e => setSelectedIds(e.target.checked ? new Set(products.map(p => p.id)) : new Set())}
+                        checked={selectedIds.size === products.length && products.length > 0} className="rounded" />
+                    </th>
+                  )}
                   {['Produit', 'Catégorie', 'Prix', 'Stock', 'Statut', 'Actions'].map(h => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
                   ))}
@@ -167,13 +180,15 @@ export function AdminProducts() {
               <tbody className="divide-y divide-gray-50">
                 {isLoading ? (
                   Array.from({ length: 6 }).map((_, i) => (
-                    <tr key={i}><td colSpan={7} className="px-4 py-3"><Skeleton className="h-10" /></td></tr>
+                    <tr key={i}><td colSpan={isSuper ? 7 : 6} className="px-4 py-3"><Skeleton className="h-10" /></td></tr>
                   ))
                 ) : products.map(product => (
                   <tr key={product.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.has(product.id) ? 'bg-brand-accent/5' : ''}`}>
-                    <td className="px-4 py-3">
-                      <input type="checkbox" checked={selectedIds.has(product.id)} onChange={() => toggleSelect(product.id)} className="rounded" />
-                    </td>
+                    {isSuper && (
+                      <td className="px-4 py-3">
+                        <input type="checkbox" checked={selectedIds.has(product.id)} onChange={() => toggleSelect(product.id)} className="rounded" />
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
@@ -217,22 +232,35 @@ export function AdminProducts() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
-                        <button onClick={() => openEdit(product)}
-                          className="p-2 text-gray-400 hover:text-brand-accent hover:bg-gray-100 rounded-lg transition-all"
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button onClick={() => handleDelete(product.id)}
-                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {(() => {
+                          const owns = isSuper || product.created_by === user?.id;
+                          return (
+                            <>
+                              <button
+                                onClick={() => owns && openEdit(product)}
+                                disabled={!owns}
+                                title={owns ? 'Modifier' : 'Vous ne pouvez modifier que vos propres produits'}
+                                className="p-2 text-gray-400 hover:text-brand-accent hover:bg-gray-100 rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                              >
+                                <Pencil size={14} />
+                              </button>
+                              <button
+                                onClick={() => owns && handleDelete(product.id)}
+                                disabled={!owns}
+                                title={owns ? 'Supprimer' : 'Vous ne pouvez supprimer que vos propres produits'}
+                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </>
+                          );
+                        })()}
                       </div>
                     </td>
                   </tr>
                 ))}
                 {!isLoading && products.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-12 text-center text-gray-400">Aucun produit trouvé</td></tr>
+                  <tr><td colSpan={isSuper ? 7 : 6} className="px-4 py-12 text-center text-gray-400">Aucun produit trouvé</td></tr>
                 )}
               </tbody>
             </table>
@@ -425,7 +453,7 @@ export function AdminProducts() {
                         value={form.meta_title}
                         onChange={e => setField('meta_title', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                        placeholder="ex. Chaise lounge moderne en chêne — Maison Materio Maroc"
+                        placeholder="ex. Chaise lounge moderne en chêne — Maison Materiau Maroc"
                       />
                       <div className="flex items-center justify-between mt-1.5">
                         <p className="text-[11px] text-gray-400">

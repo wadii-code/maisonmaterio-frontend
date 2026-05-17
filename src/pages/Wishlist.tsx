@@ -29,7 +29,7 @@ export function Wishlist() {
 
   return (
     <>
-      <Helmet><title>Ma liste de souhaits — Maison Materio</title></Helmet>
+      <Helmet><title>Ma liste de souhaits — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-white">
         <div className="bg-brand-card py-10 lg:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-4">

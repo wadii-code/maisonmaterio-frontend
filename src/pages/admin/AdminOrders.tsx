@@ -72,7 +72,7 @@ export function AdminOrders() {
 
   return (
     <>
-      <Helmet><title>Commandes — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Commandes — Maison Materiau Admin</title></Helmet>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
@@ -287,9 +287,14 @@ function OrderDetailContent({ order, onClose }: { order: any, onClose: () => voi
         <div className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4 space-y-1">
           <p className="font-bold text-gray-700 mb-2">Adresse de livraison</p>
           <p>{order.shipping_address.full_name}</p>
-          <p>{order.shipping_address.address_line1}</p>
-          <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
-          <p>{order.shipping_address.country}</p>
+          {order.shipping_address.address_line1 && <p>{order.shipping_address.address_line1}</p>}
+          {order.shipping_address.address_line2 && <p>{order.shipping_address.address_line2}</p>}
+          <p>
+            {[order.shipping_address.city, order.shipping_address.state, order.shipping_address.postal_code, order.shipping_address.country]
+              .filter(Boolean)
+              .join(', ')}
+          </p>
+          {order.shipping_address.phone && <p className="mt-1">📞 {order.shipping_address.phone}</p>}
         </div>
       )}
     </>

@@ -140,7 +140,7 @@ export function SavedAddresses() {
 
   return (
     <>
-      <Helmet><title>Saved Addresses — Maison Materio</title></Helmet>
+      <Helmet><title>Saved Addresses — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account" className="inline-flex items-center gap-1 text-sm font-bold text-gray-500 hover:text-brand-accent transition-colors mb-6">

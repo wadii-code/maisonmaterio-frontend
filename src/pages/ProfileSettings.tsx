@@ -58,7 +58,7 @@ export function ProfileSettings() {
 
   return (
     <>
-      <Helmet><title>Profile Settings — Maison Materio</title></Helmet>
+      <Helmet><title>Profile Settings — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account" className="inline-flex items-center gap-1 text-sm font-bold text-gray-500 hover:text-brand-accent transition-colors mb-6">
@@ -79,8 +79,10 @@ export function ProfileSettings() {
               <div className="min-w-0">
                 <p className="font-black text-brand-heading truncate">{form.full_name || 'Add your name'}</p>
                 <p className="text-sm text-gray-400 truncate flex items-center gap-1.5"><Mail size={12} /> {user.email}</p>
-                {profile?.role === 'admin' && (
-                  <span className="inline-block mt-1 px-2 py-0.5 bg-brand-accent text-white text-[10px] font-black rounded uppercase tracking-wider">Admin</span>
+                {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
+                  <span className="inline-block mt-1 px-2 py-0.5 bg-brand-accent text-white text-[10px] font-black rounded uppercase tracking-wider">
+                    {profile?.role === 'sub_admin' ? 'Sous-admin' : 'Admin'}
+                  </span>
                 )}
               </div>
             </div>

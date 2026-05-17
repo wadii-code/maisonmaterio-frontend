@@ -4,16 +4,16 @@ import { LayoutDashboard } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 
 export function AdminFloatingButton() {
-  const { profile } = useAuthStore();
+  const { isAdmin } = useAuthStore();
   const location = useLocation();
 
   // Only show for admins on customer-facing routes
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const isAdmin = profile?.role === 'admin';
+  const showButton = isAdmin();
 
   return (
     <AnimatePresence>
-      {isAdmin && !isAdminRoute && (
+      {showButton && !isAdminRoute && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

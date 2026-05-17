@@ -22,6 +22,8 @@ export interface Product {
   colors?: ProductColor[];
   rating: number;
   review_count: number;
+  /** Profile id of the admin who created this product. Null if seeded or the admin was deleted. */
+  created_by?: string | null;
   /** Long-form keyword-rich description rendered hidden in the page for SEO. */
   seo_description?: string | null;
   /** Optional override for <title>. Falls back to the product name. */
@@ -80,14 +82,22 @@ export interface OrderItem {
   products?: Product;
 }
 
+export type Role = 'customer' | 'admin' | 'super_admin' | 'sub_admin';
+
 export interface Profile {
   id: string;
-  role: 'customer' | 'admin';
+  /** `admin` is the legacy alias for `super_admin` and is treated identically. */
+  role: Role;
   full_name: string;
   phone?: string;
   address?: string;
   avatar_url?: string;
   created_at: string;
+}
+
+export interface AdminAccount extends Profile {
+  email?: string | null;
+  product_count?: number;
 }
 
 export interface ShippingAddress {

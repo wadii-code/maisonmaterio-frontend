@@ -34,6 +34,7 @@ import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminCustomers } from './pages/admin/AdminCustomers';
 import { AdminReviews } from './pages/admin/AdminReviews';
 import { AdminCategories } from './pages/admin/AdminCategories';
+import { AdminAdmins } from './pages/admin/AdminAdmins';
 
 // Forces ProductDetail to remount when the product id changes,
 // so all local state (image gallery, qty, customization, scroll) resets
@@ -103,6 +104,7 @@ export default function App() {
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="categories" element={<AdminCategories />} />
+          <Route path="admins" element={<AdminAdmins />} />
         </Route>
       </Routes>
     </HelmetProvider>

@@ -17,6 +17,8 @@ interface AuthState {
   fetchProfile: (userId: string) => Promise<Profile | null>;
   refreshProfile: () => Promise<Profile | null>;
   isAdmin: () => boolean;
+  isSuperAdmin: () => boolean;
+  isSubAdmin: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -117,5 +119,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user: null, session: null, profile: null });
   },
 
-  isAdmin: () => get().profile?.role === 'admin',
+  // `admin` is the legacy alias for `super_admin` and is treated identically.
+  isSuperAdmin: () => {
+    const r = get().profile?.role;
+    return r === 'super_admin' || r === 'admin';
+  },
+  isSubAdmin: () => get().profile?.role === 'sub_admin',
+  isAdmin: () => {
+    const r = get().profile?.role;
+    return r === 'super_admin' || r === 'admin' || r === 'sub_admin';
+  },
 }));

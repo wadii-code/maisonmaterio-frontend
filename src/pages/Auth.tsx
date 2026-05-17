@@ -117,17 +117,17 @@ export function Auth() {
 
   return (
     <>
-      <Helmet><title>{heading} — Maison Materio</title></Helmet>
+      <Helmet><title>{heading} — Maison Materiau</title></Helmet>
       <div className="min-h-screen bg-brand-card flex">
         {/* Visual side */}
         <div className="hidden lg:flex w-1/2 relative bg-brand-dark items-center justify-center overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"
-            alt="Maison Materio interior"
+            alt="Maison Materiau interior"
             className="absolute inset-0 w-full h-full object-cover opacity-30"
           />
           <div className="relative z-10 text-center px-12">
-            <h1 className="text-6xl font-black text-white mb-4">Maison Materio</h1>
+            <h1 className="text-6xl font-black text-white mb-4">Maison Materiau</h1>
             <p className="text-white/60 text-lg">Illuminate Your Space</p>
           </div>
         </div>

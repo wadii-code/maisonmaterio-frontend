@@ -87,7 +87,7 @@ export function Products() {
   return (
     <>
       <Helmet>
-        <title>{categoryName ?? 'Tous les produits'} — Maison Materio</title>
+        <title>{categoryName ?? 'Tous les produits'} — Maison Materiau</title>
       </Helmet>
       <div className="pt-20 min-h-screen bg-white">
         {/* Page Header */}

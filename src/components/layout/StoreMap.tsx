@@ -3,8 +3,8 @@ import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
 
 const STORE = {
   address: 'Boulevard Mohammed V, Casablanca, Morocco',
-  phone: '+212 6 00 00 00 00',
-  email: 'maisonmaterio@gmail.com',
+  phone: '+212 6 ',
+  email: 'maisonmateriau@gmail.com',
   hours: 'Mon - Sat: 10am - 8pm',
   // Coordinates: Casablanca city center
   lat: 33.5731,
@@ -46,7 +46,7 @@ export function StoreMap() {
               <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Open now</span>
             </div>
 
-            <h3 className="text-2xl font-black mb-1"> Maison Materio</h3>
+            <h3 className="text-2xl font-black mb-1"> Maison Materiau</h3>
             <p className="text-white/60 text-sm mb-8">Premium showroom & design studio</p>
 
             <div className="space-y-5 flex-1">
@@ -65,9 +65,8 @@ export function StoreMap() {
                   <Clock size={16} className="text-brand-accent" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Opening hours</p>
-                  <p className="text-sm text-white/90">{STORE.hours}</p>
-                  <p className="text-xs text-white/50">Sunday: 12pm - 6pm</p>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Opening</p>
+                  <p className="text-xs text-white ">24/7</p>
                 </div>
               </div>
 
@@ -111,7 +110,7 @@ export function StoreMap() {
               src={mapSrc}
               className="w-full h-full border-0 absolute inset-0"
               loading="lazy"
-              title="Maison Materio Factory Location"
+              title="Maison Materiau Factory Location"
               referrerPolicy="no-referrer-when-downgrade"
             />
             {/* Custom marker overlay (decorative) */}
@@ -120,7 +119,7 @@ export function StoreMap() {
                 <MapPin size={14} />
               </div>
               <div>
-                <p className="text-xs font-black text-brand-heading">Maison Materio</p>
+                <p className="text-xs font-black text-brand-heading">Maison Materiau</p>
                 <p className="text-[10px] text-gray-400">Casablanca, Morocco</p>
               </div>
             </div>

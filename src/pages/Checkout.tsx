@@ -86,7 +86,7 @@ export function Checkout() {
 
   return (
     <>
-      <Helmet><title>Checkout — Maison Materio</title></Helmet>
+      <Helmet><title>Checkout — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           {/* Step progress */}
@@ -154,39 +154,36 @@ export function Checkout() {
                       <div className="space-y-5">
                         <div>
                           <h2 className="text-xl font-black text-brand-heading flex items-center gap-2">
-                            <Truck size={22} className="text-brand-accent" /> Shipping Information
+                            <Truck size={22} className="text-brand-accent" /> Informations de livraison
                           </h2>
-                          <p className="text-sm text-gray-400 mt-1">Where should we deliver your order?</p>
+                          <p className="text-sm text-gray-400 mt-1">Où devons-nous livrer votre commande ?</p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {[
-                            { label: 'Full Name', key: 'full_name', colSpan: 2 },
-                            { label: 'Address Line 1', key: 'address_line1', colSpan: 2 },
-                            { label: 'Address Line 2 (optional)', key: 'address_line2', colSpan: 2 },
-                            { label: 'City', key: 'city', colSpan: 1 },
-                            { label: 'State', key: 'state', colSpan: 1 },
-                            { label: 'Postal Code', key: 'postal_code', colSpan: 1 },
-                            { label: 'Country', key: 'country', colSpan: 1 },
-                            { label: 'Phone (required for delivery)', key: 'phone', colSpan: 2 },
+                            { label: 'Nom complet', key: 'full_name', colSpan: 2, required: true },
+                            { label: 'Téléphone (requis pour la livraison)', key: 'phone', colSpan: 2, required: true },
+                            { label: 'Ville', key: 'city', colSpan: 2, required: true },
+                            { label: 'Adresse (facultatif)', key: 'address_line1', colSpan: 2, required: false },
+                            { label: "Complément d'adresse (facultatif)", key: 'address_line2', colSpan: 2, required: false },
                           ].map(field => (
                             <div key={field.key} className={field.colSpan === 2 ? 'sm:col-span-2' : ''}>
                               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                                {field.label}
+                                {field.label}{field.required && <span className="text-brand-accent ml-1">*</span>}
                               </label>
                               <input
                                 type="text"
                                 value={shippingData[field.key as keyof typeof shippingData]}
                                 onChange={e => setShippingData(prev => ({ ...prev, [field.key]: e.target.value }))}
                                 className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent transition-colors text-sm"
-                                placeholder={field.label.replace(' (optional)', '').replace(' (required for delivery)', '')}
+                                placeholder={field.label.replace(' (facultatif)', '').replace(' (requis pour la livraison)', '')}
                               />
                             </div>
                           ))}
                         </div>
                         <Button variant="primary" size="lg" fullWidth onClick={() => setStep('review')}
-                          disabled={!shippingData.full_name || !shippingData.address_line1 || !shippingData.city || !shippingData.phone}
+                          disabled={!shippingData.full_name || !shippingData.city || !shippingData.phone}
                         >
-                          Continue to Review
+                          Passer à la confirmation
                         </Button>
                       </div>
                     )}
@@ -227,18 +224,17 @@ export function Checkout() {
                         <div className="bg-brand-card rounded-2xl p-5">
                           <div className="flex items-center justify-between mb-3">
                             <h4 className="font-bold text-brand-heading flex items-center gap-2 text-sm">
-                              <MapPin size={14} className="text-brand-accent" /> Delivery Address
+                              <MapPin size={14} className="text-brand-accent" /> Adresse de livraison
                             </h4>
                             <button onClick={() => setStep('shipping')} className="text-xs font-bold text-brand-accent hover:underline">
-                              Edit
+                              Modifier
                             </button>
                           </div>
                           <div className="text-sm text-gray-700 space-y-0.5">
                             <p className="font-semibold">{shippingData.full_name}</p>
-                            <p>{shippingData.address_line1}</p>
+                            {shippingData.address_line1 && <p>{shippingData.address_line1}</p>}
                             {shippingData.address_line2 && <p>{shippingData.address_line2}</p>}
-                            <p>{shippingData.city}, {shippingData.state} {shippingData.postal_code}</p>
-                            <p>{shippingData.country}</p>
+                            <p>{shippingData.city}</p>
                             {shippingData.phone && <p className="flex items-center gap-1 text-gray-500 mt-1"><Phone size={12} /> {shippingData.phone}</p>}
                           </div>
                         </div>

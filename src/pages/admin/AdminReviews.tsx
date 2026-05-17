@@ -22,7 +22,7 @@ export function AdminReviews() {
 
   return (
     <>
-      <Helmet><title>Avis — Maison Materio Admin</title></Helmet>
+      <Helmet><title>Avis — Maison Materiau Admin</title></Helmet>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-black text-brand-heading">Avis</h1>

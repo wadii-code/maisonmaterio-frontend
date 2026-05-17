@@ -85,7 +85,7 @@ export function OrderDetail() {
 
   return (
     <>
-      <Helmet><title>Order #{order.id.slice(0, 8).toUpperCase()} — Maison Materio</title></Helmet>
+      <Helmet><title>Order #{order.id.slice(0, 8).toUpperCase()} — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account/orders" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-accent mb-6 transition-colors">
@@ -222,10 +222,13 @@ export function OrderDetail() {
                 </h4>
                 <div className="text-sm text-gray-700 space-y-0.5">
                   <p className="font-semibold">{order.shipping_address.full_name}</p>
-                  <p>{order.shipping_address.address_line1}</p>
+                  {order.shipping_address.address_line1 && <p>{order.shipping_address.address_line1}</p>}
                   {order.shipping_address.address_line2 && <p>{order.shipping_address.address_line2}</p>}
-                  <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
-                  <p>{order.shipping_address.country}</p>
+                  <p>
+                    {[order.shipping_address.city, order.shipping_address.state, order.shipping_address.postal_code, order.shipping_address.country]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </p>
                   {order.shipping_address.phone && (
                     <p className="flex items-center gap-1 text-gray-500 mt-2">
                       <Phone size={12} /> {order.shipping_address.phone}

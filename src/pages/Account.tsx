@@ -42,7 +42,7 @@ export function Account() {
 
   return (
     <>
-      <Helmet><title>My Account — Maison Materio</title></Helmet>
+      <Helmet><title>My Account — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -57,7 +57,7 @@ export function Account() {
                 </div>
                 <h3 className="font-black text-brand-heading">{profile?.full_name ?? 'Customer'}</h3>
                 <p className="text-sm text-gray-400 mt-1">{user.email}</p>
-                {profile?.role === 'admin' && (
+                {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
                   <span className="inline-block mt-2 px-3 py-1 bg-brand-accent text-white text-xs font-bold rounded-full">Admin</span>
                 )}
               </motion.div>
@@ -76,7 +76,7 @@ export function Account() {
                     <ChevronRight size={14} className="ml-auto" />
                   </Link>
                 ))}
-                {profile?.role === 'admin' && (
+                {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
                   <Link to="/admin" className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-brand-accent hover:bg-gray-50 rounded-xl transition-all">
                     <Package size={16} /> {t('nav.adminDashboard')} <ChevronRight size={14} className="ml-auto" />
                   </Link>

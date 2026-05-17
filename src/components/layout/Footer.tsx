@@ -28,7 +28,7 @@ export function Footer() {
         {/* Links Grid */}
         <div className="py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
-            <span className="text-2xl font-black tracking-tight text-white">Maison Materio</span>
+            <span className="text-2xl font-black tracking-tight text-white">Maison Materiau</span>
             <p className="mt-3 text-sm text-gray-400 leading-relaxed">
               {t('footer.tagline')}
             </p>
@@ -71,7 +71,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Maison materio. {t('footer.rights')}</p>
+          <p>© {new Date().getFullYear()} Maison Materiau. {t('footer.rights')}</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-gray-300">{t('footer.privacy')}</a>
             <a href="#" className="hover:text-gray-300">{t('footer.terms')}</a>

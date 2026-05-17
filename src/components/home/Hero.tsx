@@ -35,7 +35,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
             className="text-4xl sm:text-5xl lg:text-8xl font-black text-white leading-none tracking-tighter mb-4 sm:mb-6"
           >
-            Maison Materio
+            Maison Materiau
           </motion.h1>
 
           <motion.p
