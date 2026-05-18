@@ -10,18 +10,7 @@ export function Footer() {
         {/* Newsletter */}
         <div className="py-12 border-b border-white/10">
           <div className="max-w-xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-2">{t('footer.newsletterTitle')}</h3>
-            <p className="text-gray-400 mb-6">{t('footer.newsletterSub')}</p>
-            <form className="flex gap-2 max-w-md mx-auto" onSubmit={e => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder={t('footer.yourEmail')}
-                className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent transition-colors text-sm"
-              />
-              <button type="submit" className="px-6 py-3 bg-brand-accent hover:bg-brand-orange text-white font-semibold rounded-full transition-colors text-sm shrink-0">
-                {t('footer.subscribe')}
-              </button>
-            </form>
+            
           </div>
         </div>
 
@@ -32,13 +21,6 @@ export function Footer() {
             <p className="mt-3 text-sm text-gray-400 leading-relaxed">
               {t('footer.tagline')}
             </p>
-            <div className="flex gap-3 mt-5">
-              {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="p-2 bg-white/10 hover:bg-brand-accent rounded-full transition-colors">
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
           </div>
 
           <div>

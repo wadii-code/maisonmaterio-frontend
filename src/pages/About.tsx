@@ -7,7 +7,6 @@ import { Button } from '../components/ui/Button';
 const VALUES = [
   { icon: Award, title: 'La qualité d\'abord', text: 'Chaque pièce est sélectionnée par nos designers — conçue pour durer au-delà des tendances.' },
   { icon: Sparkles, title: 'Esthétique moderne', text: 'Des lignes épurées, des matériaux chaleureux. Des pièces intemporelles dès le premier jour.' },
-  { icon: Truck, title: 'Livraison rapide', text: 'Livraison gratuite dans tout le Maroc pour toute commande de plus de 500 MAD — directement chez vous.' },
   { icon: ShieldCheck, title: 'Paiement à la livraison', text: 'Inspectez vos articles avant de payer. Aucun frais à l\'avance, aucune surprise.' },
 ];
 
@@ -124,7 +123,7 @@ export function About() {
               <h2 className="text-3xl lg:text-4xl font-black text-brand-heading mt-3">Bâti sur quatre principes</h2>
               <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full mx-auto" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {VALUES.map((v, i) => {
                 const Icon = v.icon;
                 return (
