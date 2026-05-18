@@ -181,10 +181,10 @@ export function AdminLayout() {
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-3 mb-4 px-2">
             <div className="w-9 h-9 bg-brand-accent/20 rounded-full flex items-center justify-center text-sm font-bold text-brand-accent">
-              {profile.full_name?.[0]?.toUpperCase() ?? 'A'}
+              {profile?.full_name?.[0]?.toUpperCase() ?? 'A'}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{profile.full_name}</p>
+              <p className="text-sm font-semibold text-white truncate">{profile?.full_name ?? 'Admin'}</p>
               <p className="text-xs text-white/40">{superAdmin ? 'Super administrateur' : 'Sous-administrateur'}</p>
             </div>
           </div>
