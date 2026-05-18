@@ -123,7 +123,7 @@ export function ProfileSettings() {
                     type="tel" value={form.phone}
                     onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
                     className="w-full pl-10 pr-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm"
-                    placeholder="+212 6 12 34 56 78"
+                    placeholder="+212 633-438103"
                   />
                 </div>
               </div>

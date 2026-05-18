@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
 
 const STORE = {
   address: 'Boulevard Mohammed V, Casablanca, Morocco',
-  phone: '+212 6 ',
+  phone: '+212 633-438103 ',
   email: 'maisonmateriau@gmail.com',
   hours: 'Mon - Sat: 10am - 8pm',
   // Coordinates: Casablanca city center
