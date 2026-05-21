@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { useI18n } from '../../stores/i18nStore';
 
 export function Footer() {
@@ -45,7 +45,7 @@ export function Footer() {
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-gray-300">{t('footer.contact')}</h4>
             <ul className="space-y-3 text-sm text-gray-400">
               <li className="flex items-center gap-2"><Mail size={14} /><span>maisonmateriau@gmail.com</span></li>
-              <li className="flex items-center gap-2"><Phone size={14} /><span>+212 633-438103</span></li>
+              <li className="flex items-center gap-2"><Phone size={14} /><span>+212 645-104432</span></li>
               <li className="flex items-start gap-2"><MapPin size={14} className="shrink-0 mt-0.5" /><span>Boulevard Mohammed V,<br />Casablanca, Morocco</span></li>
             </ul>
           </div>

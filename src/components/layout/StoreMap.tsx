@@ -3,12 +3,12 @@ import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
 
 const STORE = {
   address: 'Boulevard Mohammed V, Casablanca, Morocco',
-  phone: '+212 633-438103 ',
+  phone: '+212 645-104432 ',
   email: 'maisonmateriau@gmail.com',
   hours: 'Mon - Sat: 10am - 8pm',
-  // Coordinates: Casablanca city center
-  lat: 33.5731,
-  lng: -7.5898,
+  // Exact store coordinates (33°32'30.1"N 7°36'14.8"W)
+  lat: 33.541697,
+  lng: -7.604112,
 };
 
 export function StoreMap() {

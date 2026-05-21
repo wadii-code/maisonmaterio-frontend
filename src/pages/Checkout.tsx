@@ -28,19 +28,10 @@ export function Checkout() {
   const [shippingData, setShippingData] = useState({
     full_name: '', address_line1: '', address_line2: '', city: '', state: '', postal_code: '', country: 'Morocco', phone: '',
   });
+  const [guestEmail, setGuestEmail] = useState('');
   const [orderId, setOrderId] = useState<string | null>(null);
 
-  if (!user) {
-    return (
-      <div className="pt-20 min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold text-brand-heading mb-2">Sign in to checkout</h2>
-          <Button variant="primary" onClick={() => navigate('/auth?redirect=/checkout')}>Sign In</Button>
-        </div>
-      </div>
-    );
-  }
+  // Login is NOT required — guests can place orders too.
 
   if (items.length === 0 && step !== 'confirmation') {
     return (
@@ -66,6 +57,7 @@ export function Checkout() {
         })),
         shipping_address: shippingData,
         payment_method: 'cod',
+        ...(!user && guestEmail ? { guest_email: guestEmail } : {}),
       });
       setOrderId(order.id);
       clearCart();
@@ -135,8 +127,8 @@ export function Checkout() {
                 </div>
                 {orderId && <p className="text-sm text-gray-400 mb-8">Order ID: <span className="font-mono font-bold">{orderId.slice(0, 8).toUpperCase()}</span></p>}
                 <div className="flex gap-3 justify-center flex-wrap px-4">
-                  <Button variant="primary" onClick={() => navigate('/account/orders')}>Track Order</Button>
-                  <Button variant="outline" onClick={() => navigate('/products')}>Continue Shopping</Button>
+                  {user && <Button variant="primary" onClick={() => navigate('/account/orders')}>Suivre ma commande</Button>}
+                  <Button variant={user ? 'outline' : 'primary'} onClick={() => navigate('/products')}>Continuer les achats</Button>
                 </div>
               </motion.div>
             ) : (
@@ -179,7 +171,34 @@ export function Checkout() {
                               />
                             </div>
                           ))}
+
+                          {/* Optional email for guests so we can send order updates */}
+                          {!user && (
+                            <div className="sm:col-span-2">
+                              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                                E-mail (facultatif)
+                              </label>
+                              <input
+                                type="email"
+                                value={guestEmail}
+                                onChange={e => setGuestEmail(e.target.value)}
+                                className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent transition-colors text-sm"
+                                placeholder="votre@email.com"
+                              />
+                            </div>
+                          )}
                         </div>
+
+                        {!user && (
+                          <p className="text-xs text-gray-400 text-center">
+                            Pas besoin de compte pour commander.{' '}
+                            <button type="button" onClick={() => navigate('/auth?redirect=/checkout')} className="text-brand-accent font-semibold hover:underline">
+                              Se connecter
+                            </button>{' '}
+                            pour suivre vos commandes.
+                          </p>
+                        )}
+
                         <Button variant="primary" size="lg" fullWidth onClick={() => setStep('review')}
                           disabled={!shippingData.full_name || !shippingData.city || !shippingData.phone}
                         >
