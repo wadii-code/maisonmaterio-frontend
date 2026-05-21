@@ -3,7 +3,7 @@ import type { ProductsResponse, Product, Category, Room, Order, DashboardStats, 
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
-async function getHeaders(forceRefresh = false): Promise<HeadersInit> {
+async function getHeaders(forceRefresh = false): Promise<{ headers: HeadersInit; authenticated: boolean }> {
   let session = (await supabase.auth.getSession()).data.session;
   const hadSession = !!session;
 
@@ -26,26 +26,26 @@ async function getHeaders(forceRefresh = false): Promise<HeadersInit> {
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (session?.access_token) {
     headers['Authorization'] = `Bearer ${session.access_token}`;
-  } else if (hadSession) {
-    // Only warn when we expected a token (session existed) but couldn't get one.
-    // Guest visitors hitting public endpoints land here too — that's normal, so no log.
-    console.warn('[api] Session exists but no access_token — request will be unauthenticated');
+    return { headers, authenticated: true };
   }
-  return headers;
+  // No token — request goes out as a guest. This is normal for public endpoints
+  // and guest checkout.
+  return { headers, authenticated: false };
 }
 
 async function request<T>(path: string, options?: RequestInit, retried = false): Promise<T> {
-  const headers = await getHeaders(retried);
+  const { headers, authenticated } = await getHeaders(retried);
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers: { ...headers, ...options?.headers } });
 
-  // Auto-retry once on 401 with a forced refresh (handles expired access tokens)
-  if (res.status === 401 && !retried) {
-    return request<T>(path, options, true);
-  }
-
-  if (res.status === 401 && retried) {
-    // Refresh + retry both failed — session is truly dead. Sign the user out
-    // so the UI re-prompts for login instead of showing a stale "signed in" state.
+  // Only treat a 401 as an expired session if we actually sent a token.
+  // Guests (no token) get the real server error instead of a false "session expired".
+  if (res.status === 401 && authenticated) {
+    if (!retried) {
+      // Auto-retry once with a forced token refresh (handles expired access tokens).
+      return request<T>(path, options, true);
+    }
+    // Refresh + retry both failed — session is truly dead. Sign out so the UI
+    // re-prompts for login instead of showing a stale "signed in" state.
     await supabase.auth.signOut().catch(() => {});
     throw new Error('Your session has expired. Please sign in again.');
   }
