@@ -10,7 +10,7 @@ export function Home() {
     <>
       <Helmet>
         <title>Maison Materiau</title>
-        <meta name="description" content="Premium home decorations, furniture and building materials. Shop 200+ unique products." />
+        <meta name="description" content="Décorations, mobilier et matériaux de construction premium. Plus de 200 produits uniques." />
       </Helmet>
       <Hero />
       <Categories />

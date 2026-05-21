@@ -46,9 +46,9 @@ export function RoomSection() {
         {/* Header */}
         <div className="flex items-end justify-between mb-8 gap-4 flex-wrap">
           <div>
-            <span className="inline-block text-xs font-bold text-brand-accent uppercase tracking-[0.2em] mb-2">House Parts</span>
+            <span className="inline-block text-xs font-bold text-brand-accent uppercase tracking-[0.2em] mb-2">Pièces de la maison</span>
             <h2 className="text-3xl lg:text-4xl font-black text-brand-heading">
-              Shop by <span className="text-brand-accent">room</span>
+              Acheter par <span className="text-brand-accent">pièce</span>
             </h2>
             <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full" />
           </div>
@@ -57,7 +57,7 @@ export function RoomSection() {
             <button
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}
-              aria-label="Scroll left"
+              aria-label="Défiler à gauche"
               className={`p-2.5 rounded-full transition-all ${
                 canScrollLeft
                   ? 'bg-white text-brand-heading hover:bg-brand-dark hover:text-white shadow-sm'
@@ -69,7 +69,7 @@ export function RoomSection() {
             <button
               onClick={() => scroll('right')}
               disabled={!canScrollRight}
-              aria-label="Scroll right"
+              aria-label="Défiler à droite"
               className={`p-2.5 rounded-full transition-all ${
                 canScrollRight
                   ? 'bg-white text-brand-heading hover:bg-brand-dark hover:text-white shadow-sm'
@@ -118,7 +118,7 @@ export function RoomSection() {
                       <h3 className="text-2xl lg:text-3xl font-black text-white mt-1 mb-4">{room.name}</h3>
                       <Link to={`/products?room=${room.slug}`}>
                         <Button variant="primary" size="sm">
-                          Shop now <ArrowRight size={14} />
+                          Découvrir <ArrowRight size={14} />
                         </Button>
                       </Link>
                     </div>

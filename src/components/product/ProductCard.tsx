@@ -26,7 +26,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     const added = toggleWishlist(product);
-    toast.success(added ? `${product.name} added to wishlist` : `Removed from wishlist`, {
+    toast.success(added ? `${product.name} ajouté aux favoris` : `Retiré des favoris`, {
       icon: added ? '❤️' : '💔',
       style: { borderRadius: '50px', fontWeight: '600' },
     });
@@ -61,14 +61,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           className="absolute bottom-3 right-3 bg-brand-accent text-white p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          aria-label="Add to cart"
+          aria-label="Ajouter au panier"
         >
           <ShoppingCart size={16} />
         </motion.button>
         <motion.button
           onClick={handleWishlist}
           whileTap={{ scale: 0.85 }}
-          aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-label={isInWishlist ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           className={`absolute top-3 right-3 p-2 rounded-full shadow-sm transition-all duration-200 ${
             isInWishlist
               ? 'bg-red-500 text-white opacity-100'

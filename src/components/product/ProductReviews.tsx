@@ -34,11 +34,11 @@ export function ProductReviews({
     setSubmitting(true);
     try {
       await onSubmit(reviewRating, comment.trim());
-      toast.success('Thank you for your review!');
+      toast.success('Merci pour votre avis !');
       setComment('');
       setShowForm(false);
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to submit review');
+      toast.error(err.message ?? "Échec de l'envoi de l'avis");
     } finally {
       setSubmitting(false);
     }
@@ -55,14 +55,14 @@ export function ProductReviews({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         {/* Summary */}
         <div className="lg:col-span-1">
-          <h2 className="text-2xl font-black text-brand-heading mb-4">Customer Reviews</h2>
+          <h2 className="text-2xl font-black text-brand-heading mb-4">Avis clients</h2>
           <div className="bg-brand-card rounded-2xl p-6">
             <div className="flex items-baseline gap-2 mb-2">
               <span className="text-5xl font-black text-brand-heading">{rating.toFixed(1)}</span>
               <span className="text-gray-400">/ 5</span>
             </div>
             <StarRating rating={rating} size="md" />
-            <p className="text-sm text-gray-500 mt-2">Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-gray-500 mt-2">Basé sur {reviewCount} avis</p>
 
             {reviewCount > 0 && (
               <div className="space-y-1.5 mt-5">
@@ -89,21 +89,21 @@ export function ProductReviews({
               {!isLoggedIn ? (
                 <div className="text-center">
                   <Lock size={20} className="mx-auto text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-500">Sign in to write a review</p>
+                  <p className="text-sm text-gray-500">Connectez-vous pour laisser un avis</p>
                 </div>
               ) : hasReviewed ? (
                 <div className="text-center">
                   <Star size={20} className="mx-auto text-brand-accent mb-2 fill-brand-accent" />
-                  <p className="text-sm text-gray-600 font-semibold">You've already reviewed this product</p>
+                  <p className="text-sm text-gray-600 font-semibold">Vous avez déjà évalué ce produit</p>
                 </div>
               ) : !hasPurchased ? (
                 <div className="text-center">
                   <ShoppingBag size={20} className="mx-auto text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-500">Only verified buyers can leave reviews</p>
+                  <p className="text-sm text-gray-500">Seuls les acheteurs vérifiés peuvent laisser un avis</p>
                 </div>
               ) : (
                 <Button variant="primary" fullWidth onClick={() => setShowForm(!showForm)}>
-                  <MessageCircle size={16} /> Write a Review
+                  <MessageCircle size={16} /> Rédiger un avis
                 </Button>
               )}
             </div>
@@ -121,10 +121,10 @@ export function ProductReviews({
                 onSubmit={handleSubmit}
                 className="bg-white border-2 border-brand-accent/30 rounded-2xl p-6 overflow-hidden"
               >
-                <h3 className="font-black text-brand-heading mb-4">Share your experience</h3>
+                <h3 className="font-black text-brand-heading mb-4">Partagez votre expérience</h3>
 
                 <div className="mb-4">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your rating</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Votre note</label>
                   <div className="flex items-center gap-1" onMouseLeave={() => setHoveredStar(0)}>
                     {[1, 2, 3, 4, 5].map(n => (
                       <button
@@ -144,21 +144,21 @@ export function ProductReviews({
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your review</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Votre avis</label>
                   <textarea
                     value={comment}
                     onChange={e => setComment(e.target.value)}
                     rows={4}
                     required minLength={10}
-                    placeholder="What did you love about this product?"
+                    placeholder="Qu'avez-vous aimé dans ce produit ?"
                     className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent transition-colors text-sm resize-none"
                   />
                 </div>
 
                 <div className="flex gap-3">
-                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Annuler</Button>
                   <Button type="submit" variant="primary" loading={submitting} disabled={!comment.trim() || comment.trim().length < 10}>
-                    Submit Review
+                    Publier l'avis
                   </Button>
                 </div>
               </motion.form>
@@ -168,8 +168,8 @@ export function ProductReviews({
           {reviews.length === 0 ? (
             <div className="bg-brand-card rounded-2xl p-12 text-center">
               <MessageCircle size={32} className="mx-auto text-gray-300 mb-3" />
-              <p className="font-semibold text-gray-500">No reviews yet</p>
-              <p className="text-sm text-gray-400 mt-1">Be the first to share your thoughts</p>
+              <p className="font-semibold text-gray-500">Aucun avis pour le moment</p>
+              <p className="text-sm text-gray-400 mt-1">Soyez le premier à donner votre avis</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -188,13 +188,13 @@ export function ProductReviews({
                         {review.profiles?.full_name?.[0]?.toUpperCase() ?? '?'}
                       </div>
                       <div>
-                        <p className="font-bold text-brand-heading text-sm">{review.profiles?.full_name ?? 'Anonymous'}</p>
+                        <p className="font-bold text-brand-heading text-sm">{review.profiles?.full_name ?? 'Anonyme'}</p>
                         <div className="flex items-center gap-2 text-xs text-gray-400">
                           <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                            <Check size={11} /> Verified buyer
+                            <Check size={11} /> Achat vérifié
                           </span>
                           <span>·</span>
-                          <span>{new Date(review.created_at).toLocaleDateString()}</span>
+                          <span>{new Date(review.created_at).toLocaleDateString('fr-MA')}</span>
                         </div>
                       </div>
                     </div>

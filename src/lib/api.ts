@@ -47,7 +47,7 @@ async function request<T>(path: string, options?: RequestInit, retried = false):
     // Refresh + retry both failed — session is truly dead. Sign out so the UI
     // re-prompts for login instead of showing a stale "signed in" state.
     await supabase.auth.signOut().catch(() => {});
-    throw new Error('Your session has expired. Please sign in again.');
+    throw new Error('Votre session a expiré. Veuillez vous reconnecter.');
   }
 
   if (!res.ok) {

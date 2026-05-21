@@ -116,7 +116,7 @@ export function Wishlist() {
                             toast.success('Removed from wishlist', { icon: '💔', style: { borderRadius: '50px', fontWeight: '600' } });
                           }}
                           className="absolute top-3 right-3 bg-white text-gray-500 hover:text-red-500 hover:bg-red-50 p-2 rounded-full shadow-sm transition-all"
-                          aria-label="Remove from wishlist"
+                          aria-label="Retirer des favoris"
                         >
                           <X size={14} />
                         </button>

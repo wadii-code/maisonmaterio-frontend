@@ -20,7 +20,7 @@ export function StarRating({ rating, count, size = 'sm' }: StarRatingProps) {
         ))}
       </div>
       {count !== undefined && (
-        <span className="text-xs text-gray-500">({count} reviews)</span>
+        <span className="text-xs text-gray-500">({count} avis)</span>
       )}
     </div>
   );

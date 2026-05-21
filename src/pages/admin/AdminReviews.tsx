@@ -63,7 +63,7 @@ export function AdminReviews() {
                     </div>
                     <div className="flex items-center gap-3">
                       <StarRating rating={r.rating} />
-                      <span className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString()}</span>
+                      <span className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString('fr-MA')}</span>
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{r.comment}</p>

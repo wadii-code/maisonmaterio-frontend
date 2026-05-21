@@ -26,7 +26,7 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-gray-300">{t('footer.shop')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              {['New Arrivals', 'Best Sellers', 'Sale', 'Dining Chairs', 'Sofas', 'Tables'].map(l => (
+              {['Nouveautés', 'Meilleures ventes', 'Soldes', 'Chaises de salle à manger', 'Canapés', 'Tables'].map(l => (
                 <li key={l}><Link to="/products" className="hover:text-white transition-colors">{l}</Link></li>
               ))}
             </ul>
@@ -35,7 +35,7 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-gray-300">{t('footer.rooms')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              {['Living Room', 'Dining Room', 'Bedroom', 'Home Office', 'Outdoor', 'Kitchen'].map(l => (
+              {['Salon', 'Salle à manger', 'Chambre', 'Bureau', 'Extérieur', 'Cuisine'].map(l => (
                 <li key={l}><Link to="/products" className="hover:text-white transition-colors">{l}</Link></li>
               ))}
             </ul>
@@ -46,7 +46,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-gray-400">
               <li className="flex items-center gap-2"><Mail size={14} /><span>maisonmateriau@gmail.com</span></li>
               <li className="flex items-center gap-2"><Phone size={14} /><span>+212 645-104432</span></li>
-              <li className="flex items-start gap-2"><MapPin size={14} className="shrink-0 mt-0.5" /><span>Boulevard Mohammed V,<br />Casablanca, Morocco</span></li>
+              <li className="flex items-start gap-2"><MapPin size={14} className="shrink-0 mt-0.5" /><span>Boulevard Mohammed V,<br />Casablanca, Maroc</span></li>
             </ul>
           </div>
         </div>

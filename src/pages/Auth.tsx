@@ -128,7 +128,7 @@ export function Auth() {
           />
           <div className="relative z-10 text-center px-12">
             <h1 className="text-6xl font-black text-white mb-4">Maison Materiau</h1>
-            <p className="text-white/60 text-lg">Illuminate Your Space</p>
+            <p className="text-white/60 text-lg">Illuminez votre espace</p>
           </div>
         </div>
 

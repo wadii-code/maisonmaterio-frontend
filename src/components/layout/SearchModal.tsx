@@ -11,7 +11,7 @@ interface SearchModalProps {
   onClose: () => void;
 }
 
-const TRENDING = ['Sofa', 'Chair', 'Table', 'Lamp', 'Bedroom'];
+const TRENDING = ['Canapé', 'Chaise', 'Table', 'Lampe', 'Chambre'];
 
 export function SearchModal({ open, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
@@ -70,7 +70,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                   type="text"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  placeholder="Search for products..."
+                  placeholder="Rechercher des produits..."
                   className="flex-1 bg-transparent text-lg text-brand-heading placeholder-gray-300 focus:outline-none"
                 />
                 {isFetching && debounced && <Loader2 size={18} className="animate-spin text-gray-300" />}
@@ -86,7 +86,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                 {!debounced ? (
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                      <TrendingUp size={12} /> Trending searches
+                      <TrendingUp size={12} /> Recherches populaires
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {TRENDING.map(t => (
@@ -101,13 +101,13 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                 ) : results.length === 0 && !isFetching ? (
                   <div className="text-center py-12 text-gray-400">
                     <Search size={32} className="mx-auto mb-3 opacity-30" />
-                    <p className="font-semibold">No products match "{debounced}"</p>
-                    <p className="text-xs mt-1">Try a different keyword</p>
+                    <p className="font-semibold">Aucun produit ne correspond à «&nbsp;{debounced}&nbsp;»</p>
+                    <p className="text-xs mt-1">Essayez un autre mot-clé</p>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                      {results.length} result{results.length !== 1 ? 's' : ''} for "{debounced}"
+                      {results.length} résultat{results.length !== 1 ? 's' : ''} pour «&nbsp;{debounced}&nbsp;»
                     </p>
                     <AnimatePresence mode="popLayout">
                       {results.map((p, i) => (
@@ -127,7 +127,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       <Link to={`/products?search=${encodeURIComponent(debounced)}`} onClick={onClose}
                         className="block text-center py-3 text-sm font-bold text-brand-accent hover:bg-brand-accent/5 rounded-xl transition-colors mt-2"
                       >
-                        See all results →
+                        Voir tous les résultats →
                       </Link>
                     )}
                   </div>
@@ -153,7 +153,7 @@ function SearchResultItem({ product, onSelect }: { product: Product; onSelect: (
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-brand-heading line-clamp-1 group-hover:text-brand-accent transition-colors">{cleanProductName(product.name)}</p>
-        <p className="text-xs text-gray-400 line-clamp-1">{(product as any).categories?.name ?? 'Product'}</p>
+        <p className="text-xs text-gray-400 line-clamp-1">{(product as any).categories?.name ?? 'Produit'}</p>
       </div>
       <div className="text-right shrink-0">
         {product.discount_price && (

@@ -64,12 +64,12 @@ export function Hero() {
           >
             <Link to="/products">
               <Button variant="primary" size="lg" className="!rounded-full">
-                Shop Now <ArrowRight size={18} />
+                Acheter maintenant <ArrowRight size={18} />
               </Button>
             </Link>
             <Link to="/products?tags=NEW">
               <Button variant="outline" size="lg" className="!border-white !text-white hover:!bg-white hover:!text-brand-dark !rounded-full">
-                Explore New Arrivals
+                Découvrir les nouveautés
               </Button>
             </Link>
           </motion.div>
@@ -81,9 +81,9 @@ export function Hero() {
             className="mt-10 sm:mt-16 flex items-center gap-6 sm:gap-8"
           >
             {[
-              { value: '200+', label: 'Unique Products' },
-              { value: '50+', label: 'Brands' },
-              { value: '2k+', label: 'Happy Customers' },
+              { value: '200+', label: 'Produits uniques' },
+              { value: '50+', label: 'Marques' },
+              { value: '2k+', label: 'Clients satisfaits' },
             ].map(stat => (
               <div key={stat.label}>
                 <div className="text-xl sm:text-2xl font-black text-white">{stat.value}</div>

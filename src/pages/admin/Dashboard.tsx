@@ -115,7 +115,7 @@ export function AdminDashboard() {
                         {(order as any).profiles?.full_name ?? 'Invité'}
                       </td>
                       <td className="px-6 py-4 text-gray-400">
-                        {new Date(order.created_at).toLocaleDateString()}
+                        {new Date(order.created_at).toLocaleDateString('fr-MA')}
                       </td>
                       <td className="px-6 py-4 font-bold">{formatPrice(order.total_amount)}</td>
                       <td className="px-6 py-4">

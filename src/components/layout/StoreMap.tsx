@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
 
 const STORE = {
-  address: 'Boulevard Mohammed V, Casablanca, Morocco',
+  address: 'Boulevard Mohammed V, Casablanca, Maroc',
   phone: '+212 645-104432 ',
   email: 'maisonmateriau@gmail.com',
   hours: 'Mon - Sat: 10am - 8pm',
@@ -25,9 +25,9 @@ export function StoreMap() {
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <span className="inline-block text-xs font-bold text-brand-accent uppercase tracking-[0.2em] mb-3">Visit Us</span>
+          <span className="inline-block text-xs font-bold text-brand-accent uppercase tracking-[0.2em] mb-3">Visitez-nous</span>
           <h2 className="text-3xl lg:text-4xl font-black text-brand-heading">
-            Find our <span className="text-brand-accent">flagship store</span>
+            Découvrez notre <span className="text-brand-accent">magasin</span>
           </h2>
           <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full mx-auto" />
         </motion.div>
@@ -43,11 +43,11 @@ export function StoreMap() {
           >
             <div className="flex items-center gap-2 mb-6">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Open now</span>
+              <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Ouvert maintenant</span>
             </div>
 
             <h3 className="text-2xl font-black mb-1"> Maison Materiau</h3>
-            <p className="text-white/60 text-sm mb-8">Premium showroom & design studio</p>
+            <p className="text-white/60 text-sm mb-8">Showroom premium & studio de design</p>
 
             <div className="space-y-5 flex-1">
               <div className="flex items-start gap-3">
@@ -55,7 +55,7 @@ export function StoreMap() {
                   <MapPin size={16} className="text-brand-accent" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Address</p>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Adresse</p>
                   <p className="text-sm text-white/90">{STORE.address}</p>
                 </div>
               </div>
@@ -65,8 +65,8 @@ export function StoreMap() {
                   <Clock size={16} className="text-brand-accent" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Opening</p>
-                  <p className="text-xs text-white ">24/7</p>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Horaires</p>
+                  <p className="text-xs text-white ">24h/24 et 7j/7</p>
                 </div>
               </div>
 
@@ -75,7 +75,7 @@ export function StoreMap() {
                   <Phone size={16} className="text-brand-accent" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Phone</p>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Téléphone</p>
                   <a href={`tel:${STORE.phone}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.phone}</a>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export function StoreMap() {
                   <Mail size={16} className="text-brand-accent" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Email</p>
+                  <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">E-mail</p>
                   <a href={`mailto:${STORE.email}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.email}</a>
                 </div>
               </div>
@@ -94,7 +94,7 @@ export function StoreMap() {
             <a href={directionsUrl} target="_blank" rel="noopener noreferrer"
               className="mt-8 flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-orange text-white font-bold py-3.5 rounded-full transition-all hover:scale-[1.02] text-sm"
             >
-              <Navigation size={16} /> Get Directions
+              <Navigation size={16} /> Obtenir l'itinéraire
             </a>
           </motion.div>
 

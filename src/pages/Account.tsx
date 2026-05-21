@@ -16,6 +16,14 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-100 text-red-700',
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  pending: 'En attente',
+  processing: 'En traitement',
+  shipped: 'Expédiée',
+  delivered: 'Livrée',
+  cancelled: 'Annulée',
+};
+
 export function Account() {
   const { user, profile, signOut } = useAuthStore();
   const { t } = useI18n();
@@ -28,8 +36,8 @@ export function Account() {
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <User size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold mb-4">Please sign in to view your account</h2>
-          <Button variant="primary" onClick={() => navigate('/auth')}>Sign In</Button>
+          <h2 className="text-xl font-bold mb-4">Connectez-vous pour voir votre compte</h2>
+          <Button variant="primary" onClick={() => navigate('/auth')}>Connexion</Button>
         </div>
       </div>
     );
@@ -42,7 +50,7 @@ export function Account() {
 
   return (
     <>
-      <Helmet><title>My Account — Maison Materiau</title></Helmet>
+      <Helmet><title>Mon compte — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -55,7 +63,7 @@ export function Account() {
                 <div className="w-20 h-20 bg-brand-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User size={32} className="text-brand-accent" />
                 </div>
-                <h3 className="font-black text-brand-heading">{profile?.full_name ?? 'Customer'}</h3>
+                <h3 className="font-black text-brand-heading">{profile?.full_name ?? 'Client'}</h3>
                 <p className="text-sm text-gray-400 mt-1">{user.email}</p>
                 {(profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'sub_admin') && (
                   <span className="inline-block mt-2 px-3 py-1 bg-brand-accent text-white text-xs font-bold rounded-full">Admin</span>
@@ -118,17 +126,17 @@ export function Account() {
                           <p className="text-xs font-mono text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</p>
                           <p className="font-bold text-brand-heading mt-1">{formatPrice(order.total_amount)}</p>
                           <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
-                            <Clock size={12} /> {new Date(order.created_at).toLocaleDateString()}
+                            <Clock size={12} /> {new Date(order.created_at).toLocaleDateString('fr-MA')}
                           </p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 text-xs font-bold rounded-full capitalize ${STATUS_COLORS[order.status]}`}>
-                            {order.status}
+                          <span className={`px-3 py-1 text-xs font-bold rounded-full ${STATUS_COLORS[order.status]}`}>
+                            {STATUS_LABELS[order.status] ?? order.status}
                           </span>
                           <Link to={`/account/orders/${order.id}`}
                             className="text-xs font-bold text-brand-accent hover:underline"
                           >
-                            View details
+                            Voir les détails
                           </Link>
                         </div>
                       </div>

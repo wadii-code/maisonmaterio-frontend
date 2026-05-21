@@ -25,6 +25,14 @@ const TIMELINE: { id: OrderStatus; icon: any }[] = [
   { id: 'delivered', icon: CheckCircle },
 ];
 
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  pending: 'En attente',
+  processing: 'En traitement',
+  shipped: 'Expédiée',
+  delivered: 'Livrée',
+  cancelled: 'Annulée',
+};
+
 export function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -38,7 +46,7 @@ export function OrderDetail() {
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Package size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold mb-4">Please sign in</h2>
+          <h2 className="text-xl font-bold mb-4">Veuillez vous connecter</h2>
           <Button variant="primary" onClick={() => navigate('/auth')}>{t('nav.signIn')}</Button>
         </div>
       </div>
@@ -60,9 +68,9 @@ export function OrderDetail() {
       <div className="pt-20 min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <XCircle size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold text-brand-heading mb-2">Order not found</h2>
+          <h2 className="text-xl font-bold text-brand-heading mb-2">Commande introuvable</h2>
           <Button variant="primary" onClick={() => navigate('/account/orders')}>
-            <ArrowLeft size={16} /> Back to orders
+            <ArrowLeft size={16} /> Retour aux commandes
           </Button>
         </div>
       </div>
@@ -74,22 +82,22 @@ export function OrderDetail() {
   const canCancel = order.status === 'pending';
 
   const handleCancel = async () => {
-    if (!confirm('Cancel this order? This cannot be undone.')) return;
+    if (!confirm('Annuler cette commande ? Cette action est irréversible.')) return;
     try {
-      await updateStatus.mutateAsync({ id: order.id, status: 'cancelled', notes: 'Cancelled by customer' });
-      toast.success('Order cancelled');
+      await updateStatus.mutateAsync({ id: order.id, status: 'cancelled', notes: 'Annulée par le client' });
+      toast.success('Commande annulée');
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to cancel order');
+      toast.error(err.message ?? "Échec de l'annulation de la commande");
     }
   };
 
   return (
     <>
-      <Helmet><title>Order #{order.id.slice(0, 8).toUpperCase()} — Maison Materiau</title></Helmet>
+      <Helmet><title>Commande #{order.id.slice(0, 8).toUpperCase()} — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account/orders" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-accent mb-6 transition-colors">
-            <ArrowLeft size={16} /> Back to orders
+            <ArrowLeft size={16} /> Retour aux commandes
           </Link>
 
           <motion.div
@@ -98,14 +106,14 @@ export function OrderDetail() {
           >
             <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
               <div>
-                <p className="text-xs font-mono text-gray-400">ORDER</p>
+                <p className="text-xs font-mono text-gray-400">COMMANDE</p>
                 <h1 className="text-2xl font-black text-brand-heading">#{order.id.slice(0, 8).toUpperCase()}</h1>
                 <p className="text-sm text-gray-400 mt-1">
-                  Placed {new Date(order.created_at).toLocaleString()}
+                  Passée le {new Date(order.created_at).toLocaleString('fr-MA')}
                 </p>
               </div>
-              <span className={`px-4 py-1.5 text-xs font-black rounded-full capitalize ${STATUS_COLORS[order.status]}`}>
-                {order.status}
+              <span className={`px-4 py-1.5 text-xs font-black rounded-full ${STATUS_COLORS[order.status]}`}>
+                {STATUS_LABELS[order.status]}
               </span>
             </div>
 
@@ -129,8 +137,8 @@ export function OrderDetail() {
                         } ${active ? 'ring-4 ring-brand-accent/20' : ''}`}>
                           <Icon size={18} />
                         </div>
-                        <span className={`text-xs font-bold capitalize ${done ? 'text-brand-heading' : 'text-gray-400'}`}>
-                          {step.id}
+                        <span className={`text-xs font-bold ${done ? 'text-brand-heading' : 'text-gray-400'}`}>
+                          {STATUS_LABELS[step.id]}
                         </span>
                       </div>
                     );
@@ -141,7 +149,7 @@ export function OrderDetail() {
               <div className="py-4 px-5 bg-red-50 rounded-2xl flex items-center gap-3">
                 <Ban size={20} className="text-red-500" />
                 <div>
-                  <p className="font-bold text-red-700">Order cancelled</p>
+                  <p className="font-bold text-red-700">Commande annulée</p>
                   {order.notes && <p className="text-xs text-red-500 mt-0.5">{order.notes}</p>}
                 </div>
               </div>
@@ -154,7 +162,7 @@ export function OrderDetail() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
               className="lg:col-span-2 bg-white rounded-3xl p-6 lg:p-8"
             >
-              <h3 className="font-black text-brand-heading mb-5">Items</h3>
+              <h3 className="font-black text-brand-heading mb-5">Articles</h3>
               <div className="space-y-4">
                 {order.order_items?.map(item => {
                   const color = (item.customization as any)?.color;
@@ -173,7 +181,7 @@ export function OrderDetail() {
                         <Link to={`/products/${item.product_id}`}
                           className="font-semibold text-brand-heading hover:text-brand-accent transition-colors line-clamp-2"
                         >
-                          {cleanProductName(item.products?.name ?? 'Product')}
+                          {cleanProductName(item.products?.name ?? 'Produit')}
                         </Link>
                         {color && (
                           <div className="flex items-center gap-2 mt-1">
@@ -182,7 +190,7 @@ export function OrderDetail() {
                           </div>
                         )}
                         <p className="text-xs text-gray-400 mt-1">
-                          Qty: <span className="font-bold text-brand-heading">{item.quantity}</span> · {formatPrice(item.price_at_time)} ea.
+                          Qté : <span className="font-bold text-brand-heading">{item.quantity}</span> · {formatPrice(item.price_at_time)} l'unité
                         </p>
                       </div>
                       <p className="text-base font-black text-brand-heading shrink-0">
@@ -206,7 +214,7 @@ export function OrderDetail() {
 
               {canCancel && (
                 <Button variant="outline" fullWidth className="mt-6 !text-red-500 !border-red-200 hover:!bg-red-50" onClick={handleCancel} loading={updateStatus.isPending}>
-                  <Ban size={16} /> Cancel order
+                  <Ban size={16} /> Annuler la commande
                 </Button>
               )}
             </motion.div>
@@ -218,7 +226,7 @@ export function OrderDetail() {
             >
               <div className="bg-white rounded-3xl p-6">
                 <h4 className="font-bold text-brand-heading flex items-center gap-2 text-sm mb-3">
-                  <MapPin size={14} className="text-brand-accent" /> Delivery Address
+                  <MapPin size={14} className="text-brand-accent" /> Adresse de livraison
                 </h4>
                 <div className="text-sm text-gray-700 space-y-0.5">
                   <p className="font-semibold">{order.shipping_address.full_name}</p>
@@ -239,18 +247,18 @@ export function OrderDetail() {
 
               <div className="bg-white rounded-3xl p-6">
                 <h4 className="font-bold text-brand-heading flex items-center gap-2 text-sm mb-3">
-                  <Banknote size={14} className="text-brand-accent" /> Payment
+                  <Banknote size={14} className="text-brand-accent" /> Paiement
                 </h4>
-                <p className="text-sm text-brand-heading font-semibold">Cash on Delivery</p>
+                <p className="text-sm text-brand-heading font-semibold">Paiement à la livraison</p>
                 <p className="text-xs text-gray-400 mt-1">
                   {order.payment_status === 'paid'
-                    ? 'Paid on delivery'
-                    : 'Pay when your order arrives'}
+                    ? 'Payé à la livraison'
+                    : 'Payez à la réception de votre commande'}
                 </p>
-                <span className={`inline-block mt-2 px-2.5 py-0.5 text-xs font-bold rounded-full capitalize ${
+                <span className={`inline-block mt-2 px-2.5 py-0.5 text-xs font-bold rounded-full ${
                   order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'
                 }`}>
-                  {order.payment_status}
+                  {order.payment_status === 'paid' ? 'payé' : 'en attente'}
                 </span>
               </div>
             </motion.aside>

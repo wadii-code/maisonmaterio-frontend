@@ -7,9 +7,9 @@ import { ProductCard } from '../product/ProductCard';
 import { ProductCardSkeleton } from '../ui/Skeleton';
 
 const TABS = [
-  { label: 'Latest Products', sort: 'created_at', order: 'desc' },
-  { label: 'Top Rating', sort: 'rating', order: 'desc' },
-  { label: 'Best Sellers', sort: 'review_count', order: 'desc' },
+  { label: 'Nouveautés', sort: 'created_at', order: 'desc' },
+  { label: 'Mieux notés', sort: 'rating', order: 'desc' },
+  { label: 'Meilleures ventes', sort: 'review_count', order: 'desc' },
 ];
 
 export function HotProducts() {
@@ -25,7 +25,7 @@ export function HotProducts() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-6">
           <div>
             <h2 className="text-3xl lg:text-4xl font-black text-brand-heading">
-              Hot <span className="text-brand-accent">Products</span>
+              Produits <span className="text-brand-accent">Populaires</span>
             </h2>
             <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full" />
           </div>
@@ -49,7 +49,7 @@ export function HotProducts() {
           </div>
 
           <Link to="/products" className="hidden sm:flex items-center gap-2 text-sm font-bold border border-gray-300 text-brand-text hover:border-brand-accent hover:text-brand-accent px-4 py-2 rounded-full transition-all">
-            All products <ArrowRight size={14} />
+            Tous les produits <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -69,8 +69,8 @@ export function HotProducts() {
                 ? (
                   <div className="col-span-full bg-brand-card rounded-2xl p-12 text-center text-gray-400">
                     <Package size={32} className="mx-auto mb-3 opacity-30" />
-                    <p className="font-semibold">No products available yet</p>
-                    <Link to="/admin/products/new" className="text-sm mt-1 text-brand-accent hover:underline inline-block">Add your first product →</Link>
+                    <p className="font-semibold">Aucun produit disponible pour le moment</p>
+                    <Link to="/admin/products/new" className="text-sm mt-1 text-brand-accent hover:underline inline-block">Ajoutez votre premier produit →</Link>
                   </div>
                 )
                 : products.slice(0, 8).map((product, i) => (

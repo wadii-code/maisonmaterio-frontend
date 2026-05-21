@@ -128,7 +128,7 @@ export function AdminOrders() {
                     >
                       <td className="px-4 py-4 font-mono text-xs text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</td>
                       <td className="px-4 py-4 font-semibold text-brand-heading">{order.profiles?.full_name ?? 'Invité'}</td>
-                      <td className="px-4 py-4 text-gray-400 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString()}</td>
+                      <td className="px-4 py-4 text-gray-400 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString('fr-MA')}</td>
                       <td className="px-4 py-4 font-bold">{formatPrice(order.total_amount)}</td>
                       <td className="px-4 py-4">
                         <button
@@ -185,7 +185,7 @@ export function AdminOrders() {
                   </div>
                   <p className="font-semibold text-brand-heading">{order.profiles?.full_name ?? 'Invité'}</p>
                   <div className="flex justify-between items-center mt-1">
-                    <span className="text-gray-400 text-sm">{new Date(order.created_at).toLocaleDateString()}</span>
+                    <span className="text-gray-400 text-sm">{new Date(order.created_at).toLocaleDateString('fr-MA')}</span>
                     <span className="font-bold">{formatPrice(order.total_amount)}</span>
                   </div>
                 </div>
@@ -251,7 +251,7 @@ function OrderDetailContent({ order, onClose }: { order: any, onClose: () => voi
         <p className="font-mono text-gray-400">#{order.id}</p>
         <p className="font-semibold">{order.profiles?.full_name}</p>
         <p className="text-gray-500">{order.profiles?.phone}</p>
-        <p className="text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
+        <p className="text-gray-500">{new Date(order.created_at).toLocaleString('fr-MA')}</p>
       </div>
       <div className="space-y-3">
         {order.order_items?.map((item: any) => {

@@ -14,9 +14,9 @@ import toast from 'react-hot-toast';
 type Step = 'shipping' | 'review' | 'confirmation';
 
 const STEPS = [
-  { id: 'shipping', label: 'Shipping', icon: Truck },
-  { id: 'review', label: 'Review & Place Order', icon: Banknote },
-  { id: 'confirmation', label: 'Confirmed', icon: CheckCircle },
+  { id: 'shipping', label: 'Livraison', icon: Truck },
+  { id: 'review', label: 'Vérifier & Commander', icon: Banknote },
+  { id: 'confirmation', label: 'Confirmée', icon: CheckCircle },
 ];
 
 export function Checkout() {
@@ -26,7 +26,7 @@ export function Checkout() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('shipping');
   const [shippingData, setShippingData] = useState({
-    full_name: '', address_line1: '', address_line2: '', city: '', state: '', postal_code: '', country: 'Morocco', phone: '',
+    full_name: '', address_line1: '', address_line2: '', city: '', state: '', postal_code: '', country: 'Maroc', phone: '',
   });
   const [guestEmail, setGuestEmail] = useState('');
   const [orderId, setOrderId] = useState<string | null>(null);
@@ -38,8 +38,8 @@ export function Checkout() {
       <div className="pt-20 min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold text-brand-heading mb-2">Your cart is empty</h2>
-          <Button variant="primary" onClick={() => navigate('/products')}>Shop Now</Button>
+          <h2 className="text-xl font-bold text-brand-heading mb-2">Votre panier est vide</h2>
+          <Button variant="primary" onClick={() => navigate('/products')}>Acheter maintenant</Button>
         </div>
       </div>
     );
@@ -62,9 +62,9 @@ export function Checkout() {
       setOrderId(order.id);
       clearCart();
       setStep('confirmation');
-      toast.success('Order placed! Pay on delivery.');
+      toast.success('Commande passée ! Paiement à la livraison.');
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to place order');
+      toast.error(err.message ?? 'Échec de la commande');
     }
   };
 
@@ -78,7 +78,7 @@ export function Checkout() {
 
   return (
     <>
-      <Helmet><title>Checkout — Maison Materiau</title></Helmet>
+      <Helmet><title>Paiement — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           {/* Step progress */}
@@ -116,16 +116,16 @@ export function Checkout() {
                 >
                   <CheckCircle size={40} className="text-emerald-500" />
                 </motion.div>
-                <h2 className="text-2xl lg:text-3xl font-black text-brand-heading mb-2 px-4">Order Confirmed!</h2>
-                <p className="text-gray-500 mb-2 px-4">Thank you for your purchase.</p>
+                <h2 className="text-2xl lg:text-3xl font-black text-brand-heading mb-2 px-4">Commande confirmée !</h2>
+                <p className="text-gray-500 mb-2 px-4">Merci pour votre achat.</p>
                 <div className="bg-brand-card max-w-md mx-auto rounded-2xl p-5 my-6 mx-4">
                   <div className="flex items-center justify-center gap-2 text-brand-accent mb-2">
                     <Banknote size={20} />
-                    <span className="font-bold">Cash on Delivery</span>
+                    <span className="font-bold">Paiement à la livraison</span>
                   </div>
-                  <p className="text-sm text-gray-600">Pay <span className="font-black text-brand-heading">{formatPrice(total)}</span> in cash when your order arrives.</p>
+                  <p className="text-sm text-gray-600">Payez <span className="font-black text-brand-heading">{formatPrice(total)}</span> en espèces à la réception de votre commande.</p>
                 </div>
-                {orderId && <p className="text-sm text-gray-400 mb-8">Order ID: <span className="font-mono font-bold">{orderId.slice(0, 8).toUpperCase()}</span></p>}
+                {orderId && <p className="text-sm text-gray-400 mb-8">N° de commande : <span className="font-mono font-bold">{orderId.slice(0, 8).toUpperCase()}</span></p>}
                 <div className="flex gap-3 justify-center flex-wrap px-4">
                   {user && <Button variant="primary" onClick={() => navigate('/account/orders')}>Suivre ma commande</Button>}
                   <Button variant={user ? 'outline' : 'primary'} onClick={() => navigate('/products')}>Continuer les achats</Button>
@@ -211,9 +211,9 @@ export function Checkout() {
                       <div className="space-y-6">
                         <div>
                           <h2 className="text-xl font-black text-brand-heading flex items-center gap-2">
-                            <Banknote size={22} className="text-brand-accent" /> Cash on Delivery
+                            <Banknote size={22} className="text-brand-accent" /> Paiement à la livraison
                           </h2>
-                          <p className="text-sm text-gray-400 mt-1">Pay in cash when your order is delivered to your door.</p>
+                          <p className="text-sm text-gray-400 mt-1">Payez en espèces à la livraison de votre commande.</p>
                         </div>
 
                         {/* COD Info Card */}
@@ -223,16 +223,16 @@ export function Checkout() {
                               <Banknote size={22} />
                             </div>
                             <div>
-                              <h3 className="font-black text-brand-heading mb-1">Cash on Delivery</h3>
+                              <h3 className="font-black text-brand-heading mb-1">Paiement à la livraison</h3>
                               <p className="text-sm text-gray-600 mb-3">
-                                The only payment method we accept. Have <span className="font-bold text-brand-heading">{formatPrice(total)}</span> ready when our courier arrives.
+                                Le seul mode de paiement accepté. Préparez <span className="font-bold text-brand-heading">{formatPrice(total)}</span> à l'arrivée de notre livreur.
                               </p>
                               <div className="flex flex-wrap gap-3 text-xs">
                                 <span className="flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-full">
-                                  <ShieldCheck size={12} className="text-emerald-500" /> No upfront payment
+                                  <ShieldCheck size={12} className="text-emerald-500" /> Aucun paiement à l'avance
                                 </span>
                                 <span className="flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-full">
-                                  <ShieldCheck size={12} className="text-emerald-500" /> Inspect before paying
+                                  <ShieldCheck size={12} className="text-emerald-500" /> Inspectez avant de payer
                                 </span>
                               </div>
                             </div>
@@ -259,9 +259,9 @@ export function Checkout() {
                         </div>
 
                         <div className="flex gap-3 flex-col sm:flex-row">
-                          <Button variant="outline" onClick={() => setStep('shipping')} className="flex-1">Back</Button>
+                          <Button variant="outline" onClick={() => setStep('shipping')} className="flex-1">Retour</Button>
                           <Button variant="primary" size="lg" onClick={handlePlaceOrder} loading={createOrder.isPending} className="flex-1">
-                            Place Order · {formatPrice(total)}
+                            Commander · {formatPrice(total)}
                           </Button>
                         </div>
                       </div>
@@ -272,7 +272,7 @@ export function Checkout() {
                 {/* Order Summary */}
                 <div className="space-y-4">
                   <div className="bg-white rounded-3xl p-6 lg:sticky lg:top-24">
-                    <h3 className="font-black text-brand-heading mb-5">Order Summary</h3>
+                    <h3 className="font-black text-brand-heading mb-5">Récapitulatif</h3>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
                       {items.map(item => {
                         const unit = item.customization?.unitPrice ?? item.product.discount_price ?? item.product.price;
@@ -297,7 +297,7 @@ export function Checkout() {
                                 {color.name}
                               </span>
                             )}
-                            <p className="text-xs text-gray-400">{formatPrice(unit)} ea.</p>
+                            <p className="text-xs text-gray-400">{formatPrice(unit)} l'unité</p>
                           </div>
                           <p className="text-sm font-bold shrink-0">
                             {formatPrice(unit * item.quantity)}
@@ -308,10 +308,10 @@ export function Checkout() {
                     </div>
                     <div className="mt-5 pt-5 border-t border-gray-100 space-y-2 text-sm">
                       <div className="flex justify-between text-gray-500">
-                        <span>Subtotal</span><span>{formatPrice(subtotal)}</span>
+                        <span>Sous-total</span><span>{formatPrice(subtotal)}</span>
                       </div>
                       <div className="flex justify-between font-black text-base text-brand-heading pt-3 border-t border-gray-100">
-                        <span>Total to Pay</span><span className="text-brand-accent">{formatPrice(total)}</span>
+                        <span>Total à payer</span><span className="text-brand-accent">{formatPrice(total)}</span>
                       </div>
                     </div>
                   </div>

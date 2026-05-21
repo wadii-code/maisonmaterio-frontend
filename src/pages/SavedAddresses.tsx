@@ -24,14 +24,14 @@ interface Address {
 }
 
 const EMPTY_FORM = {
-  label: 'Home',
+  label: 'Domicile',
   full_name: '',
   address_line1: '',
   address_line2: '',
   city: '',
   state: '',
   postal_code: '',
-  country: 'Morocco',
+  country: 'Maroc',
   phone: '',
   is_default: false,
 };
@@ -71,8 +71,8 @@ export function SavedAddresses() {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">Sign in to manage your saved addresses.</p>
-          <Button variant="primary" onClick={() => navigate('/auth?redirect=/account/addresses')}>Sign In</Button>
+          <p className="text-gray-500 mb-4">Connectez-vous pour gérer vos adresses enregistrées.</p>
+          <Button variant="primary" onClick={() => navigate('/auth?redirect=/account/addresses')}>Connexion</Button>
         </div>
       </div>
     );
@@ -82,7 +82,7 @@ export function SavedAddresses() {
   const openEdit = (a: Address) => {
     setEditing(a);
     setForm({
-      label: a.label ?? 'Home',
+      label: a.label ?? 'Domicile',
       full_name: a.full_name,
       address_line1: a.address_line1,
       address_line2: a.address_line2 ?? '',
@@ -117,16 +117,16 @@ export function SavedAddresses() {
     setSaving(false);
 
     if (error) { toast.error(error.message); return; }
-    toast.success(editing ? 'Address updated' : 'Address added');
+    toast.success(editing ? 'Adresse mise à jour' : 'Adresse ajoutée');
     setModalOpen(false);
     loadAddresses();
   };
 
   const handleDelete = async (a: Address) => {
-    if (!confirm(`Delete the "${a.label ?? 'address'}" address?`)) return;
+    if (!confirm(`Supprimer l'adresse « ${a.label ?? 'adresse'} » ?`)) return;
     const { error } = await supabase.from('addresses').delete().eq('id', a.id);
     if (error) { toast.error(error.message); return; }
-    toast.success('Address deleted');
+    toast.success('Adresse supprimée');
     loadAddresses();
   };
 
@@ -134,26 +134,26 @@ export function SavedAddresses() {
     await supabase.from('addresses').update({ is_default: false }).eq('user_id', user.id);
     const { error } = await supabase.from('addresses').update({ is_default: true }).eq('id', a.id);
     if (error) { toast.error(error.message); return; }
-    toast.success(`${a.label ?? 'Address'} set as default`);
+    toast.success(`${a.label ?? 'Adresse'} définie par défaut`);
     loadAddresses();
   };
 
   return (
     <>
-      <Helmet><title>Saved Addresses — Maison Materiau</title></Helmet>
+      <Helmet><title>Adresses enregistrées — Maison Materiau</title></Helmet>
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account" className="inline-flex items-center gap-1 text-sm font-bold text-gray-500 hover:text-brand-accent transition-colors mb-6">
-            <ChevronLeft size={16} /> Back to Account
+            <ChevronLeft size={16} /> Retour au compte
           </Link>
 
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-black text-brand-heading">Saved Addresses</h1>
-              <p className="text-gray-500 mt-2 text-sm">{addresses.length} saved {addresses.length === 1 ? 'address' : 'addresses'}</p>
+              <h1 className="text-3xl lg:text-4xl font-black text-brand-heading">Adresses enregistrées</h1>
+              <p className="text-gray-500 mt-2 text-sm">{addresses.length} {addresses.length === 1 ? 'adresse enregistrée' : 'adresses enregistrées'}</p>
             </div>
             <Button variant="primary" onClick={openNew}>
-              <Plus size={16} /> Add Address
+              <Plus size={16} /> Ajouter une adresse
             </Button>
           </div>
 
@@ -164,9 +164,9 @@ export function SavedAddresses() {
           ) : addresses.length === 0 ? (
             <div className="bg-white rounded-3xl py-16 px-6 text-center">
               <MapPin size={36} className="mx-auto text-gray-300 mb-3" />
-              <p className="font-bold text-brand-heading mb-1">No addresses saved</p>
-              <p className="text-sm text-gray-400 mb-6">Add one to speed up checkout.</p>
-              <Button variant="primary" onClick={openNew}><Plus size={16} /> Add Your First Address</Button>
+              <p className="font-bold text-brand-heading mb-1">Aucune adresse enregistrée</p>
+              <p className="text-sm text-gray-400 mb-6">Ajoutez-en une pour accélérer vos commandes.</p>
+              <Button variant="primary" onClick={openNew}><Plus size={16} /> Ajouter ma première adresse</Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -182,10 +182,10 @@ export function SavedAddresses() {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-black text-brand-heading">{a.label ?? 'Address'}</span>
+                        <span className="font-black text-brand-heading">{a.label ?? 'Adresse'}</span>
                         {a.is_default && (
                           <span className="flex items-center gap-1 px-2 py-0.5 bg-brand-accent/10 text-brand-accent text-[10px] font-black rounded-full">
-                            <Star size={10} className="fill-brand-accent" /> DEFAULT
+                            <Star size={10} className="fill-brand-accent" /> PAR DÉFAUT
                           </span>
                         )}
                       </div>
@@ -201,14 +201,14 @@ export function SavedAddresses() {
                     <div className="flex flex-wrap gap-1 mt-4 pt-4 border-t border-gray-100">
                       {!a.is_default && (
                         <button onClick={() => handleSetDefault(a)} className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-bold text-brand-accent hover:bg-brand-accent/10 rounded-lg transition-colors">
-                          <Star size={12} /> Default
+                          <Star size={12} /> Par défaut
                         </button>
                       )}
                       <button onClick={() => openEdit(a)} className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-bold text-brand-text hover:bg-gray-50 rounded-lg transition-colors">
-                        <Pencil size={12} /> Edit
+                        <Pencil size={12} /> Modifier
                       </button>
                       <button onClick={() => handleDelete(a)} className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                        <Trash2 size={12} /> Delete
+                        <Trash2 size={12} /> Supprimer
                       </button>
                     </div>
                   </motion.div>
@@ -235,23 +235,23 @@ export function SavedAddresses() {
             >
               <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-hidden pointer-events-auto flex flex-col">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 shrink-0">
-                  <h2 className="text-xl font-black text-brand-heading">{editing ? 'Edit Address' : 'Add Address'}</h2>
+                  <h2 className="text-xl font-black text-brand-heading">{editing ? "Modifier l'adresse" : 'Ajouter une adresse'}</h2>
                   <button onClick={() => setModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={18} /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
-                  <Field label="Label" value={form.label} onChange={v => setForm(p => ({ ...p, label: v }))} placeholder="Home, Office..." />
-                  <Field label="Full Name *" value={form.full_name} onChange={v => setForm(p => ({ ...p, full_name: v }))} required />
-                  <Field label="Address Line 1 *" value={form.address_line1} onChange={v => setForm(p => ({ ...p, address_line1: v }))} required />
-                  <Field label="Address Line 2" value={form.address_line2} onChange={v => setForm(p => ({ ...p, address_line2: v }))} />
+                  <Field label="Libellé" value={form.label} onChange={v => setForm(p => ({ ...p, label: v }))} placeholder="Domicile, Bureau..." />
+                  <Field label="Nom complet *" value={form.full_name} onChange={v => setForm(p => ({ ...p, full_name: v }))} required />
+                  <Field label="Adresse ligne 1 *" value={form.address_line1} onChange={v => setForm(p => ({ ...p, address_line1: v }))} required />
+                  <Field label="Adresse ligne 2" value={form.address_line2} onChange={v => setForm(p => ({ ...p, address_line2: v }))} />
                   <div className="grid grid-cols-2 gap-3">
-                    <Field label="City *" value={form.city} onChange={v => setForm(p => ({ ...p, city: v }))} required />
-                    <Field label="State" value={form.state} onChange={v => setForm(p => ({ ...p, state: v }))} />
+                    <Field label="Ville *" value={form.city} onChange={v => setForm(p => ({ ...p, city: v }))} required />
+                    <Field label="Région" value={form.state} onChange={v => setForm(p => ({ ...p, state: v }))} />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <Field label="Postal Code *" value={form.postal_code} onChange={v => setForm(p => ({ ...p, postal_code: v }))} required />
-                    <Field label="Country *" value={form.country} onChange={v => setForm(p => ({ ...p, country: v }))} required />
+                    <Field label="Code postal *" value={form.postal_code} onChange={v => setForm(p => ({ ...p, postal_code: v }))} required />
+                    <Field label="Pays *" value={form.country} onChange={v => setForm(p => ({ ...p, country: v }))} required />
                   </div>
-                  <Field label="Phone *" value={form.phone} onChange={v => setForm(p => ({ ...p, phone: v }))} required />
+                  <Field label="Téléphone *" value={form.phone} onChange={v => setForm(p => ({ ...p, phone: v }))} required />
                   <label className="flex items-center gap-2 text-sm cursor-pointer pt-2">
                     <input
                       type="checkbox"
@@ -259,11 +259,11 @@ export function SavedAddresses() {
                       onChange={e => setForm(p => ({ ...p, is_default: e.target.checked }))}
                       className="accent-brand-accent w-4 h-4"
                     />
-                    Set as default address
+                    Définir comme adresse par défaut
                   </label>
                   <div className="flex gap-3 pt-2">
-                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Cancel</Button>
-                    <Button type="submit" variant="primary" loading={saving} className="flex-1"><Save size={14} /> {editing ? 'Save' : 'Add'}</Button>
+                    <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="flex-1">Annuler</Button>
+                    <Button type="submit" variant="primary" loading={saving} className="flex-1"><Save size={14} /> {editing ? 'Enregistrer' : 'Ajouter'}</Button>
                   </div>
                 </form>
               </div>

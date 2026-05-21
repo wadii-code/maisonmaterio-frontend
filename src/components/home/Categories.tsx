@@ -16,16 +16,16 @@ export function Categories() {
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
           <div>
             <h2 className="text-3xl lg:text-4xl font-black text-brand-heading">
-              Shop by <span className="text-brand-accent">categories</span>
+              Acheter par <span className="text-brand-accent">catégories</span>
             </h2>
             <div className="w-12 h-1 bg-brand-accent mt-3 rounded-full" />
             <div className="flex items-center gap-2 mt-4 text-gray-500">
               <Sofa size={18} className="text-brand-accent" />
-              <span className="text-sm">200+ Unique products</span>
+              <span className="text-sm">200+ produits uniques</span>
             </div>
           </div>
           <Link to="/products" className="flex items-center gap-2 text-sm font-bold text-brand-accent hover:gap-3 transition-all uppercase tracking-wider">
-            All Categories <ArrowRight size={16} />
+            Toutes les catégories <ArrowRight size={16} />
           </Link>
         </div>
 

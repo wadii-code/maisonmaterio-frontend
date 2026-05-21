@@ -122,7 +122,7 @@ export function Header() {
 
             <Link
               to="/wishlist"
-              aria-label="Wishlist"
+              aria-label="Favoris"
               className={`relative p-2 rounded-full hover:bg-white/10 transition-colors ${isTransparent ? 'text-white' : 'text-brand-text'}`}
             >
               <Heart size={20} className={wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''} />

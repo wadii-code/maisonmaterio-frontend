@@ -61,8 +61,8 @@ export function ProductDetail() {
   if (error || !product) {
     return (
       <div className="pt-20 flex flex-col items-center justify-center min-h-[60vh] text-gray-400 px-4">
-        <p className="text-xl font-semibold">Product not found</p>
-        <Link to="/products" className="mt-4 text-brand-accent underline">Browse all products</Link>
+        <p className="text-xl font-semibold">Produit introuvable</p>
+        <Link to="/products" className="mt-4 text-brand-accent underline">Parcourir tous les produits</Link>
       </div>
     );
   }
@@ -146,9 +146,9 @@ export function ProductDetail() {
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-400 overflow-x-auto whitespace-nowrap">
-            <Link to="/" className="hover:text-brand-accent transition-colors">Home</Link>
+            <Link to="/" className="hover:text-brand-accent transition-colors">Accueil</Link>
             <ChevronRight size={12} />
-            <Link to="/products" className="hover:text-brand-accent transition-colors">Shop</Link>
+            <Link to="/products" className="hover:text-brand-accent transition-colors">Boutique</Link>
             <ChevronRight size={12} />
             <span className="text-brand-text font-medium truncate">{cleanProductName(product.name)}</span>
           </div>
@@ -195,7 +195,7 @@ export function ProductDetail() {
                 {discount && <Badge label={`-${discount}% OFF`} color="red" />}
                 {product.tags.includes('HOT') && <Badge label="HOT" color="orange" />}
                 {product.tags.includes('NEW') && <Badge label="NEW" color="green" />}
-                {product.stock <= 5 && product.stock > 0 && <Badge label={`Only ${product.stock} left`} color="red" />}
+                {product.stock <= 5 && product.stock > 0 && <Badge label={`Plus que ${product.stock}`} color="red" />}
               </div>
 
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-brand-heading leading-tight">{cleanProductName(product.name)}</h1>
@@ -220,7 +220,7 @@ export function ProductDetail() {
               {/* Customization (colors from product, only if defined) */}
               {(product.colors?.length ?? 0) > 0 && (
                 <div className="bg-brand-card rounded-2xl p-5">
-                  <h3 className="text-sm font-black text-brand-heading mb-4">Choose your color</h3>
+                  <h3 className="text-sm font-black text-brand-heading mb-4">Choisissez votre couleur</h3>
                   <ProductCustomization
                     basePrice={basePrice}
                     options={[{
@@ -243,7 +243,7 @@ export function ProductDetail() {
                 <div className="bg-brand-card rounded-2xl p-5 space-y-3">
                   {product.material && (
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="text-gray-400 w-24 shrink-0">Material</span>
+                      <span className="text-gray-400 w-24 shrink-0">Matériau</span>
                       <span className="font-semibold text-brand-heading">{product.material}</span>
                     </div>
                   )}
@@ -256,7 +256,7 @@ export function ProductDetail() {
                   <div className="flex items-start gap-3 text-sm">
                     <span className="text-gray-400 w-24 shrink-0">Stock</span>
                     <span className={`font-semibold ${product.stock > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                      {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                      {product.stock > 0 ? `${product.stock} en stock` : 'Rupture de stock'}
                     </span>
                   </div>
                 </div>
@@ -281,7 +281,7 @@ export function ProductDetail() {
                     </button>
                   </div>
                   <Button variant="primary" size="lg" onClick={handleAddToCart} className="flex-1">
-                    <ShoppingCart size={20} /> Add to Cart · {formatPrice(finalPrice * quantity)}
+                    <ShoppingCart size={20} /> Ajouter au panier · {formatPrice(finalPrice * quantity)}
                   </Button>
                   <motion.button
                     onClick={() => {
@@ -307,10 +307,10 @@ export function ProductDetail() {
               {/* Guarantees */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-gray-100">
                 {[
-                  { icon: Banknote, label: 'Cash on Delivery', sub: 'Pay when you receive' },
-                  { icon: Truck, label: 'Free Shipping', sub: 'On orders over 500 MAD' },
-                  { icon: RotateCcw, label: '30-Day Returns', sub: 'Easy & free returns' },
-                  { icon: Shield, label: '2-Year Warranty', sub: 'On all products' },
+                  { icon: Banknote, label: 'Paiement à la livraison', sub: 'Payez à la réception' },
+                  { icon: Truck, label: 'Livraison gratuite', sub: 'Dès 500 MAD d\'achat' },
+                  { icon: RotateCcw, label: 'Retours sous 30 jours', sub: 'Faciles et gratuits' },
+                  { icon: Shield, label: 'Garantie 2 ans', sub: 'Sur tous les produits' },
                 ].map(({ icon: Icon, label, sub }) => (
                   <div key={label} className="flex items-center gap-3">
                     <div className="p-2 bg-brand-accent/10 rounded-lg shrink-0">
@@ -341,7 +341,7 @@ export function ProductDetail() {
           {/* Related Products */}
           {related?.data && related.data.filter(p => p.id !== product.id).length > 0 && (
             <div className="mt-16 lg:mt-20">
-              <h2 className="text-2xl font-black text-brand-heading mb-6 lg:mb-8">You may also like</h2>
+              <h2 className="text-2xl font-black text-brand-heading mb-6 lg:mb-8">Vous aimerez aussi</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
                 {related.data.filter(p => p.id !== product.id).slice(0, 4).map((p, i) => (
                   <ProductCard key={p.id} product={p} index={i} />
@@ -375,7 +375,7 @@ export function ProductDetail() {
             <h2>{cleanProductName(product.name)}</h2>
             {product.categories?.name && <p>Catégorie : {product.categories.name}</p>}
             {product.material && <p>Matériau : {product.material}</p>}
-            {product.dimensions && <p>Dimensions : {product.dimensions}</p>}
+            {product.dimensions && <p>Dimensions&nbsp;: {product.dimensions}</p>}
             {product.tags?.length > 0 && <p>Mots-clés : {product.tags.join(', ')}</p>}
             <div>
               {product.seo_description.split(/\n\n+/).map((paragraph, i) => (
