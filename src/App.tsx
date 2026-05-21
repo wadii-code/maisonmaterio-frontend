@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { supabase } from './lib/supabase';
@@ -105,7 +105,12 @@ export default function App() {
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="admins" element={<AdminAdmins />} />
+          {/* Unknown /admin/* path → dashboard */}
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
+
+        {/* Any unknown path falls back to the home page */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HelmetProvider>
   );
