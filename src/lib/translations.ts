@@ -57,6 +57,10 @@ export const translations = {
     'auth.accountCreatedToast': 'Account created! Please check your email.',
     'auth.authFailed': 'Authentication failed',
     'auth.invalidResetLink': 'Invalid or expired reset link. Please request a new one.',
+    'auth.verifyingLink': 'Verifying your reset link…',
+    'auth.linkExpiredTitle': 'Link expired or invalid',
+    'auth.linkExpiredBody': 'This password reset link is no longer valid. Request a new one below.',
+    'auth.requestNewLink': 'Request a new link',
 
     // Buttons / common
     'common.continueShopping': 'Continue Shopping',
@@ -177,6 +181,10 @@ export const translations = {
     'auth.accountCreatedToast': 'Compte créé ! Vérifiez votre e-mail.',
     'auth.authFailed': 'Échec de l\'authentification',
     'auth.invalidResetLink': 'Lien invalide ou expiré. Veuillez en demander un nouveau.',
+    'auth.verifyingLink': 'Vérification de votre lien…',
+    'auth.linkExpiredTitle': 'Lien expiré ou invalide',
+    'auth.linkExpiredBody': 'Ce lien de réinitialisation n\'est plus valide. Demandez-en un nouveau ci-dessous.',
+    'auth.requestNewLink': 'Demander un nouveau lien',
 
     // Buttons / common
     'common.continueShopping': 'Continuer les achats',
