@@ -14,7 +14,16 @@ async function fetchRevenue(period: string) {
     headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
   });
   if (!res.ok) throw new Error('Failed to fetch revenue');
-  return res.json() as Promise<{ series: { date: string; revenue: number }[]; total: number }>;
+  return res.json() as Promise<{
+    series: { date: string; revenue: number }[];
+    total: number;
+    last_sale_date: string | null;
+  }>;
+}
+
+// "2026-05-21" -> "21 mai 2026"
+function formatDay(day: string): string {
+  return new Date(`${day}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 // Build a smooth Catmull-Rom-style cubic Bezier path through the points.
@@ -43,12 +52,17 @@ const PAD_X = 16;
 const PAD_TOP = 14;
 const PAD_BOTTOM = 22;
 
+type Period = '7d' | '30d' | '90d' | '12m';
+const PERIOD_LABELS: Record<Period, string> = {
+  '7d': '7 jours', '30d': '30 jours', '90d': '90 jours', '12m': '12 mois',
+};
+
 export function RevenueChart() {
-  const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
+  const [period, setPeriod] = useState<Period>('7d');
   const [hover, setHover] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['revenue', period],
     queryFn: () => fetchRevenue(period),
     refetchInterval: 60_000,
@@ -57,8 +71,9 @@ export function RevenueChart() {
   const series = data?.series ?? [];
   const hasAnyRevenue = series.some(p => p.revenue > 0);
 
+  // A period with no sales still draws the chart: a flat line at 0.
   const { points, linePath, areaPath, max, yTicks } = useMemo(() => {
-    if (series.length === 0 || !hasAnyRevenue) {
+    if (series.length === 0) {
       return { points: [], linePath: '', areaPath: '', max: 0, yTicks: [] as number[] };
     }
     const rawMax = Math.max(...series.map(p => p.revenue), 0);
@@ -78,7 +93,7 @@ export function RevenueChart() {
       : '';
     const ticks = [0, niceMax / 2, niceMax];
     return { points: pts, linePath: line, areaPath: area, max: niceMax, yTicks: ticks };
-  }, [series, hasAnyRevenue]);
+  }, [series]);
 
   const handleMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (points.length === 0 || !svgRef.current) return;
@@ -97,7 +112,7 @@ export function RevenueChart() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-5 border-b border-gray-100">
         <div>
           <h2 className="font-black text-brand-heading flex items-center gap-2">
             <TrendingUp size={18} className="text-brand-accent" /> Aperçu des revenus
@@ -108,14 +123,14 @@ export function RevenueChart() {
             </p>
           )}
         </div>
-        <div className="flex bg-gray-100 p-1 rounded-full">
-          {(['7d', '30d', '90d'] as const).map(p => (
+        <div className="flex w-full sm:w-auto bg-gray-100 p-1 rounded-full">
+          {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
             <button key={p} onClick={() => { setPeriod(p); setHover(null); }}
-              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
+              className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-xs font-bold whitespace-nowrap rounded-full transition-all ${
                 period === p ? 'bg-white text-brand-heading shadow-sm' : 'text-gray-400'
               }`}
             >
-              {p === '7d' ? '7 jours' : p === '30d' ? '30 jours' : '90 jours'}
+              {PERIOD_LABELS[p]}
             </button>
           ))}
         </div>
@@ -124,14 +139,34 @@ export function RevenueChart() {
       <div className="p-6">
         {isLoading ? (
           <Skeleton className="h-56 w-full" />
-        ) : series.length === 0 || !hasAnyRevenue ? (
+        ) : isError || series.length === 0 ? (
           <div className="h-56 flex flex-col items-center justify-center text-gray-400 text-sm gap-1.5">
             <TrendingUp size={28} className="opacity-30" />
-            <p className="font-semibold">Aucun revenu pour cette période</p>
-            <p className="text-xs">Marquez une commande comme <span className="font-bold text-purple-500">expédiée</span> ou <span className="font-bold text-emerald-500">livrée</span> pour voir la courbe.</p>
+            <p className="font-semibold">Impossible de charger les revenus</p>
+            <button onClick={() => refetch()}
+              className="mt-1 text-xs font-bold text-brand-accent hover:underline">
+              Réessayer
+            </button>
           </div>
         ) : (
           <div className="relative">
+            {/* No sales in this period: the flat line stays visible, this explains it */}
+            {!hasAnyRevenue && (
+              <div className="absolute inset-x-0 top-4 z-10 flex flex-col items-center text-center gap-1 px-4 pointer-events-none">
+                <p className="text-sm font-semibold text-gray-400">Aucune vente sur cette période</p>
+                <p className="text-xs text-gray-400">
+                  {data?.last_sale_date
+                    ? <>Dernière vente&nbsp;: <span className="font-bold text-brand-heading">{formatDay(data.last_sale_date)}</span></>
+                    : <>Les commandes <span className="font-bold text-purple-500">expédiées</span> ou <span className="font-bold text-emerald-500">livrées</span> apparaîtront ici.</>}
+                </p>
+                {period !== '12m' && data?.last_sale_date && (
+                  <button onClick={() => { setPeriod('12m'); setHover(null); }}
+                    className="pointer-events-auto mt-1 text-xs font-bold text-brand-accent hover:underline">
+                    Voir les 12 derniers mois →
+                  </button>
+                )}
+              </div>
+            )}
             <svg
               ref={svgRef}
               viewBox={`0 0 ${W} ${H}`}
@@ -145,7 +180,8 @@ export function RevenueChart() {
                   <stop offset="0%" stopColor="#f5a623" stopOpacity="0.35" />
                   <stop offset="100%" stopColor="#f5a623" stopOpacity="0" />
                 </linearGradient>
-                <linearGradient id="rev-line" x1="0" x2="1" y1="0" y2="0">
+                {/* userSpaceOnUse: a bbox gradient renders nothing on a flat (zero-height) line */}
+                <linearGradient id="rev-line" gradientUnits="userSpaceOnUse" x1={0} x2={W} y1={0} y2={0}>
                   <stop offset="0%" stopColor="#f5a623" />
                   <stop offset="100%" stopColor="#ff6b35" />
                 </linearGradient>
@@ -213,7 +249,9 @@ export function RevenueChart() {
                 style={{
                   left: `calc(${(hoverPoint.x / W) * 100}% )`,
                   top: `calc(${(hoverPoint.y / H) * 100}% - 56px)`,
-                  transform: 'translateX(-50%)',
+                  // Keep the tooltip inside the card at the first/last points.
+                  transform: hoverPoint.x > W * 0.85 ? 'translateX(-100%)'
+                    : hoverPoint.x < W * 0.15 ? 'none' : 'translateX(-50%)',
                 }}
               >
                 <p className="text-[10px] opacity-60 font-mono">{hoverPoint.raw.date}</p>

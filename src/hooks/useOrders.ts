@@ -33,6 +33,7 @@ export function useUpdateOrderStatus() {
       qc.invalidateQueries({ queryKey: ['orders'] });
       qc.invalidateQueries({ queryKey: ['order', id] });
       qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      qc.invalidateQueries({ queryKey: ['revenue'] });
     },
   });
 }
