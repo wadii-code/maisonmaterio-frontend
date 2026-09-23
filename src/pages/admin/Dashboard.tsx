@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+﻿import { Seo } from '../../components/seo/Seo';
 import { motion } from 'framer-motion';
 import { DollarSign, ShoppingBag, Clock, AlertTriangle, ArrowUpRight } from 'lucide-react';
 import { useDashboardStats } from '../../hooks/useOrders';
@@ -47,7 +47,7 @@ export function AdminDashboard() {
 
   return (
     <>
-      <Helmet><title>Tableau de bord — Maison Materiau Admin</title></Helmet>
+      <Seo title="Tableau de bord — Admin" noindex />
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-black text-brand-heading text-center sm:text-left">Tableau de bord</h1>

@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+﻿import { Seo } from '../../components/seo/Seo';
 import { motion } from 'framer-motion';
 import { Star, Trash2, MessageCircle } from 'lucide-react';
 import { useAdminReviews, useDeleteReview } from '../../hooks/useReviews';
@@ -22,7 +22,7 @@ export function AdminReviews() {
 
   return (
     <>
-      <Helmet><title>Avis — Maison Materiau Admin</title></Helmet>
+      <Seo title="Avis — Admin" noindex />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-black text-brand-heading">Avis</h1>

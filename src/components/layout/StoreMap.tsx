@@ -1,15 +1,6 @@
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Navigation } from 'lucide-react';
-
-const STORE = {
-  address: 'Boulevard Mohammed V, Casablanca, Maroc',
-  phone: '+212 645-104432 ',
-  email: 'maisonmateriau@gmail.com',
-  hours: 'Mon - Sat: 10am - 8pm',
-  // Exact store coordinates (33°32'30.1"N 7°36'14.8"W)
-  lat: 33.541697,
-  lng: -7.604112,
-};
+import { STORE } from '../../lib/seo';
 
 export function StoreMap() {
   const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${STORE.lng - 0.01},${STORE.lat - 0.005},${STORE.lng + 0.01},${STORE.lat + 0.005}&layer=mapnik&marker=${STORE.lat},${STORE.lng}`;
@@ -76,7 +67,7 @@ export function StoreMap() {
                 </div>
                 <div>
                   <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-0.5">Téléphone</p>
-                  <a href={`tel:${STORE.phone}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.phone}</a>
+                  <a href={`tel:${STORE.phone}`} className="text-sm text-white/90 hover:text-brand-accent transition-colors">{STORE.phoneDisplay}</a>
                 </div>
               </div>
 

@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, User, MapPin, LogOut, ChevronRight, Clock } from 'lucide-react';
@@ -34,9 +34,10 @@ export function Account() {
   if (!user) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
+        <Seo title="Mon compte" noindex />
         <div className="text-center">
           <User size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold mb-4">Connectez-vous pour voir votre compte</h2>
+          <h1 className="text-xl font-bold mb-4">Connectez-vous pour voir votre compte</h1>
           <Button variant="primary" onClick={() => navigate('/auth')}>Connexion</Button>
         </div>
       </div>
@@ -50,7 +51,7 @@ export function Account() {
 
   return (
     <>
-      <Helmet><title>Mon compte — Maison Materiau</title></Helmet>
+      <Seo title="Mon compte" noindex />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
+import { breadcrumbJsonLd } from '../components/seo/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { MessageCircle, User, Phone, Tag, Sparkles, ArrowRight } from 'lucide-react';
 import { useCategories } from '../hooks/useProducts';
@@ -68,7 +69,12 @@ export function Personalize() {
 
   return (
     <>
-      <Helmet><title>{t('personalize.title')} — Maison Materiau</title></Helmet>
+      <Seo
+        title={t('personalize.title')}
+        description="Faites fabriquer un meuble sur mesure par Maison Materiau : dimensions, matériaux et finitions au choix. Devis gratuit par WhatsApp depuis Casablanca."
+        canonicalPath="/personalize"
+        jsonLd={breadcrumbJsonLd([{ label: 'Accueil', to: '/' }, { label: t('personalize.title') }])}
+      />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           {/* Hero */}

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Minus, Plus, ChevronRight, Truck, Shield, RotateCcw, Banknote } from 'lucide-react';
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Banknote } from 'lucide-react';
 import { useProduct, useProducts } from '../hooks/useProducts';
 import { useReviewEligibility, useCreateReview } from '../hooks/useReviews';
 import { useCartStore } from '../stores/cartStore';
@@ -16,25 +15,40 @@ import { ProductCard } from '../components/product/ProductCard';
 import { ProductCustomization } from '../components/product/ProductCustomization';
 import { ProductReviews } from '../components/product/ProductReviews';
 import { Skeleton } from '../components/ui/Skeleton';
+import { Seo } from '../components/seo/Seo';
+import { Breadcrumbs, breadcrumbJsonLd, type Crumb } from '../components/seo/Breadcrumbs';
+import { absoluteUrl, productPath, isUuid } from '../lib/seo';
 import toast from 'react-hot-toast';
 
 export function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
-  const { data: product, isLoading, error } = useProduct(id!);
+  // The route param is slug-first but still accepts a UUID, so older links and
+  // bookmarks keep resolving. Everything keyed on the product itself must use
+  // product.id, never this.
+  const { id: routeParam } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: product, isLoading, error } = useProduct(routeParam!);
+  const productId = product?.id ?? '';
   const { data: related } = useProducts(
     product?.categories?.slug ? { category: product.categories.slug, limit: 8 } : undefined
   );
   const addItem = useCartStore(s => s.addItem);
   const toggleWishlist = useWishlistStore(s => s.toggle);
-  const isInWishlist = useWishlistStore(s => (id ? s.has(id) : false));
+  const isInWishlist = useWishlistStore(s => (productId ? s.has(productId) : false));
   const { user } = useAuthStore();
-  const { data: eligibility } = useReviewEligibility(id ?? '', !!user && !!id);
-  const createReview = useCreateReview(id ?? '');
+  const { data: eligibility } = useReviewEligibility(productId, !!user && !!productId);
+  const createReview = useCreateReview(productId);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [customization, setCustomization] = useState<{ selections: Record<string, string>; price: number }>({ selections: {}, price: 0 });
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); }, [id]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); }, [routeParam]);
+
+  // Collapse legacy UUID URLs onto the slug so one product has one address.
+  useEffect(() => {
+    if (product?.slug && routeParam && isUuid(routeParam)) {
+      navigate(productPath(product), { replace: true });
+    }
+  }, [product, routeParam, navigate]);
 
   // IMPORTANT: this hook must be declared before any early returns
   // (otherwise React hook order mismatches cause a blank page).
@@ -71,6 +85,18 @@ export function ProductDetail() {
     ? product.images
     : [`https://placehold.co/600x600/f5f5f5/999?text=${encodeURIComponent(product.name)}`];
 
+  // Always the slug URL, even when reached via a UUID.
+  const canonicalPath = productPath(product);
+
+  const crumbs: Crumb[] = [
+    { label: 'Accueil', to: '/' },
+    { label: 'Boutique', to: '/products' },
+    ...(product.categories?.name && product.categories.slug
+      ? [{ label: product.categories.name, to: `/products?category=${product.categories.slug}` }]
+      : []),
+    { label: cleanProductName(product.name) },
+  ];
+
   const basePrice = product.discount_price ?? product.price;
   const discount = product.discount_price && product.price
     ? Math.round((1 - product.discount_price / product.price) * 100)
@@ -101,57 +127,49 @@ export function ProductDetail() {
 
   return (
     <>
-      <Helmet>
-        <title>{product.meta_title?.trim() || `${cleanProductName(product.name)} — Maison Materiau`}</title>
-        <meta name="description" content={product.meta_description?.trim() || product.description} />
-        {/* Open Graph */}
-        <meta property="og:type" content="product" />
-        <meta property="og:title" content={product.meta_title?.trim() || cleanProductName(product.name)} />
-        <meta property="og:description" content={product.meta_description?.trim() || product.description} />
-        {product.images?.[0] && <meta property="og:image" content={product.images[0]} />}
-        {/* Twitter card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={product.meta_title?.trim() || cleanProductName(product.name)} />
-        <meta name="twitter:description" content={product.meta_description?.trim() || product.description} />
-        {product.images?.[0] && <meta name="twitter:image" content={product.images[0]} />}
-        {/* Product / Offer structured data for Google rich results */}
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          name: cleanProductName(product.name),
-          description: product.seo_description?.trim() || product.description,
-          image: product.images ?? [],
-          sku: product.id,
-          brand: { '@type': 'Brand', name: 'Maison Materiau' },
-          ...(product.material ? { material: product.material } : {}),
-          ...(product.review_count > 0 ? {
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: product.rating,
-              reviewCount: product.review_count,
+      <Seo
+        type="product"
+        title={product.meta_title?.trim() || cleanProductName(product.name)}
+        description={product.meta_description?.trim() || product.description}
+        image={product.images?.[0]}
+        canonicalPath={canonicalPath}
+        jsonLd={[
+          breadcrumbJsonLd(crumbs),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: cleanProductName(product.name),
+            description: product.seo_description?.trim() || product.description,
+            image: product.images ?? [],
+            sku: product.id,
+            url: absoluteUrl(canonicalPath),
+            brand: { '@type': 'Brand', name: 'Maison Materiau' },
+            ...(product.material ? { material: product.material } : {}),
+            ...(product.categories?.name ? { category: product.categories.name } : {}),
+            ...(product.review_count > 0 ? {
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: product.rating,
+                reviewCount: product.review_count,
+              },
+            } : {}),
+            offers: {
+              '@type': 'Offer',
+              priceCurrency: 'MAD',
+              price: product.discount_price ?? product.price,
+              itemCondition: 'https://schema.org/NewCondition',
+              availability: product.stock > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+              url: absoluteUrl(canonicalPath),
             },
-          } : {}),
-          offers: {
-            '@type': 'Offer',
-            priceCurrency: 'MAD',
-            price: product.discount_price ?? product.price,
-            availability: product.stock > 0
-              ? 'https://schema.org/InStock'
-              : 'https://schema.org/OutOfStock',
-            url: typeof window !== 'undefined' ? window.location.href : undefined,
           },
-        })}</script>
-      </Helmet>
+        ]}
+      />
       <div className="pt-20 min-h-screen">
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-400 overflow-x-auto whitespace-nowrap">
-            <Link to="/" className="hover:text-brand-accent transition-colors">Accueil</Link>
-            <ChevronRight size={12} />
-            <Link to="/products" className="hover:text-brand-accent transition-colors">Boutique</Link>
-            <ChevronRight size={12} />
-            <span className="text-brand-text font-medium truncate">{cleanProductName(product.name)}</span>
-          </div>
+          <Breadcrumbs items={crumbs} />
         </div>
 
         {/* Main content */}
@@ -167,7 +185,7 @@ export function ProductDetail() {
               >
                 <img
                   src={images[selectedImage]}
-                  alt={product.name}
+                  alt={`${cleanProductName(product.name)} — photo ${selectedImage + 1} sur ${images.length}`}
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -177,11 +195,17 @@ export function ProductDetail() {
                     <button
                       key={i}
                       onClick={() => setSelectedImage(i)}
+                      aria-label={`Voir la photo ${i + 1} de ${cleanProductName(product.name)}`}
                       className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
                         selectedImage === i ? 'border-brand-accent' : 'border-transparent'
                       }`}
                     >
-                      <img src={img} alt="" className="w-full h-full object-cover" />
+                      <img
+                        src={img}
+                        alt={`${cleanProductName(product.name)} — miniature ${i + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>

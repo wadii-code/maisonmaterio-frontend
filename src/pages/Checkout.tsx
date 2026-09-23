@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Truck, ShoppingBag, Banknote, MapPin, Phone, ShieldCheck } from 'lucide-react';
@@ -35,13 +35,16 @@ export function Checkout() {
 
   if (items.length === 0 && step !== 'confirmation') {
     return (
-      <div className="pt-20 min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-bold text-brand-heading mb-2">Votre panier est vide</h2>
-          <Button variant="primary" onClick={() => navigate('/products')}>Acheter maintenant</Button>
+      <>
+        <Seo title="Paiement" noindex />
+        <div className="pt-20 min-h-screen flex items-center justify-center px-4">
+          <div className="text-center">
+            <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
+            <h1 className="text-xl font-bold text-brand-heading mb-2">Votre panier est vide</h1>
+            <Button variant="primary" onClick={() => navigate('/products')}>Acheter maintenant</Button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -78,7 +81,7 @@ export function Checkout() {
 
   return (
     <>
-      <Helmet><title>Paiement — Maison Materiau</title></Helmet>
+      <Seo title="Paiement" noindex />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           {/* Step progress */}

@@ -1,5 +1,4 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SlidersHorizontal, ChevronDown, X, Package } from 'lucide-react';
@@ -8,6 +7,9 @@ import { ProductCard } from '../components/product/ProductCard';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
 import { Button } from '../components/ui/Button';
 import { FilterPanel, type FilterValues } from '../components/product/FilterPanel';
+import { Seo } from '../components/seo/Seo';
+import { Breadcrumbs, breadcrumbJsonLd, type Crumb } from '../components/seo/Breadcrumbs';
+import { absoluteUrl, productPath } from '../lib/seo';
 
 const SORT_OPTIONS = [
   { value: 'created_at-desc', label: 'Plus récents' },
@@ -84,17 +86,61 @@ export function Products() {
     ? categories?.find(c => c.slug === filters.category)?.name
     : null;
 
+  const heading = categoryName ?? 'Tous les produits';
+
+  // Price/sort/pagination permutations are the same listing to a crawler, so
+  // they all fold into one canonical. Category and room are genuinely distinct
+  // landing pages and keep their own.
+  const canonicalPath = filters.category
+    ? `/products?category=${filters.category}`
+    : filters.room
+      ? `/products?room=${filters.room}`
+      : '/products';
+
+  const crumbs: Crumb[] = [
+    { label: 'Accueil', to: '/' },
+    ...(categoryName
+      ? [{ label: 'Boutique', to: '/products' }, { label: categoryName }]
+      : [{ label: 'Boutique' }]),
+  ];
+
+  const description = categoryName
+    ? `${heading} — découvrez notre sélection ${heading.toLowerCase()} chez Maison Materiau. Livraison partout au Maroc depuis notre showroom de Casablanca.`
+    : 'Parcourez tout le catalogue Maison Materiau : mobilier, décoration d’intérieur et matériaux de construction premium. Livraison partout au Maroc.';
+
   return (
     <>
-      <Helmet>
-        <title>{categoryName ?? 'Tous les produits'} — Maison Materiau</title>
-      </Helmet>
+      <Seo
+        title={heading}
+        description={description}
+        canonicalPath={canonicalPath}
+        // Search result pages are thin and infinitely variable — never index them.
+        noindex={!!filters.search}
+        jsonLd={[
+          breadcrumbJsonLd(crumbs),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: heading,
+            numberOfItems: products.length,
+            itemListElement: products.map((product, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: absoluteUrl(productPath(product)),
+              name: product.name,
+            })),
+          },
+        ]}
+      />
       <div className="pt-20 min-h-screen bg-white">
         {/* Page Header */}
         <div className="bg-brand-card py-10 lg:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-4">
+              <Breadcrumbs items={crumbs} />
+            </div>
             <h1 className="text-3xl lg:text-4xl font-black text-brand-heading">
-              {categoryName ?? 'Tous les produits'}
+              {heading}
             </h1>
             <p className="text-gray-500 mt-2 text-sm">
               {pagination?.total ?? 0} {pagination?.total === 1 ? 'produit trouvé' : 'produits trouvés'}

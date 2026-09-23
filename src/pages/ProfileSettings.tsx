@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, Save, ChevronLeft, KeyRound } from 'lucide-react';
@@ -58,7 +58,7 @@ export function ProfileSettings() {
 
   return (
     <>
-      <Helmet><title>Paramètres du profil — Maison Materiau</title></Helmet>
+      <Seo title="Paramètres du profil" noindex />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account" className="inline-flex items-center gap-1 text-sm font-bold text-gray-500 hover:text-brand-accent transition-colors mb-6">

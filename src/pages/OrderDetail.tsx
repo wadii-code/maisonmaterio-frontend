@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Package, MapPin, Phone, Banknote, Clock, CheckCircle, Truck, XCircle, Ban } from 'lucide-react';
@@ -93,7 +93,7 @@ export function OrderDetail() {
 
   return (
     <>
-      <Helmet><title>Commande #{order.id.slice(0, 8).toUpperCase()} — Maison Materiau</title></Helmet>
+      <Seo title={`Commande #${order.id.slice(0, 8).toUpperCase()}`} noindex />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Link to="/account/orders" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-accent mb-6 transition-colors">

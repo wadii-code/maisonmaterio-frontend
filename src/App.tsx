@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
@@ -66,7 +65,7 @@ export default function App() {
   }, [setSession, hydrateWishlist]);
 
   return (
-    <HelmetProvider>
+    <>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -112,6 +111,6 @@ export default function App() {
         {/* Any unknown path falls back to the home page */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </HelmetProvider>
+    </>
   );
 }

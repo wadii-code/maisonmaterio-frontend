@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+﻿import { useState } from 'react';
+import { Seo } from '../../components/seo/Seo';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Search, User, Phone as PhoneIcon, Calendar, ShoppingBag, DollarSign } from 'lucide-react';
@@ -34,7 +34,7 @@ export function AdminCustomers() {
 
   return (
     <>
-      <Helmet><title>Clients — Maison Materiau Admin</title></Helmet>
+      <Seo title="Clients — Admin" noindex />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-black text-brand-heading">Clients</h1>

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+﻿import { useState } from 'react';
+import { Seo } from '../../components/seo/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, FolderTree, Image as ImageIcon } from 'lucide-react';
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from '../../hooks/useProducts';
@@ -59,7 +59,7 @@ export function AdminCategories() {
 
   return (
     <>
-      <Helmet><title>Catégories — Maison Materiau Admin</title></Helmet>
+      <Seo title="Catégories — Admin" noindex />
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

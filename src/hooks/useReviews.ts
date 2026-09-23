@@ -41,7 +41,9 @@ export function useCreateReview(productId: string) {
     mutationFn: (data: { rating: number; comment: string }) =>
       req(`/reviews`, { method: 'POST', body: JSON.stringify({ product_id: productId, ...data }) }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['product', productId] });
+      // Product queries are keyed by the URL param (slug or id), which is not
+      // necessarily this productId — invalidate the whole prefix instead.
+      qc.invalidateQueries({ queryKey: ['product'] });
       qc.invalidateQueries({ queryKey: ['review-eligibility', productId] });
     },
   });

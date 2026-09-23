@@ -6,6 +6,7 @@ import { StarRating } from '../ui/StarRating';
 import { useCartStore } from '../../stores/cartStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
 import { formatPrice, cleanProductName } from '../../lib/format';
+import { productPath } from '../../lib/seo';
 import type { Product } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -42,10 +43,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       whileHover={{ y: -4 }}
       className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
     >
-      <Link to={`/products/${product.id}`} className="block relative overflow-hidden aspect-square bg-brand-card">
+      <Link to={productPath(product)} className="block relative overflow-hidden aspect-square bg-brand-card">
         <img
           src={primaryImage}
-          alt={product.name}
+          alt={cleanProductName(product.name)}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
@@ -81,7 +82,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
       <div className="p-4 space-y-2">
         <StarRating rating={product.rating} count={product.review_count} />
-        <Link to={`/products/${product.id}`}>
+        <Link to={productPath(product)}>
           <h3 className="text-sm font-semibold text-brand-heading line-clamp-2 hover:text-brand-accent transition-colors">
             {cleanProductName(product.name)}
           </h3>

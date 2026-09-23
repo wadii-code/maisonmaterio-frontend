@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Trash2, X, ArrowRight } from 'lucide-react';
@@ -8,6 +7,8 @@ import { Button } from '../components/ui/Button';
 import { StarRating } from '../components/ui/StarRating';
 import { Badge } from '../components/ui/Badge';
 import { formatPrice, cleanProductName } from '../lib/format';
+import { productPath } from '../lib/seo';
+import { Seo } from '../components/seo/Seo';
 import toast from 'react-hot-toast';
 
 export function Wishlist() {
@@ -29,7 +30,7 @@ export function Wishlist() {
 
   return (
     <>
-      <Helmet><title>Ma liste de souhaits — Maison Materiau</title></Helmet>
+      <Seo title="Ma liste de souhaits" noindex />
       <div className="pt-20 min-h-screen bg-white">
         <div className="bg-brand-card py-10 lg:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-4">
@@ -97,10 +98,10 @@ export function Wishlist() {
                       whileHover={{ y: -4 }}
                       className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow"
                     >
-                      <Link to={`/products/${product.id}`} className="block relative aspect-square bg-brand-card overflow-hidden">
+                      <Link to={productPath(product)} className="block relative aspect-square bg-brand-card overflow-hidden">
                         <img
                           src={img}
-                          alt={product.name}
+                          alt={cleanProductName(product.name)}
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
@@ -126,7 +127,7 @@ export function Wishlist() {
                         {product.review_count > 0 && (
                           <StarRating rating={product.rating} count={product.review_count} />
                         )}
-                        <Link to={`/products/${product.id}`}>
+                        <Link to={productPath(product)}>
                           <h3 className="text-sm font-semibold text-brand-heading line-clamp-2 hover:text-brand-accent transition-colors min-h-[2.5rem]">
                             {cleanProductName(product.name)}
                           </h3>

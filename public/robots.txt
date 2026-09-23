@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Private and transactional areas. No search value, and crawling them just
+# burns crawl budget that belongs on the catalogue.
+Disallow: /admin
+Disallow: /account
+Disallow: /checkout
+Disallow: /auth
+Disallow: /wishlist
+
+# Search and filter permutations are handled by the canonical tag and by
+# noindex on search results — deliberately NOT blocked here, because a URL
+# blocked in robots.txt can never be crawled to discover its noindex.
+
+# Rewritten at build time with the real origin (scripts/generate-sitemap.mjs).
+Sitemap: /sitemap.xml

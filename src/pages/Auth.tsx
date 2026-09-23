@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, CheckCircle, Loader2, AlertTriangle } from 'lucide-react';
@@ -209,7 +209,7 @@ export function Auth() {
 
   return (
     <>
-      <Helmet><title>{heading} — Maison Materiau</title></Helmet>
+      <Seo title={heading} noindex />
       <div className="min-h-screen bg-brand-card flex">
         {/* Visual side */}
         <div className="hidden lg:flex w-1/2 relative bg-brand-dark items-center justify-center overflow-hidden">
@@ -218,8 +218,9 @@ export function Auth() {
             alt="Maison Materiau interior"
             className="absolute inset-0 w-full h-full object-cover opacity-30"
           />
-          <div className="relative z-10 text-center px-12">
-            <h1 className="text-6xl font-black text-white mb-4">Maison Materiau</h1>
+          {/* Decorative brand panel — the page's real h1 is the form heading. */}
+          <div className="relative z-10 text-center px-12" aria-hidden="true">
+            <p className="text-6xl font-black text-white mb-4">Maison Materiau</p>
             <p className="text-white/60 text-lg">Illuminez votre espace</p>
           </div>
         </div>
@@ -234,7 +235,7 @@ export function Auth() {
               className="bg-white rounded-3xl p-8 shadow-sm"
             >
               <div className="mb-8">
-                <h2 className="text-2xl font-black text-brand-heading">{heading}</h2>
+                <h1 className="text-2xl font-black text-brand-heading">{heading}</h1>
                 <p className="text-gray-400 text-sm mt-1">{subheading}</p>
               </div>
 

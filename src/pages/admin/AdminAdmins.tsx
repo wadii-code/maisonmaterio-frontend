@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+﻿import { useState } from 'react';
+import { Seo } from '../../components/seo/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ShieldCheck, ShieldAlert, Mail, Lock, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 import { useAdmins, useCreateAdmin, useUpdateAdmin, useDeleteAdmin } from '../../hooks/useAdmins';
@@ -105,7 +105,7 @@ export function AdminAdmins() {
 
   return (
     <>
-      <Helmet><title>Administrateurs — SWIPO Admin</title></Helmet>
+      <Seo title="Administrateurs — Admin" noindex />
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

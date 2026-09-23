@@ -1,4 +1,5 @@
-import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { Seo } from '../components/seo/Seo';
+import { organizationJsonLd, websiteJsonLd, localBusinessJsonLd } from '../lib/structuredData';
 import { Hero } from '../components/home/Hero';
 import { Categories } from '../components/home/Categories';
 import { RoomSection } from '../components/home/RoomSection';
@@ -8,10 +9,12 @@ import { StoreMap } from '../components/layout/StoreMap';
 export function Home() {
   return (
     <>
-      <Helmet>
-        <title>Maison Materiau</title>
-        <meta name="description" content="Décorations, mobilier et matériaux de construction premium. Plus de 200 produits uniques." />
-      </Helmet>
+      <Seo
+        title="Maison Materiau — Mobilier, décoration & matériaux de construction à Casablanca"
+        description="Mobilier haut de gamme, décoration d’intérieur et matériaux de construction à Casablanca. Plus de 200 produits uniques, livraison partout au Maroc."
+        canonicalPath="/"
+        jsonLd={[organizationJsonLd(), websiteJsonLd(), localBusinessJsonLd()]}
+      />
       <Hero />
       <Categories />
       <RoomSection />

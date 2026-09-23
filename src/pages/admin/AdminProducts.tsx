@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+﻿import { useState } from 'react';
+import { Seo } from '../../components/seo/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Search, ToggleLeft, ToggleRight, X, Save, Upload } from 'lucide-react';
 import { useProducts, useCategories, useRooms, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useProducts';
@@ -128,7 +128,7 @@ export function AdminProducts() {
 
   return (
     <>
-      <Helmet><title>Produits — Maison Materiau Admin</title></Helmet>
+      <Seo title="Produits — Admin" noindex />
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

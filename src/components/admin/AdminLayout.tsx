@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { LayoutDashboard, Package, FolderTree, ShoppingBag, Users, LogOut, Menu, X, ShieldAlert, RefreshCw, LogIn, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../ui/Button';
+import { Seo } from '../seo/Seo';
 
 type NavItem = { icon: any; label: string; to: string; superOnly?: boolean };
 
@@ -46,6 +47,7 @@ export function AdminLayout() {
   if (!initialized || refreshing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Seo title="Admin" noindex />
         <div className="text-center">
           <div className="animate-spin w-10 h-10 border-4 border-brand-accent border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-sm text-gray-500 font-semibold">Vérification de l'accès administrateur…</p>
@@ -58,6 +60,7 @@ export function AdminLayout() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <Seo title="Connexion requise — Admin" noindex />
         <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center shadow-sm">
           <div className="w-16 h-16 bg-brand-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <LogIn size={28} className="text-brand-accent" />
@@ -76,6 +79,7 @@ export function AdminLayout() {
   if (!isAdmin()) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <Seo title="Accès refusé — Admin" noindex />
         <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center shadow-sm">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <ShieldAlert size={28} className="text-red-500" />
@@ -102,7 +106,7 @@ export function AdminLayout() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
               <p className="text-xs font-bold text-amber-700 mb-2">Si vous venez de vous promouvoir dans Supabase&nbsp;:</p>
               <ol className="text-xs text-amber-700 space-y-1 list-decimal list-inside">
-                <li>Cliquez sur «&nbsp;Actualiser le profil&nbsp;» ci-dessous — pas besoin de se déconnecter</li>
+                <li>Cliquez sur «&nbsp;Actualiser le profil&nbsp;» ci-dessous, pas besoin de se déconnecter</li>
                 <li>Ou déconnectez-vous puis reconnectez-vous</li>
                 <li>Vérifiez dans Supabase&nbsp;:</li>
               </ol>

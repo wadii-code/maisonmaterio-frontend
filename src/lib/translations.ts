@@ -208,7 +208,7 @@ export const translations = {
 
     // Personalize
     'personalize.title': 'Personnalisez votre produit',
-    'personalize.subtitle': 'Dites-nous exactement ce que vous voulez — nous le créerons pour vous.',
+    'personalize.subtitle': 'Dites-nous exactement ce que vous voulez, nous le créerons pour vous.',
     'personalize.category': 'Catégorie de produit',
     'personalize.categoryPlaceholder': 'Choisissez une catégorie',
     'personalize.fullName': 'Nom complet',

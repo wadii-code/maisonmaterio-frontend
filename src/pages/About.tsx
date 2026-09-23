@@ -1,8 +1,12 @@
-import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Award, Sparkles, Truck, ShieldCheck, Heart, Users, ArrowRight, Quote } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { Seo } from '../components/seo/Seo';
+import { breadcrumbJsonLd, type Crumb } from '../components/seo/Breadcrumbs';
+import { organizationJsonLd } from '../lib/structuredData';
+
+const CRUMBS: Crumb[] = [{ label: 'Accueil', to: '/' }, { label: 'À propos' }];
 
 const VALUES = [
   { icon: Award, title: 'La qualité d\'abord', text: 'Chaque pièce est sélectionnée par nos designers — conçue pour durer au-delà des tendances.' },
@@ -20,14 +24,19 @@ const STATS = [
 export function About() {
   return (
     <>
-      <Helmet><title>À propos — Maison Materiau</title></Helmet>
+      <Seo
+        title="À propos"
+        description="L’histoire de Maison Materiau : une équipe de designers et d’artisans à Casablanca qui sélectionne du mobilier, de la décoration et des matériaux conçus pour durer."
+        canonicalPath="/about"
+        jsonLd={[breadcrumbJsonLd(CRUMBS), organizationJsonLd()]}
+      />
       <div className="pt-20">
         {/* Hero */}
         <section className="relative bg-brand-dark text-white overflow-hidden">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=1600&q=80"
-              alt=""
+              alt="Intérieur meublé par Maison Materiau"
               className="w-full h-full object-cover opacity-30"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/80 via-brand-dark/60 to-brand-dark" />
@@ -93,7 +102,7 @@ export function About() {
               </h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 Pendant trop longtemps, le mobilier design est resté réservé à ceux prêts à payer le prix fort.
-                Nous travaillons directement avec les fabricants — sans intermédiaires — pour vous offrir des
+                Nous travaillons directement avec les fabricants sans intermédiaires, pour vous offrir des
                 pièces conçues avec soin, à un prix qui respecte votre budget.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -109,8 +118,8 @@ export function About() {
               viewport={{ once: true }}
               className="order-1 lg:order-2 grid grid-cols-2 gap-3"
             >
-              <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="" className="rounded-2xl aspect-[3/4] object-cover" />
-              <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80" alt="" className="rounded-2xl aspect-[3/4] object-cover translate-y-8" />
+              <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="Salon aménagé avec du mobilier Maison Materiau" loading="lazy" className="rounded-2xl aspect-[3/4] object-cover" />
+              <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80" alt="Détail d’un fauteuil en tissu de la collection Maison Materiau" loading="lazy" className="rounded-2xl aspect-[3/4] object-cover translate-y-8" />
             </motion.div>
           </div>
         </section>

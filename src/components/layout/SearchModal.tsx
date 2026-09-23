@@ -4,6 +4,7 @@ import { Search, X, TrendingUp, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { formatPrice, cleanProductName } from '../../lib/format';
+import { productPath } from '../../lib/seo';
 import type { Product } from '../../types';
 
 interface SearchModalProps {
@@ -145,11 +146,11 @@ function SearchResultItem({ product, onSelect }: { product: Product; onSelect: (
   const price = product.discount_price ?? product.price;
   const img = product.images?.[0] ?? `https://placehold.co/64x64/f5f5f5/999?text=${encodeURIComponent(product.name)}`;
   return (
-    <Link to={`/products/${product.id}`} onClick={onSelect}
+    <Link to={productPath(product)} onClick={onSelect}
       className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors group"
     >
       <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-        <img src={img} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+        <img src={img} alt={cleanProductName(product.name)} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-brand-heading line-clamp-1 group-hover:text-brand-accent transition-colors">{cleanProductName(product.name)}</p>

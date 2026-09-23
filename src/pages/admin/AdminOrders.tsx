@@ -1,6 +1,6 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../../components/seo/Seo';
 import { motion } from 'framer-motion';
 import { ChevronDown, Search, Eye, X } from 'lucide-react';
 import { useOrders, useUpdateOrderStatus, useOrder } from '../../hooks/useOrders';
@@ -72,7 +72,7 @@ export function AdminOrders() {
 
   return (
     <>
-      <Helmet><title>Commandes — Maison Materiau Admin</title></Helmet>
+      <Seo title="Commandes — Admin" noindex />
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

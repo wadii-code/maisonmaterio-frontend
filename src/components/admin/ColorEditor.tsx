@@ -45,7 +45,7 @@ export function ColorEditor({ value, onChange }: ColorEditorProps) {
         <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center">
           <Palette size={20} className="mx-auto text-gray-300 mb-2" />
           <p className="text-sm font-semibold text-gray-500 mb-1">Aucune variante de couleur</p>
-          <p className="text-xs text-gray-400">Ajoutez des couleurs pour que vos clients puissent choisir — chacune peut avoir son propre prix.</p>
+          <p className="text-xs text-gray-400">Ajoutez des couleurs pour que vos clients puissent choisir, chacune peut avoir son propre prix.</p>
         </div>
       ) : (
         <div className="space-y-2">
