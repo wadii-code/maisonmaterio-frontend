@@ -8,17 +8,8 @@
  */
 import { writeFile, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { loadEnv } from 'vite';
-
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const distDir = resolve(root, 'dist');
-const env = { ...loadEnv('production', root, 'VITE_'), ...process.env };
-
-const SITE_URL = (env.VITE_SITE_URL || '').replace(/\/+$/, '');
-const SUPABASE_URL = (env.VITE_SUPABASE_URL || '').replace(/\/+$/, '');
-const SUPABASE_KEY = env.VITE_SUPABASE_ANON_KEY || '';
+import { resolve } from 'node:path';
+import { distDir, SITE_URL, hasSupabase, fetchTable } from './site.mjs';
 
 const STATIC_ROUTES = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
@@ -30,16 +21,8 @@ const STATIC_ROUTES = [
 const escapeXml = (value) =>
   String(value).replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]);
 
-async function fetchTable(table, query) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-  });
-  if (!res.ok) throw new Error(`${table}: HTTP ${res.status} ${await res.text()}`);
-  return res.json();
-}
-
 async function collectDynamicUrls() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
+  if (!hasSupabase) {
     console.warn('[sitemap] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY missing — static routes only.');
     return [];
   }
@@ -89,10 +72,6 @@ async function stampRobots() {
 }
 
 async function main() {
-  if (!SITE_URL) {
-    console.warn('[sitemap] VITE_SITE_URL is not set — skipping. Set it so canonical URLs and the sitemap agree.');
-    return;
-  }
   if (!existsSync(distDir)) {
     console.warn('[sitemap] dist/ not found — run this after `vite build`.');
     return;

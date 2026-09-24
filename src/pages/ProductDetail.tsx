@@ -16,8 +16,10 @@ import { ProductCustomization } from '../components/product/ProductCustomization
 import { ProductReviews } from '../components/product/ProductReviews';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Seo } from '../components/seo/Seo';
-import { Breadcrumbs, breadcrumbJsonLd, type Crumb } from '../components/seo/Breadcrumbs';
-import { absoluteUrl, productPath, isUuid } from '../lib/seo';
+import { Breadcrumbs } from '../components/seo/Breadcrumbs';
+import { productPath, isUuid } from '../lib/seo';
+import { productSeo } from '../lib/pageSeo';
+import { productCrumbs } from '../lib/structuredData';
 import toast from 'react-hot-toast';
 
 export function ProductDetail() {
@@ -75,6 +77,7 @@ export function ProductDetail() {
   if (error || !product) {
     return (
       <div className="pt-20 flex flex-col items-center justify-center min-h-[60vh] text-gray-400 px-4">
+        <Seo title="Produit introuvable" noindex />
         <p className="text-xl font-semibold">Produit introuvable</p>
         <Link to="/products" className="mt-4 text-brand-accent underline">Parcourir tous les produits</Link>
       </div>
@@ -85,17 +88,7 @@ export function ProductDetail() {
     ? product.images
     : [`https://placehold.co/600x600/f5f5f5/999?text=${encodeURIComponent(product.name)}`];
 
-  // Always the slug URL, even when reached via a UUID.
-  const canonicalPath = productPath(product);
-
-  const crumbs: Crumb[] = [
-    { label: 'Accueil', to: '/' },
-    { label: 'Boutique', to: '/products' },
-    ...(product.categories?.name && product.categories.slug
-      ? [{ label: product.categories.name, to: `/products?category=${product.categories.slug}` }]
-      : []),
-    { label: cleanProductName(product.name) },
-  ];
+  const crumbs = productCrumbs(product);
 
   const basePrice = product.discount_price ?? product.price;
   const discount = product.discount_price && product.price
@@ -127,45 +120,7 @@ export function ProductDetail() {
 
   return (
     <>
-      <Seo
-        type="product"
-        title={product.meta_title?.trim() || cleanProductName(product.name)}
-        description={product.meta_description?.trim() || product.description}
-        image={product.images?.[0]}
-        canonicalPath={canonicalPath}
-        jsonLd={[
-          breadcrumbJsonLd(crumbs),
-          {
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: cleanProductName(product.name),
-            description: product.seo_description?.trim() || product.description,
-            image: product.images ?? [],
-            sku: product.id,
-            url: absoluteUrl(canonicalPath),
-            brand: { '@type': 'Brand', name: 'Maison Materiau' },
-            ...(product.material ? { material: product.material } : {}),
-            ...(product.categories?.name ? { category: product.categories.name } : {}),
-            ...(product.review_count > 0 ? {
-              aggregateRating: {
-                '@type': 'AggregateRating',
-                ratingValue: product.rating,
-                reviewCount: product.review_count,
-              },
-            } : {}),
-            offers: {
-              '@type': 'Offer',
-              priceCurrency: 'MAD',
-              price: product.discount_price ?? product.price,
-              itemCondition: 'https://schema.org/NewCondition',
-              availability: product.stock > 0
-                ? 'https://schema.org/InStock'
-                : 'https://schema.org/OutOfStock',
-              url: absoluteUrl(canonicalPath),
-            },
-          },
-        ]}
-      />
+      <Seo {...productSeo(product)} />
       <div className="pt-20 min-h-screen">
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -375,39 +330,6 @@ export function ProductDetail() {
           )}
         </div>
 
-        {/*
-          SEO content — long-form keyword-rich description that's part of the rendered HTML
-          (so Google crawls and indexes it) but visually hidden from users.
-          We use the .sr-only-style pattern instead of `display:none` because search engines
-          discount truly hidden content but treat off-screen-positioned content as indexable.
-        */}
-        {product.seo_description && product.seo_description.trim().length > 0 && (
-          <section
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              width: '1px',
-              height: '1px',
-              padding: 0,
-              margin: '-1px',
-              overflow: 'hidden',
-              clip: 'rect(0, 0, 0, 0)',
-              whiteSpace: 'normal',
-              border: 0,
-            }}
-          >
-            <h2>{cleanProductName(product.name)}</h2>
-            {product.categories?.name && <p>Catégorie : {product.categories.name}</p>}
-            {product.material && <p>Matériau : {product.material}</p>}
-            {product.dimensions && <p>Dimensions&nbsp;: {product.dimensions}</p>}
-            {product.tags?.length > 0 && <p>Mots-clés : {product.tags.join(', ')}</p>}
-            <div>
-              {product.seo_description.split(/\n\n+/).map((paragraph, i) => (
-                <p key={i}>{paragraph}</p>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </>
   );

@@ -417,13 +417,13 @@ export function AdminProducts() {
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mb-4">
-                        Ces champs ne sont pas affichés visuellement aux clients mais sont présents dans le HTML pour les moteurs de recherche.
+                        Le meta title et la meta description définissent le titre et l’extrait affichés dans les résultats Google.
                       </p>
                     </div>
 
                     <div className="col-span-full">
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                        Description SEO (longue, riche en mots-clés)
+                        Mots-clés (notes internes, non publiées)
                       </label>
                       <textarea
                         rows={6}
@@ -431,11 +431,11 @@ export function AdminProducts() {
                         value={form.seo_description}
                         onChange={e => setField('seo_description', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-brand-accent text-sm resize-y"
-                        placeholder="Description longue avec mots-clés pour le référencement Google. Décrivez les matériaux, les usages, les pièces de la maison, les avantages, les marques associées, les termes de recherche fréquents…"
+                        placeholder="Termes que vos clients recherchent, pour vous aider à rédiger le titre et la description…"
                       />
                       <div className="flex items-center justify-between mt-1.5">
                         <p className="text-[11px] text-gray-400">
-                          Idéalement 300–1500 caractères. Inclut des termes de recherche que les clients utilisent.
+                          Pas affiché sur le site : Google pénalise le texte caché et les listes de mots-clés. Utilisez ces termes naturellement dans la description visible.
                         </p>
                         <span className={`text-[11px] font-mono ${form.seo_description.length > 9500 ? 'text-red-500' : 'text-gray-400'}`}>
                           {form.seo_description.length} / 10000

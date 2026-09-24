@@ -1,34 +1,25 @@
 import { useId, useInsertionEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  SITE_NAME,
-  OG_LOCALE,
-  DEFAULT_DESCRIPTION,
-  DEFAULT_OG_IMAGE,
-  absoluteUrl,
-  buildTitle,
-  clampDescription,
-} from '../../lib/seo';
+import { buildHeadTags, type MetaSpec, type SeoOptions } from '../../lib/seo';
 
 /**
  * Head manager for this SPA.
  *
  * Replaces react-helmet-async, which silently stopped applying tags here (the
  * package is unmaintained and misbehaves under React 18 concurrent rendering).
- * Nothing in this app is server-rendered, so a direct document.head sync is
- * both simpler and deterministic.
+ * A direct document.head sync is both simpler and deterministic.
  *
  * Render at most one <Seo> per route: the last one mounted wins.
  */
 
 const OWNER = 'data-seo-owner';
 
-type MetaSpec = { key: 'name' | 'property'; value: string; content: string };
-
 function syncHead(ownerId: string, title: string, metas: MetaSpec[], canonical: string, jsonLd: object[]) {
-  // Drop everything this instance created last time; tags it merely updated
-  // (the static ones from index.html) are overwritten below instead.
-  document.head.querySelectorAll(`[${OWNER}="${ownerId}"]`).forEach(node => node.remove());
+  // Drop what this instance created last time and any prerendered JSON-LD;
+  // existing meta tags (index.html, prerender) are overwritten below instead.
+  document.head
+    .querySelectorAll(`[${OWNER}="${ownerId}"], script[data-prerender]`)
+    .forEach(node => node.remove());
 
   document.title = title;
 
@@ -63,67 +54,26 @@ function syncHead(ownerId: string, title: string, metas: MetaSpec[], canonical: 
   }
 }
 
-interface SeoProps {
-  title?: string;
-  description?: string | null;
-  image?: string | null;
-  /** Canonical path override. Defaults to the current pathname (query dropped). */
-  canonicalPath?: string;
-  /** Private or transactional pages that must stay out of the index. */
-  noindex?: boolean;
-  type?: 'website' | 'product' | 'article';
-  jsonLd?: object | object[];
+interface SeoProps extends SeoOptions {
   children?: ReactNode;
 }
 
-export function Seo({
-  title,
-  description,
-  image,
-  canonicalPath,
-  noindex = false,
-  type = 'website',
-  jsonLd,
-}: SeoProps) {
+export function Seo(props: SeoProps) {
   const { pathname } = useLocation();
   const ownerId = useId();
 
-  const canonical = absoluteUrl(canonicalPath ?? pathname);
-  const fullTitle = buildTitle(title);
-  const desc = clampDescription(description) || DEFAULT_DESCRIPTION;
-  const ogImage = absoluteUrl(image || DEFAULT_OG_IMAGE);
-  const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
-  const serializedBlocks = JSON.stringify(blocks);
-
-  const metas: MetaSpec[] = [
-    { key: 'name', value: 'description', content: desc },
-    {
-      key: 'name',
-      value: 'robots',
-      content: noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1',
-    },
-    { key: 'property', value: 'og:site_name', content: SITE_NAME },
-    { key: 'property', value: 'og:type', content: type },
-    { key: 'property', value: 'og:title', content: fullTitle },
-    { key: 'property', value: 'og:description', content: desc },
-    { key: 'property', value: 'og:url', content: canonical },
-    { key: 'property', value: 'og:image', content: ogImage },
-    { key: 'property', value: 'og:locale', content: OG_LOCALE },
-    { key: 'name', value: 'twitter:card', content: 'summary_large_image' },
-    { key: 'name', value: 'twitter:title', content: fullTitle },
-    { key: 'name', value: 'twitter:description', content: desc },
-    { key: 'name', value: 'twitter:image', content: ogImage },
-  ];
+  const { title, metas, canonical, jsonLd } = buildHeadTags(props, pathname);
+  const serializedMetas = JSON.stringify(metas);
+  const serializedBlocks = JSON.stringify(jsonLd);
 
   // Insertion effects run before paint and before layout effects, so crawlers
   // and the tab title never flash the index.html fallback.
   useInsertionEffect(() => {
-    syncHead(ownerId, fullTitle, metas, canonical, JSON.parse(serializedBlocks));
+    syncHead(ownerId, title, JSON.parse(serializedMetas), canonical, JSON.parse(serializedBlocks));
     return () => {
       document.head.querySelectorAll(`[${OWNER}="${ownerId}"]`).forEach(node => node.remove());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ownerId, fullTitle, desc, canonical, ogImage, type, noindex, serializedBlocks]);
+  }, [ownerId, title, canonical, serializedMetas, serializedBlocks]);
 
   return null;
 }

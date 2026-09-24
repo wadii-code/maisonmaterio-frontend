@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f5a623" />
 
-    <!-- Fallbacks for crawlers that don't execute JS. Per-page values are
-         rendered by react-helmet-async and override everything below. -->
+    <!-- scripts/prerender.mjs replaces the seo block per page. No canonical or
+         og:url here: this file is served for every non-prerendered route. -->
+    <!-- seo:start -->
     <title>Maison Materiau — Mobilier, décoration &amp; matériaux de construction à Casablanca</title>
     <meta
       name="description"
@@ -18,14 +19,28 @@
     <meta property="og:site_name" content="Maison Materiau" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_MA" />
-    <meta property="og:image" content="/MAISONMATERIOLOGO.png" />
+    <meta property="og:title" content="Maison Materiau — Mobilier, décoration &amp; matériaux de construction à Casablanca" />
+    <meta property="og:description" content="Mobilier haut de gamme, décoration d’intérieur et matériaux de construction à Casablanca. Plus de 200 produits uniques, livraison partout au Maroc." />
+    <meta property="og:image" content="https://www.maisonmateriau.com/MAISONMATERIOLOGO.png" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.maisonmateriau.com/MAISONMATERIOLOGO.png" />
+    <!-- seo:end -->
+
+    <!-- Crawler-only copy on prerendered pages; React replaces it on mount. -->
+    <style>[data-prerender]{display:none}</style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/index-B-3bGlFE.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Ds4S25IX.css">
+    <script type="module" crossorigin src="/assets/index-GboYW8Ai.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/Seo-lzaq8eQR.js">
+    <link rel="modulepreload" crossorigin href="/assets/supabase-DiMj8ZG9.js">
+    <link rel="modulepreload" crossorigin href="/assets/api-CM3AXsUg.js">
+    <link rel="modulepreload" crossorigin href="/assets/useQuery-JuxAwll2.js">
+    <link rel="modulepreload" crossorigin href="/assets/useMutation-B2ouxwwY.js">
+    <link rel="modulepreload" crossorigin href="/assets/star-BYfOtsVM.js">
+    <link rel="modulepreload" crossorigin href="/assets/esm-D5Tf1my3.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DyIKyJnn.css">
   </head>
   <body>
     <div id="root"></div>

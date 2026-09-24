@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom';
 import { Award, Sparkles, Truck, ShieldCheck, Heart, Users, ArrowRight, Quote } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Seo } from '../components/seo/Seo';
-import { breadcrumbJsonLd, type Crumb } from '../components/seo/Breadcrumbs';
-import { organizationJsonLd } from '../lib/structuredData';
-
-const CRUMBS: Crumb[] = [{ label: 'Accueil', to: '/' }, { label: 'À propos' }];
+import { aboutSeo } from '../lib/pageSeo';
 
 const VALUES = [
   { icon: Award, title: 'La qualité d\'abord', text: 'Chaque pièce est sélectionnée par nos designers — conçue pour durer au-delà des tendances.' },
@@ -24,12 +21,7 @@ const STATS = [
 export function About() {
   return (
     <>
-      <Seo
-        title="À propos"
-        description="L’histoire de Maison Materiau : une équipe de designers et d’artisans à Casablanca qui sélectionne du mobilier, de la décoration et des matériaux conçus pour durer."
-        canonicalPath="/about"
-        jsonLd={[breadcrumbJsonLd(CRUMBS), organizationJsonLd()]}
-      />
+      <Seo {...aboutSeo()} />
       <div className="pt-20">
         {/* Hero */}
         <section className="relative bg-brand-dark text-white overflow-hidden">

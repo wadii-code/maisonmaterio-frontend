@@ -2,7 +2,8 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import video from '../../assets/videos/vid.mp4';
+import video from '../../assets/videos/hero-720p.mp4';
+import poster from '../../assets/videos/hero-poster.jpg';
 
 
 
@@ -11,7 +12,7 @@ export function Hero() {
     <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <video src={video} autoPlay loop muted className="w-full h-full object-cover" />
+        <video src={video} poster={poster} autoPlay loop muted playsInline aria-hidden="true" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
       </div>
 

@@ -21,7 +21,6 @@ async function fetchRevenue(period: string) {
   }>;
 }
 
-// "2026-05-21" -> "21 mai 2026"
 function formatDay(day: string): string {
   return new Date(`${day}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
@@ -71,7 +70,6 @@ export function RevenueChart() {
   const series = data?.series ?? [];
   const hasAnyRevenue = series.some(p => p.revenue > 0);
 
-  // A period with no sales still draws the chart: a flat line at 0.
   const { points, linePath, areaPath, max, yTicks } = useMemo(() => {
     if (series.length === 0) {
       return { points: [], linePath: '', areaPath: '', max: 0, yTicks: [] as number[] };
@@ -150,7 +148,6 @@ export function RevenueChart() {
           </div>
         ) : (
           <div className="relative">
-            {/* No sales in this period: the flat line stays visible, this explains it */}
             {!hasAnyRevenue && (
               <div className="absolute inset-x-0 top-4 z-10 flex flex-col items-center text-center gap-1 px-4 pointer-events-none">
                 <p className="text-sm font-semibold text-gray-400">Aucune vente sur cette période</p>
@@ -249,7 +246,6 @@ export function RevenueChart() {
                 style={{
                   left: `calc(${(hoverPoint.x / W) * 100}% )`,
                   top: `calc(${(hoverPoint.y / H) * 100}% - 56px)`,
-                  // Keep the tooltip inside the card at the first/last points.
                   transform: hoverPoint.x > W * 0.85 ? 'translateX(-100%)'
                     : hoverPoint.x < W * 0.15 ? 'none' : 'translateX(-50%)',
                 }}

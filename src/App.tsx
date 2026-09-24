@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense, type ReactNode } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { supabase } from './lib/supabase';
@@ -9,31 +9,35 @@ import { useI18nStore } from './stores/i18nStore';
 
 // Layout
 import { Layout } from './components/layout/Layout';
-import { AdminLayout } from './components/admin/AdminLayout';
 
-// Customer pages
+// Pages people land on from search stay eager; the rest load on demand.
 import { useParams } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
-import { Checkout } from './pages/Checkout';
-import { Auth } from './pages/Auth';
-import { Account } from './pages/Account';
-import { Wishlist } from './pages/Wishlist';
 import { About } from './pages/About';
-import { ProfileSettings } from './pages/ProfileSettings';
-import { SavedAddresses } from './pages/SavedAddresses';
 import { Personalize } from './pages/Personalize';
-import { OrderDetail } from './pages/OrderDetail';
 
-// Admin pages
-import { AdminDashboard } from './pages/admin/Dashboard';
-import { AdminProducts } from './pages/admin/AdminProducts';
-import { AdminOrders } from './pages/admin/AdminOrders';
-import { AdminCustomers } from './pages/admin/AdminCustomers';
-import { AdminReviews } from './pages/admin/AdminReviews';
-import { AdminCategories } from './pages/admin/AdminCategories';
-import { AdminAdmins } from './pages/admin/AdminAdmins';
+const Checkout = lazy(() => import('./pages/Checkout').then(m => ({ default: m.Checkout })));
+const Auth = lazy(() => import('./pages/Auth').then(m => ({ default: m.Auth })));
+const Account = lazy(() => import('./pages/Account').then(m => ({ default: m.Account })));
+const Wishlist = lazy(() => import('./pages/Wishlist').then(m => ({ default: m.Wishlist })));
+const ProfileSettings = lazy(() => import('./pages/ProfileSettings').then(m => ({ default: m.ProfileSettings })));
+const SavedAddresses = lazy(() => import('./pages/SavedAddresses').then(m => ({ default: m.SavedAddresses })));
+const OrderDetail = lazy(() => import('./pages/OrderDetail').then(m => ({ default: m.OrderDetail })));
+
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout').then(m => ({ default: m.AdminLayout })));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts').then(m => ({ default: m.AdminProducts })));
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders').then(m => ({ default: m.AdminOrders })));
+const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers').then(m => ({ default: m.AdminCustomers })));
+const AdminReviews = lazy(() => import('./pages/admin/AdminReviews').then(m => ({ default: m.AdminReviews })));
+const AdminCategories = lazy(() => import('./pages/admin/AdminCategories').then(m => ({ default: m.AdminCategories })));
+const AdminAdmins = lazy(() => import('./pages/admin/AdminAdmins').then(m => ({ default: m.AdminAdmins })));
+
+function Page({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<div className="min-h-screen" />}>{children}</Suspense>;
+}
 
 // Forces ProductDetail to remount when the product id changes,
 // so all local state (image gallery, qty, customization, scroll) resets
@@ -80,30 +84,30 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetailRoute />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/account/orders" element={<Account />} />
-          <Route path="/account/orders/:id" element={<OrderDetail />} />
-          <Route path="/account/profile" element={<ProfileSettings />} />
-          <Route path="/account/addresses" element={<SavedAddresses />} />
-          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/checkout" element={<Page><Checkout /></Page>} />
+          <Route path="/auth" element={<Page><Auth /></Page>} />
+          <Route path="/account" element={<Page><Account /></Page>} />
+          <Route path="/account/orders" element={<Page><Account /></Page>} />
+          <Route path="/account/orders/:id" element={<Page><OrderDetail /></Page>} />
+          <Route path="/account/profile" element={<Page><ProfileSettings /></Page>} />
+          <Route path="/account/addresses" element={<Page><SavedAddresses /></Page>} />
+          <Route path="/wishlist" element={<Page><Wishlist /></Page>} />
           <Route path="/about" element={<About />} />
           <Route path="/personalize" element={<Personalize />} />
-          <Route path="/auth/reset-password" element={<Auth />} />
+          <Route path="/auth/reset-password" element={<Page><Auth /></Page>} />
         </Route>
 
         {/* Admin routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="products/new" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="orders/:id" element={<AdminOrders />} />
-          <Route path="customers" element={<AdminCustomers />} />
-          <Route path="reviews" element={<AdminReviews />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="admins" element={<AdminAdmins />} />
+        <Route path="/admin" element={<Page><AdminLayout /></Page>}>
+          <Route index element={<Page><AdminDashboard /></Page>} />
+          <Route path="products" element={<Page><AdminProducts /></Page>} />
+          <Route path="products/new" element={<Page><AdminProducts /></Page>} />
+          <Route path="orders" element={<Page><AdminOrders /></Page>} />
+          <Route path="orders/:id" element={<Page><AdminOrders /></Page>} />
+          <Route path="customers" element={<Page><AdminCustomers /></Page>} />
+          <Route path="reviews" element={<Page><AdminReviews /></Page>} />
+          <Route path="categories" element={<Page><AdminCategories /></Page>} />
+          <Route path="admins" element={<Page><AdminAdmins /></Page>} />
           {/* Unknown /admin/* path → dashboard */}
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>

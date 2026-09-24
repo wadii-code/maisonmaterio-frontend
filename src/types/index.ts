@@ -24,7 +24,7 @@ export interface Product {
   review_count: number;
   /** Profile id of the admin who created this product. Null if seeded or the admin was deleted. */
   created_by?: string | null;
-  /** Long-form keyword-rich description rendered hidden in the page for SEO. */
+  /** Admin keyword notes. Deliberately not published: hidden keyword text breaks Google's spam policies. */
   seo_description?: string | null;
   /** Optional override for <title>. Falls back to the product name. */
   meta_title?: string | null;

@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f5a623" />
 
-    <!-- Fallbacks for crawlers that don't execute JS. Per-page values are
-         rendered by react-helmet-async and override everything below. -->
+    <!-- scripts/prerender.mjs replaces the seo block per page. No canonical or
+         og:url here: this file is served for every non-prerendered route. -->
+    <!-- seo:start -->
     <title>Maison Materiau — Mobilier, décoration &amp; matériaux de construction à Casablanca</title>
     <meta
       name="description"
@@ -18,8 +19,15 @@
     <meta property="og:site_name" content="Maison Materiau" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_MA" />
+    <meta property="og:title" content="Maison Materiau — Mobilier, décoration &amp; matériaux de construction à Casablanca" />
+    <meta property="og:description" content="Mobilier haut de gamme, décoration d’intérieur et matériaux de construction à Casablanca. Plus de 200 produits uniques, livraison partout au Maroc." />
     <meta property="og:image" content="/MAISONMATERIOLOGO.png" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/MAISONMATERIOLOGO.png" />
+    <!-- seo:end -->
+
+    <!-- Crawler-only copy on prerendered pages; React replaces it on mount. -->
+    <style>[data-prerender]{display:none}</style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Seo } from '../components/seo/Seo';
-import { breadcrumbJsonLd } from '../components/seo/Breadcrumbs';
+import { personalizeSeo } from '../lib/pageSeo';
+import { STORE } from '../lib/seo';
 import { motion } from 'framer-motion';
 import { MessageCircle, User, Phone, Tag, Sparkles, ArrowRight } from 'lucide-react';
 import { useCategories } from '../hooks/useProducts';
@@ -8,9 +9,9 @@ import { useI18n } from '../stores/i18nStore';
 import { Button } from '../components/ui/Button';
 import toast from 'react-hot-toast';
 
-// Set this to your business WhatsApp number in international format (no '+', no spaces).
-// Override at build time via VITE_WHATSAPP_NUMBER if you prefer.
-const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '212600000000';
+// International format, no '+' or spaces.
+const WHATSAPP_NUMBER =
+  (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) || STORE.phone.replace(/\D/g, '');
 
 export function Personalize() {
   const { t, locale } = useI18n();
@@ -69,12 +70,7 @@ export function Personalize() {
 
   return (
     <>
-      <Seo
-        title={t('personalize.title')}
-        description="Faites fabriquer un meuble sur mesure par Maison Materiau : dimensions, matériaux et finitions au choix. Devis gratuit par WhatsApp depuis Casablanca."
-        canonicalPath="/personalize"
-        jsonLd={breadcrumbJsonLd([{ label: 'Accueil', to: '/' }, { label: t('personalize.title') }])}
-      />
+      <Seo {...personalizeSeo(t('personalize.title'))} />
       <div className="pt-20 min-h-screen bg-brand-card">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           {/* Hero */}

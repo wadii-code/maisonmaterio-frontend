@@ -3,13 +3,14 @@
  * NAP (name / address / phone) used by both the UI and the LocalBusiness schema.
  */
 
-// Without VITE_SITE_URL every host the app answers on (preview deploys, the
-// bare *.vercel.app domain, the custom domain) would emit its own canonical —
-// the exact duplicate-content split canonical tags exist to prevent. The
-// window fallback only keeps dev and misconfigured builds functional.
+// Keep in sync with scripts/site.mjs.
+export const PRODUCTION_SITE_URL = 'https://www.maisonmateriau.com';
+
+// Every deploy (previews, *.vercel.app) must emit the live domain as canonical,
+// or they split ranking signals. Only the dev server uses its own origin.
 export const SITE_URL = (
   (import.meta.env.VITE_SITE_URL as string | undefined) ||
-  (typeof window !== 'undefined' ? window.location.origin : '')
+  (import.meta.env.DEV && typeof window !== 'undefined' ? window.location.origin : PRODUCTION_SITE_URL)
 ).replace(/\/+$/, '');
 
 export const SITE_NAME = 'Maison Materiau';
@@ -58,6 +59,56 @@ export function clampDescription(text?: string | null, max = 160): string {
   const cut = clean.slice(0, max - 1);
   const lastSpace = cut.lastIndexOf(' ');
   return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
+export interface SeoOptions {
+  title?: string;
+  description?: string | null;
+  image?: string | null;
+  /** Canonical path override. Defaults to the current pathname (query dropped). */
+  canonicalPath?: string;
+  /** Private or transactional pages that must stay out of the index. */
+  noindex?: boolean;
+  type?: 'website' | 'product' | 'article';
+  jsonLd?: object | object[];
+}
+
+export type MetaSpec = { key: 'name' | 'property'; value: string; content: string };
+
+/** Also used by scripts/prerender.mjs, so prerendered HTML matches what <Seo> renders. */
+export function buildHeadTags(options: SeoOptions, pathname: string) {
+  const { title, description, image, canonicalPath, noindex = false, type = 'website', jsonLd } = options;
+  const canonical = absoluteUrl(canonicalPath ?? pathname);
+  const fullTitle = buildTitle(title);
+  const desc = clampDescription(description) || DEFAULT_DESCRIPTION;
+  const ogImage = absoluteUrl(image || DEFAULT_OG_IMAGE);
+
+  const metas: MetaSpec[] = [
+    { key: 'name', value: 'description', content: desc },
+    {
+      key: 'name',
+      value: 'robots',
+      content: noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1',
+    },
+    { key: 'property', value: 'og:site_name', content: SITE_NAME },
+    { key: 'property', value: 'og:type', content: type },
+    { key: 'property', value: 'og:title', content: fullTitle },
+    { key: 'property', value: 'og:description', content: desc },
+    { key: 'property', value: 'og:url', content: canonical },
+    { key: 'property', value: 'og:image', content: ogImage },
+    { key: 'property', value: 'og:locale', content: OG_LOCALE },
+    { key: 'name', value: 'twitter:card', content: 'summary_large_image' },
+    { key: 'name', value: 'twitter:title', content: fullTitle },
+    { key: 'name', value: 'twitter:description', content: desc },
+    { key: 'name', value: 'twitter:image', content: ogImage },
+  ];
+
+  return {
+    title: fullTitle,
+    metas,
+    canonical,
+    jsonLd: jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [],
+  };
 }
 
 /** Slug-first product URL. Falls back to the id so older links keep resolving. */
